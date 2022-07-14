@@ -1,0 +1,13 @@
+#root {
+  margin-top: 58px;
+  --cord-page-presence-avatar-size: 24px;
+  --cord-avatar-border-radius: 100%;
+  --cord-sidebar-launcher-background-color: #000;
+  --cord-sidebar-launcher-text-color: #dadce0;
+}
+
+cord-sidebar {
+  --cord-sidebar-top: 58px;
+  --cord-sidebar-z-index: 2;
+  --cord-sidebar-width: 392px;
+}

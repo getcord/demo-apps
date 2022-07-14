@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+body {
+  background: #f0f0f0;
+  margin: 0;
+  padding: 0;
+  padding-top: 73px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #ccc;
+  background: white;
+  line-height: 24px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+header #logo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+header #links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+header .button {
+  color: white;
+  background: #7371ee;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 50px;
+}
+
+header .button:hover {
+  background: #4643e9;
+}
+
+#dashboard {
+  color: #4a4a4a;
+  font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+    sans-serif;
+  padding: 24px;
+}
+
+#dashboard.with-sidebar {
+  margin-right: 320px;
+}
+
+#dashboard .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 24px;
+}
+
+#dashboard h1 {
+  line-height: 64px;
+  font-weight: 300;
+  font-size: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+#dashboard h2 {
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 32px;
+  margin: 0;
+  padding: 0;
+}
+
+#dashboard .panel {
+  background: white;
+  padding: 24px;
+  border: 1px solid #dadce0;
+  box-shadow: 0px 2px 4px 0px #00000014;
+  border-radius: 2px;
+}
+
+#dashboard .panel h2 {
+  margin-bottom: 8px;
+}
+
+#dashboard .grid {
+  display: grid;
+  grid-gap: 32px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+#collaboration {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ag-theme-alpine {
+  --ag-value-change-value-highlight-background-color: #e37400;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+#grid-container {
+  height: 400px;
+  margin: 0 auto;
+}
+
+.cell {
+  position: relative;
+}
+
+.cell-presence {
+  border: 2px solid #e37400;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.cell-presence span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #e37400;
+  padding: 4px;
+  line-height: 1em;
+  font-size: 10px;
+  color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50%;
+  pointer-events: none;
+}
+
+.threadlist-button {
+  cursor: pointer;
+  max-width: 100%;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 20px;
+  border-style: none;
+  text-transform: none;
+  border-radius: var(--cord-border-radius-medium, var(--cord-space-3xs, 4px));
+  padding: 16px;
+  color: #1a73e8;
+  background-color: #e8f0fe;
+  gap: var(--cord-floating-threads-gap, var(--cord-space-3xs, 4px));
+}
+
+.threadlist-button:hover {
+  color: white;
+  background-color: #1a73e8;
+}
+
+.threadlist-container {
+  width: 300px;
+  background: white;
+  border-radius: 4px;
+  z-index: 9;
+  box-shadow: var(
+    --cord-shadow-large,
+    0 var(--cord-space-4xs, 2px) var(--cord-space-m, 16px) 0 rgba(0, 0, 0, 0.16)
+  );
+  border: 1px solid var(--cord-color-base-x-strong, #dadce0);
+}

@@ -1,0 +1,15 @@
+.share-room-button {
+  background-color: #7371ee;
+  border: 0;
+  border-radius: 50px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 8px 16px;
+  width: 130px;
+}
+
+.share-room-button:hover {
+  background-color: #4643e9;
+}
