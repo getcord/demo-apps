@@ -8,15 +8,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@floating-ui/react-dom": "^0.7.0",
     "@cord-sdk/react": "^0.0.19",
-    "@popperjs/core": "^2.11.6",
     "ag-grid-react": "^28.0.0",
     "classnames": "^2.3.1",
     "highcharts": "^10.2.0",
     "highcharts-react-official": "^3.1.0",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-popper": "^2.3.0"
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

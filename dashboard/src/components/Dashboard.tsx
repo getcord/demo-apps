@@ -1,7 +1,13 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { PagePresence, beta, ThreadList } from '@cord-sdk/react';
-import { usePopper } from 'react-popper';
 import type { HTMLCordFloatingThreadsElement } from '@cord-sdk/types';
+import {
+  autoUpdate,
+  flip,
+  offset as offsetMiddleware,
+  shift,
+  useFloating,
+} from '@floating-ui/react-dom';
 
 import { HighchartsExample } from './HighchartsExample';
 import { AGGridExample } from './AGGridExample';
@@ -46,23 +52,35 @@ function ThreadListButton({
 }: {
   floatingThreadsRef: React.MutableRefObject<HTMLCordFloatingThreadsElement | null>;
 }) {
-  const [referenceElement, setReferenceElement] =
-    useState<HTMLButtonElement | null>(null);
-  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
-    null,
-  );
   const [threadListOpen, setThreadListOpen] = useState(false);
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: 'bottom-start',
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [-155, 0],
-        },
-      },
+
+  const {
+    x,
+    y,
+    strategy,
+    reference: setReferenceElement,
+    floating: setPopperElement,
+  } = useFloating({
+    strategy: 'fixed',
+    whileElementsMounted: autoUpdate,
+    placement: 'bottom',
+    middleware: [
+      offsetMiddleware(0),
+      shift({
+        padding: 2,
+      }),
+      flip(),
     ],
   });
+
+  const popperStyles = useMemo(
+    () => ({
+      position: strategy,
+      top: y ?? '',
+      left: x ?? '',
+    }),
+    [strategy, x, y],
+  );
 
   const toggleThreadList = useCallback(() => {
     setThreadListOpen((prev) => !prev);
@@ -94,8 +112,7 @@ function ThreadListButton({
         <div
           className="threadlist-container"
           ref={setPopperElement}
-          style={styles.popper}
-          {...attributes.popper}
+          style={popperStyles}
         >
           <ThreadList location={LOCATION} onThreadClick={handleOpenThread} />
         </div>
