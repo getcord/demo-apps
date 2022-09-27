@@ -1,11 +1,9 @@
 import { CordProvider } from '@cord-sdk/react';
 import React, { useCallback, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { ComponentsDropdown } from '../components/ComponentsDropdown';
-
+import { ComponentsDropdown } from '../../../_common/ComponentsDropdown';
 import Dashboard from '../components/Dashboard';
 import '../css/index.css';
-import componentsDropdownCSS from '../css/components-dropdown.css';
 import '../css/highcharts-line-chart.css';
 import {
   startRoomSession,
@@ -60,7 +58,6 @@ ReactDOM.createRoot(
     ?.shadowRoot?.getElementById('components-dropdown-button-container')!,
 ).render(
   <>
-    <style>{componentsDropdownCSS}</style>
     <ComponentsDropdown
       componentNames={[
         'cord-page-presence',

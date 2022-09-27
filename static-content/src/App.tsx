@@ -1,8 +1,9 @@
 import React from 'react';
 import { CordProvider } from '@cord-sdk/react';
 
+import { InformationHeader } from '../../_common/InformationHeader';
+import demoLogo from './images/cord-static-content-demo-logo.png';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
-import { InformationHeader } from './components/InformationHeader';
 import { StaticContent } from './components/StaticContent';
 
 export default function App() {
@@ -10,7 +11,15 @@ export default function App() {
   return (
     // All the Cord React components must be children of a single CordProvider component.
     <CordProvider clientAuthToken={authToken}>
-      <InformationHeader />
+      <InformationHeader
+        demoLogo={demoLogo}
+        componentNames={[
+          'cord-presence-observer',
+          'cord-presence-facepile',
+          'cord-sidebar',
+          'cord-sidebar-launcher',
+        ]}
+      />
       {authToken && <StaticContent />}
     </CordProvider>
   );

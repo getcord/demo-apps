@@ -1,10 +1,15 @@
 import React from 'react';
 
-import cord from '../images/cord.svg';
-import demoLogo from '../images/cord-dashboard-demo-logo.png';
+import cord from './images/cord.svg';
+import type { CordComponentNames } from './ComponentsDropdown';
 import { ComponentsDropdown } from './ComponentsDropdown';
 
-export function InformationHeader() {
+type Props = {
+  componentNames: CordComponentNames[];
+  demoLogo: string;
+};
+
+export function InformationHeader({ componentNames, demoLogo }: Props) {
   return (
     <header>
       <div id="logo">
@@ -13,11 +18,7 @@ export function InformationHeader() {
       </div>
       <div id="links">
         <ComponentsDropdown
-          componentNames={[
-            'cord-page-presence',
-            'cord-sidebar',
-            'cord-sidebar-launcher',
-          ]}
+          componentNames={componentNames}
           walkthroughURL={'https://docs.cord.com/components/'}
         />
         <a

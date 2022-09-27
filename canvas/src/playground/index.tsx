@@ -3,9 +3,8 @@ import React, { useCallback, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
 import Canvas from '../components/Canvas';
-import { ComponentsDropdown } from '../components/ComponentsDropdown';
+import { ComponentsDropdown } from '../../../_common/ComponentsDropdown';
 import '../css/index.css';
-import componentsDropdownCSS from '../css/components-dropdown.css';
 import {
   startRoomSession,
   useCordDemoRooms,
@@ -58,7 +57,6 @@ ReactDOM.createRoot(
     ?.shadowRoot?.getElementById('components-dropdown-button-container')!,
 ).render(
   <>
-    <style>{componentsDropdownCSS}</style>
     <ComponentsDropdown
       componentNames={[
         'cord-page-presence',

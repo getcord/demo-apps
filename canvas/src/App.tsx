@@ -1,9 +1,10 @@
 import React from 'react';
 import { CordProvider } from '@cord-sdk/react';
 
+import { InformationHeader } from '../../_common/InformationHeader';
+import demoLogo from './images/cord-canvas-demo-logo.png';
 import Canvas from './components/Canvas';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
-import { InformationHeader } from './components/InformationHeader';
 
 export default function App() {
   // This must be replaced with your code that obtains the client auth token
@@ -13,7 +14,14 @@ export default function App() {
   return (
     // All the Cord React components must be children of a single CordProvider component.
     <CordProvider clientAuthToken={clientAuthToken}>
-      <InformationHeader />
+      <InformationHeader
+        demoLogo={demoLogo}
+        componentNames={[
+          'cord-floating-threads',
+          'cord-thread-list',
+          'cord-page-presence',
+        ]}
+      />
       <Canvas />
     </CordProvider>
   );
