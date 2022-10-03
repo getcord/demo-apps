@@ -12,6 +12,14 @@
   font-weight: bold;
 }
 
+.demo-no-header #root {
+  margin-top: 0;
+}
+
+.demo-no-header #headers {
+  display: none;
+}
+
 /* 57px is the height of the use cases header */
 .threadListContainer {
   top: calc(24px + 57px);

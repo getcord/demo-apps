@@ -11,3 +11,15 @@ cord-sidebar {
   --cord-sidebar-z-index: 2;
   --cord-sidebar-width: 392px;
 }
+
+.demo-no-header #root {
+  margin-top: 0;
+}
+
+.demo-no-header #headers {
+  display: none;
+}
+
+.demo-no-header cord-sidebar {
+  --cord-sidebar-top: 0;
+}

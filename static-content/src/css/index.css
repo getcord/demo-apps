@@ -71,6 +71,10 @@ html.cord-sidebar {
   margin-top: 58px;
 }
 
+.demo-no-header .playground--content {
+  margin-top: 0;
+}
+
 .playground--content .highlighter-rouge {
   display: contents;
 }

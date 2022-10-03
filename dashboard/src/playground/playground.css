@@ -5,6 +5,14 @@
     sans-serif;
 }
 
+.demo-no-header #root {
+  margin-top: 0;
+}
+
+.demo-no-header #headers {
+  display: none;
+}
+
 cord-page-presence {
   --cord-page-presence-avatar-size: 36px;
   --cord-avatar-border-radius: 50%;
