@@ -45,25 +45,19 @@ function ShareRoomButton() {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
 ReactDOM.createRoot(
-  document
-    .getElementById('headers')
-    ?.shadowRoot?.getElementById('share-room-button-container')!,
+  document.getElementById('share-room-button-container')!,
 ).render(<ShareRoomButton />);
 
 ReactDOM.createRoot(
-  document
-    .getElementById('headers')
-    ?.shadowRoot?.getElementById('components-dropdown-button-container')!,
+  document.getElementById('components-dropdown-button-container')!,
 ).render(
-  <>
-    <ComponentsDropdown
-      componentNames={[
-        'cord-presence-observer',
-        'cord-presence-facepile',
-        'cord-sidebar',
-        'cord-sidebar-launcher',
-      ]}
-      walkthroughURL={'https://docs.cord.com/components/'}
-    />
-  </>,
+  <ComponentsDropdown
+    componentNames={[
+      'cord-presence-observer',
+      'cord-presence-facepile',
+      'cord-sidebar',
+      'cord-sidebar-launcher',
+    ]}
+    walkthroughURL={'https://docs.cord.com/components/'}
+  />,
 );
