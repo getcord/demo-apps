@@ -59,6 +59,11 @@ header .button:hover {
   background: #4643e9;
 }
 
+/* prevent pins from overlaying thread-list */
+cord-floating-threads {
+  z-index: 0;
+}
+
 #dashboard {
   color: #4a4a4a;
   font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont,
