@@ -213,5 +213,5 @@ html.cord-sidebar {
   position: fixed;
   margin-right: 8px;
   margin-top: 8px;
-  z-index: 1;
+  z-index: 3;
 }
