@@ -316,7 +316,7 @@ function Button({
   );
 }
 
-function FloatingMenu(props: React.PropsWithChildren<{}>) {
+function FloatingMenu(props: React.PropsWithChildren<unknown>) {
   return <div className="floatingMenu">{props.children}</div>;
 }
 
