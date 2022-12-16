@@ -56,8 +56,8 @@ ReactDOM.createRoot(
   <ComponentsDropdown
     componentNames={[
       'cord-page-presence',
-      'cord-sidebar',
-      'cord-sidebar-launcher',
+      'cord-thread-list',
+      'cord-floating-threads',
     ]}
     walkthroughURL={'https://docs.cord.com/components/'}
   />,
