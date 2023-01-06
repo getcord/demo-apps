@@ -16,8 +16,8 @@ export default function App() {
         demoLogo={demoLogo}
         componentNames={[
           'cord-page-presence',
-          'cord-sidebar',
-          'cord-sidebar-launcher',
+          'cord-thread-list',
+          'cord-floating-threads',
         ]}
       />
       {authToken && <Dashboard />}
