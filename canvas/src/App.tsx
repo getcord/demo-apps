@@ -2,6 +2,7 @@ import React from 'react';
 import { CordProvider } from '@cord-sdk/react';
 
 import { InformationHeader } from '../../_common/InformationHeader';
+import { componentsUsed } from '../../_common/componentsList';
 import demoLogo from './images/cord-canvas-demo-logo.png';
 import Canvas from './components/Canvas';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
@@ -16,11 +17,7 @@ export default function App() {
     <CordProvider clientAuthToken={clientAuthToken}>
       <InformationHeader
         demoLogo={demoLogo}
-        componentNames={[
-          'cord-floating-threads',
-          'cord-thread-list',
-          'cord-page-presence',
-        ]}
+        componentNames={componentsUsed.canvas}
       />
       <Canvas />
     </CordProvider>

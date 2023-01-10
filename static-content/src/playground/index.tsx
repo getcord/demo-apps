@@ -10,6 +10,7 @@ import {
 } from '../../../../../playground/util';
 import './playground.css';
 import { StaticContent } from '../components/StaticContent';
+import { componentsUsed } from '../../../_common/componentsList';
 import shareRoomButtonCSS from './componentCSS/share-room-button.css';
 
 function App() {
@@ -52,12 +53,7 @@ ReactDOM.createRoot(
   document.getElementById('components-dropdown-button-container')!,
 ).render(
   <ComponentsDropdown
-    componentNames={[
-      'cord-presence-observer',
-      'cord-presence-facepile',
-      'cord-sidebar',
-      'cord-sidebar-launcher',
-    ]}
+    componentNames={componentsUsed.staticContent}
     walkthroughURL={'https://docs.cord.com/components/'}
   />,
 );

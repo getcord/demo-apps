@@ -11,6 +11,7 @@ import {
   useCordPlaygroundToken,
 } from '../../../../../playground/util';
 import './playground.css';
+import { componentsUsed } from '../../../_common/componentsList';
 import shareRoomButtonCSS from './componentCSS/share-room-button.css';
 
 function App() {
@@ -53,11 +54,7 @@ ReactDOM.createRoot(
   document.getElementById('components-dropdown-button-container')!,
 ).render(
   <ComponentsDropdown
-    componentNames={[
-      'cord-page-presence',
-      'cord-sidebar',
-      'cord-sidebar-launcher',
-    ]}
+    componentNames={componentsUsed.canvas}
     walkthroughURL={'https://docs.cord.com/components/'}
   />,
 );
