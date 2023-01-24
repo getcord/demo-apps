@@ -12,6 +12,7 @@ import {
   useCordAnnotationRenderer,
   useCordAnnotationClickHandler,
   beta,
+  useCordThreadActivitySummary,
 } from '@cord-sdk/react';
 import type { HTMLCordFloatingThreadsElement } from '@cord-sdk/types';
 
@@ -260,6 +261,8 @@ function InboxButton({
   const [showInbox, setShowInbox] = useState(false);
   const [hover, setHover] = useState(false);
 
+  const activity = useCordThreadActivitySummary(EXAMPLE_CORD_LOCATION);
+
   const active = showInbox || hover;
 
   return (
@@ -277,6 +280,8 @@ function InboxButton({
         onClick={() => setShowInbox(!showInbox)}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
+        badgeCount={activity ? activity.total - activity.resolved : 0}
+        hasUnreadThreads={activity ? activity.unread > 0 : false}
       >
         <img src={active ? bulletListIconWhiteSrc : bulletListIconSrc} />
       </Button>
@@ -287,31 +292,49 @@ function InboxButton({
 function Button({
   children,
   isActive,
-  onClick,
+  badgeCount = 0,
+  hasUnreadThreads = false,
   extraStyle,
+  onClick,
   onMouseEnter,
   onMouseLeave,
 }: React.PropsWithChildren<{
   isActive: boolean;
-  onClick: () => void;
+  badgeCount?: number;
+  hasUnreadThreads?: boolean;
   extraStyle?: CSSProperties;
+  onClick: () => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 }>) {
   return (
     <div
-      className={cx('btn', {
-        'btn-active': isActive,
-        'btn-inactive': !isActive,
-      })}
-      style={{
-        ...extraStyle,
-      }}
+      className="btn-wrapper"
       onClick={() => onClick()}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      {children}
+      {badgeCount > 0 && (
+        <div
+          className={cx({
+            'btn-badge': true,
+            'btn-badge-attention': hasUnreadThreads,
+          })}
+        >
+          {badgeCount}
+        </div>
+      )}
+      <div
+        className={cx('btn', {
+          'btn-active': isActive,
+          'btn-inactive': !isActive,
+        })}
+        style={{
+          ...extraStyle,
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }

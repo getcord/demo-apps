@@ -82,6 +82,32 @@ cord-thread {
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
 }
 
+.btn-wrapper {
+  position: relative;
+}
+
+.btn-badge {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: #f2e8ff;
+  color: #a259ff;
+  border: 2px solid white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  line-height: 28px;
+  text-align: center;
+  transform: translate(30%, -30%);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-badge-attention {
+  background-color: red;
+  color: white;
+}
+
 .btn {
   background-color: #a259ff;
   width: 56px;
@@ -93,7 +119,7 @@ cord-thread {
   cursor: pointer;
 }
 
-.btn:hover {
+.btn-wrapper:hover .btn {
   background-color: #a259ff;
 }
 
