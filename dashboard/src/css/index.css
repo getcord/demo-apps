@@ -69,7 +69,7 @@ cord-floating-threads {
   font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
     sans-serif;
-  padding: 24px;
+  padding: 32px;
 }
 
 #dashboard.with-sidebar {
@@ -80,7 +80,7 @@ cord-floating-threads {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 24px;
+  padding-bottom: 32px;
 }
 
 #dashboard h1 {
@@ -101,7 +101,7 @@ cord-floating-threads {
 
 #dashboard .panel {
   background: white;
-  padding: 24px;
+  padding: 32px;
   border: 1px solid #dadce0;
   box-shadow: 0px 2px 4px 0px #00000014;
   border-radius: 2px;
