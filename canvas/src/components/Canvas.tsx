@@ -103,6 +103,7 @@ export default function Canvas() {
       container: canvasContainerRef.current,
       width: canvasContainerRef.current.clientWidth,
       height: canvasContainerRef.current.clientHeight,
+      draggable: true,
     });
 
     const layer = new Konva.Layer();
@@ -156,7 +157,7 @@ export default function Canvas() {
 
         let direction = evt.deltaY > 0 ? 1 : -1;
         // When we zoom on trackpads,
-        // e.evt.ctrlKey is true so in that case lets revert direction.
+        // e.evt.ctrlKey is true so in that case let's revert direction.
         if (evt.ctrlKey) {
           direction = -direction;
         }
