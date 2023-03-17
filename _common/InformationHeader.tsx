@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import cord from './images/cord.svg';
 import type { CordComponentNames } from './ComponentsDropdown';

@@ -1,5 +1,6 @@
 import type { CSSProperties, Dispatch, SetStateAction } from 'react';
-import React, { useRef, useEffect, useState } from 'react';
+import * as React from 'react';
+import { useRef, useEffect, useState } from 'react';
 import Konva from 'konva';
 import type { Shape } from 'konva/lib/Shape';
 import type { KonvaEventObject } from 'konva/lib/Node';

@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import * as React from 'react';
+import { useState, useCallback, useRef, useMemo } from 'react';
 import { PagePresence, beta, ThreadList } from '@cord-sdk/react';
 import type { HTMLCordFloatingThreadsElement } from '@cord-sdk/types';
 import {

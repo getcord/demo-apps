@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { CordProvider } from '@cord-sdk/react';
 
 import { InformationHeader } from '../../_common/InformationHeader';
