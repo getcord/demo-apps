@@ -6,7 +6,7 @@ import {
   useCordAnnotationClickHandler,
   useCordAnnotationRenderer,
 } from '@cord-sdk/react';
-import Highcharts from 'highcharts';
+import * as Highcharts from 'highcharts';
 import type { TooltipPositionerPointObject } from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import cx from 'classnames';
