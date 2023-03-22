@@ -1,5 +1,4 @@
 import { CordProvider } from '@cord-sdk/react';
-import * as React from 'react';
 import { useCallback, useState } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { ComponentsDropdown } from '../../../_common/ComponentsDropdown';
