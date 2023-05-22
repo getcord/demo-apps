@@ -20,3 +20,14 @@ cord-page-presence {
   --cord-page-presence-avatar-size: 36px;
   --cord-avatar-border-radius: 50%;
 }
+
+cord-notification-list-launcher {
+  --cord-font-weight-medium: 400;
+  --cord-notification-list-launcher-padding: 16px;
+  --cord-notification-list-height: 500px;
+
+  --cord-notification-list-launcher-background-color: #e8f0fe;
+  --cord-notification-list-launcher-text-color: #1a73e8;
+  --cord-notification-list-launcher-background-color--hover: #1a73e8;
+  --cord-notification-list-launcher-text-color--hover: white;
+}

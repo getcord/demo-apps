@@ -1,7 +1,15 @@
-import * as React from 'react';
-import { useState, useCallback, useRef, useMemo } from 'react';
-import { PagePresence, beta, ThreadList } from '@cord-sdk/react';
-import type { HTMLCordFloatingThreadsElement } from '@cord-sdk/types';
+import type { MutableRefObject, PropsWithChildren } from 'react';
+import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
+import {
+  PagePresence,
+  beta,
+  ThreadList,
+  NotificationListLauncher,
+} from '@cord-sdk/react';
+import type {
+  HTMLCordFloatingThreadsElement,
+  NavigateFn,
+} from '@cord-sdk/types';
 import {
   autoUpdate,
   flip,
@@ -14,10 +22,28 @@ import { HighchartsExample } from './HighchartsExample';
 import { AGGridExample } from './AGGridExample';
 
 const LOCATION = { page: 'dashboard' };
-function Dashboard() {
+function Dashboard({
+  navigateRef,
+}: {
+  navigateRef: MutableRefObject<NavigateFn | null>;
+}) {
   const floatingThreadsRef = useRef<HTMLCordFloatingThreadsElement | null>(
     null,
   );
+
+  useEffect(() => {
+    navigateRef.current = (_url, _location, { threadID }) => {
+      // Since our app is an SPA, we don't need to actually navigate to a
+      // specific URL, but rather can just open up the indicated thread ID. We
+      // then return "true" to tell Cord that we have handled the navigation and
+      // it doesn't need to proceed to the actual URL navigation.
+      //
+      // Full documentation on the navigate hook is here:
+      // https://docs.cord.com/js-apis-and-hooks/initialization#navigate-3
+      floatingThreadsRef.current?.openThread(threadID);
+      return true;
+    };
+  }, [navigateRef]);
 
   return (
     <>
@@ -30,6 +56,7 @@ function Dashboard() {
               ref={floatingThreadsRef}
             />
             <ThreadListButton floatingThreadsRef={floatingThreadsRef} />
+            <NotificationListLauncher label="Notifications" />
             <PagePresence location={LOCATION} />
           </div>
         </div>
@@ -51,7 +78,7 @@ function Dashboard() {
 function ThreadListButton({
   floatingThreadsRef,
 }: {
-  floatingThreadsRef: React.MutableRefObject<HTMLCordFloatingThreadsElement | null>;
+  floatingThreadsRef: MutableRefObject<HTMLCordFloatingThreadsElement | null>;
 }) {
   const [threadListOpen, setThreadListOpen] = useState(false);
 
@@ -122,7 +149,7 @@ function ThreadListButton({
   );
 }
 
-function Panel(props: React.PropsWithChildren<{ title: string }>) {
+function Panel(props: PropsWithChildren<{ title: string }>) {
   return (
     <div className="panel">
       <h2>{props.title}</h2>
