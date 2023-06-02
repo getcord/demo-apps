@@ -43,7 +43,7 @@ export default function Canvas() {
     EXAMPLE_CORD_LOCATION,
     (capturePosition) => {
       if (!stage) {
-        console.warn('useCordAnnotationCaptureHandler: stage not initialised');
+        console.warn('useCordAnnotationCaptureHandler: stage not initialized');
         return;
       }
 
@@ -60,7 +60,7 @@ export default function Canvas() {
     EXAMPLE_CORD_LOCATION,
     ({ location: { x, y } }) => {
       if (!stage) {
-        console.warn('useCordAnnotationCaptureHandler: stage not initialised');
+        console.warn('useCordAnnotationCaptureHandler: stage not initialized');
         return;
       }
 
@@ -76,7 +76,7 @@ export default function Canvas() {
       EXAMPLE_CORD_LOCATION,
       ({ location: { x, y } }) => {
         if (!stage) {
-          console.warn('useCordAnnotationRenderer: stage not initialised');
+          console.warn('useCordAnnotationRenderer: stage not initialized');
           return;
         }
 

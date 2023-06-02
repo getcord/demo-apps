@@ -15,7 +15,7 @@ export default function App() {
   return (
     // All the Cord React components must be children of a single CordProvider
     // component, which is passed the clientAuthToken so the Cord components
-    // know which user they're connecting as. The "navigage" function is
+    // know which user they're connecting as. The "navigate" function is
     // optional and used here to make clicking on notifications work better (see
     // it's actual implementation in Dashboard.tsx).
     //
