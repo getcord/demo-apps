@@ -10,8 +10,8 @@ import {
   useCordAnnotationRenderer,
   useCordAnnotationTargetRef,
   useCordPresentUsers,
+  user,
 } from '@cord-sdk/react';
-
 import books from '../books.json';
 
 const COLUMN_HEADER_HEIGHT = 48;
@@ -35,11 +35,17 @@ function CellWithAnnotationTargetAndPresence(params: ICellRendererParams) {
   const annotationTargetRef =
     useCordAnnotationTargetRef<HTMLDivElement>(location);
 
-  const presentUsers = useCordPresentUsers(location, {
-    includeUserDetails: true,
-    onlyPresentUsers: true,
+  const userPresence = useCordPresentUsers(location, {
+    exclude_durable: true,
   });
-
+  const presentUsers = useMemo(
+    () => userPresence?.filter((u) => u.ephemeral.locations.length > 0) ?? [],
+    [userPresence],
+  );
+  const userData = user.useUserData(presentUsers.map((u) => u.id));
+  const userNames = presentUsers
+    .filter((u) => !!userData[u.id])
+    .map((u) => userData[u.id]!.shortName ?? userData[u.id]!.name ?? 'Unknown');
   return (
     <>
       <PresenceObserver location={location}>
@@ -47,9 +53,9 @@ function CellWithAnnotationTargetAndPresence(params: ICellRendererParams) {
           {params.value}
         </div>
       </PresenceObserver>
-      {presentUsers.length > 0 && (
+      {userNames.length > 0 && (
         <div className="cell-presence">
-          <span>{presentUsers.map((u) => u.name).join(', ')}</span>
+          <span>{userNames.join(', ')}</span>
         </div>
       )}
     </>
