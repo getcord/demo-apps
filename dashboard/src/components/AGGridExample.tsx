@@ -4,12 +4,12 @@ import type { ICellRendererParams } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import {
+  presence,
   PresenceObserver,
   useCordAnnotationCaptureHandler,
   useCordAnnotationClickHandler,
   useCordAnnotationRenderer,
   useCordAnnotationTargetRef,
-  useCordPresentUsers,
   user,
 } from '@cord-sdk/react';
 import books from '../books.json';
@@ -35,7 +35,7 @@ function CellWithAnnotationTargetAndPresence(params: ICellRendererParams) {
   const annotationTargetRef =
     useCordAnnotationTargetRef<HTMLDivElement>(location);
 
-  const userPresence = useCordPresentUsers(location, {
+  const userPresence = presence.useLocationData(location, {
     exclude_durable: true,
   });
   const presentUsers = useMemo(
