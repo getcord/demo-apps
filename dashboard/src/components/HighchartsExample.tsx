@@ -9,6 +9,7 @@ import * as Highcharts from 'highcharts';
 import type { TooltipPositionerPointObject } from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import cx from 'classnames';
+import chartData from '../chartData.json';
 
 function planarDistance(x1: number, y1: number, x2: number, y2: number) {
   return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
@@ -262,31 +263,13 @@ export function HighchartsExample() {
               },
             },
 
-            series: DATA,
+            series: chartData,
           }}
         />
       </div>
     </>
   );
 }
-
-const DATA = [
-  {
-    name: 'Recreational books',
-    data: [
-      22.69, 24.42, 24.75, 25.9, 26.51, 26.87, 26.98, 27.16, 27.08, 25.72, 23.7,
-      22.61, 20.52, 18.26, 18.09, 18.35, 18.5, 19.35, 19.17, 19.48, 19.37,
-      19.98,
-    ],
-  },
-  {
-    name: 'Educational books',
-    data: [
-      8.56, 9.04, 9.23, 9.7, 9.85, 9.88, 9.77, 9.67, 9.42, 9.59, 9.52, 9.82,
-      9.72, 9.55, 9.45, 9.59, 9.66, 10.01, 10, 10.16, 10.1, 10.4,
-    ],
-  },
-];
 
 const DATE_RANGE_SELECTOR_OPTIONS = [
   { start: 1999, end: 2009 },
