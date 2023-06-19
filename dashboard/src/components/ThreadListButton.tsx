@@ -1,11 +1,5 @@
-import {
-  autoUpdate,
-  flip,
-  offset as offsetMiddleware,
-  shift,
-  useFloating,
-} from '@floating-ui/react-dom';
-import { useCallback, useMemo, useState } from 'react';
+import { autoUpdate, flip, shift, useFloating } from '@floating-ui/react';
+import { useCallback, useState } from 'react';
 import type { MutableRefObject } from 'react';
 import type { HTMLCordFloatingThreadsElement } from '@cord-sdk/types';
 import { ThreadList } from '@cord-sdk/react';
@@ -19,33 +13,16 @@ export function ThreadListButton({
 }) {
   const [threadListOpen, setThreadListOpen] = useState(false);
 
-  const {
-    x,
-    y,
-    strategy,
-    reference: setReferenceElement,
-    floating: setPopperElement,
-  } = useFloating({
-    strategy: 'fixed',
+  const { refs, floatingStyles } = useFloating({
     whileElementsMounted: autoUpdate,
     placement: 'bottom',
     middleware: [
-      offsetMiddleware(0),
       shift({
         padding: 2,
       }),
       flip(),
     ],
   });
-
-  const popperStyles = useMemo(
-    () => ({
-      position: strategy,
-      top: y ?? '',
-      left: x ?? '',
-    }),
-    [strategy, x, y],
-  );
 
   const toggleThreadList = useCallback(() => {
     setThreadListOpen((prev) => !prev);
@@ -67,7 +44,7 @@ export function ThreadListButton({
             ? { color: '#f8f9fa', backgroundColor: '#476b9b' }
             : undefined
         }
-        ref={setReferenceElement}
+        ref={refs.setReference}
         onClick={toggleThreadList}
       >
         <InboxIcon />
@@ -76,8 +53,8 @@ export function ThreadListButton({
       {threadListOpen && (
         <div
           className="threadlist-container"
-          ref={setPopperElement}
-          style={popperStyles}
+          ref={refs.setFloating}
+          style={floatingStyles}
         >
           <ThreadList location={LOCATION} onThreadClick={handleOpenThread} />
         </div>

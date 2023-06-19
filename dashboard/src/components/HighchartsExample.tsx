@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   useCordAnnotationTargetRef,
   useCordAnnotationCaptureHandler,
@@ -170,6 +170,8 @@ export function HighchartsExample() {
     },
   );
 
+  const chartOptions = useChartOptions(redrawAnnotations);
+
   return (
     <>
       <div className="date-range-selector">
@@ -195,79 +197,86 @@ export function HighchartsExample() {
         <HighchartsReact
           ref={highchartsRef}
           highcharts={Highcharts}
-          options={{
-            title: {
-              text: null,
-            },
-
-            yAxis: {
-              title: {
-                text: 'Expenditure in billion U.S. dollars',
-              },
-            },
-
-            xAxis: {
-              min: 1999,
-              max: 2009,
-              accessibility: {
-                rangeDescription: 'Range: 1999 to 2020',
-              },
-              tickInterval: 1,
-            },
-
-            legend: {
-              layout: 'horizontal',
-              align: 'center',
-              verticalAlign: 'bottom',
-              itemStyle: {
-                color: '#4A4A4A',
-              },
-            },
-
-            plotOptions: {
-              series: {
-                label: {
-                  connectorAllowed: false,
-                },
-                pointStart: 1999,
-                marker: {
-                  states: {
-                    hover: {
-                      fillColor: '#e37400',
-                    },
-                  },
-                },
-              },
-            },
-
-            tooltip: {
-              positioner: function (
-                _labelHeight: number,
-                _labelWidth: number,
-                point: TooltipPositionerPointObject,
-              ) {
-                return {
-                  x: point.plotX,
-                  y: point.plotY + 20,
-                };
-              },
-            },
-
-            chart: {
-              style: {
-                fontFamily:
-                  'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
-              },
-              events: {
-                render: redrawAnnotations,
-              },
-            },
-
-            series: chartData,
-          }}
+          options={chartOptions}
         />
       </div>
     </>
+  );
+}
+
+function useChartOptions(onRender: () => void) {
+  return useMemo(
+    () => ({
+      title: {
+        text: null,
+      },
+
+      yAxis: {
+        title: {
+          text: 'Expenditure in billion U.S. dollars',
+        },
+      },
+
+      xAxis: {
+        min: 1999,
+        max: 2009,
+        accessibility: {
+          rangeDescription: 'Range: 1999 to 2020',
+        },
+        tickInterval: 1,
+      },
+
+      legend: {
+        layout: 'horizontal',
+        align: 'center',
+        verticalAlign: 'bottom',
+        itemStyle: {
+          color: '#4A4A4A',
+        },
+      },
+
+      plotOptions: {
+        series: {
+          label: {
+            connectorAllowed: false,
+          },
+          pointStart: 1999,
+          marker: {
+            states: {
+              hover: {
+                fillColor: '#e37400',
+              },
+            },
+          },
+        },
+      },
+
+      tooltip: {
+        positioner: function (
+          _labelHeight: number,
+          _labelWidth: number,
+          point: TooltipPositionerPointObject,
+        ) {
+          return {
+            x: point.plotX,
+            y: point.plotY + 20,
+          };
+        },
+      },
+
+      chart: {
+        style: {
+          fontFamily:
+            'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
+        },
+        events: {
+          render: onRender,
+        },
+      },
+
+      series: chartData,
+    }),
+    [onRender],
   );
 }
 
