@@ -7,6 +7,7 @@ import { componentsUsed } from '../../_common/componentsList';
 import demoLogo from './images/cord-dashboard-demo-logo.png';
 import Dashboard from './components/Dashboard';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
+import { ThreadsProvider } from './ThreadsContext';
 
 export default function App() {
   const authToken = useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION();
@@ -30,7 +31,11 @@ export default function App() {
         demoLogo={demoLogo}
         componentNames={componentsUsed.dashboard}
       />
-      {authToken && <Dashboard navigateRef={navigateRef} />}
+      {authToken && (
+        <ThreadsProvider>
+          <Dashboard navigateRef={navigateRef} />
+        </ThreadsProvider>
+      )}
     </CordProvider>
   );
 }

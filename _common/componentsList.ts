@@ -6,11 +6,7 @@ export const componentsUsed: {
   [key in AppNames]: CordComponentNames[];
 } = {
   canvas: ['cord-floating-threads', 'cord-thread-list', 'cord-page-presence'],
-  dashboard: [
-    'cord-page-presence',
-    'cord-thread-list',
-    'cord-floating-threads',
-  ],
+  dashboard: ['cord-page-presence', 'cord-thread-list', 'cord-pin'],
   staticContent: [
     'cord-presence-observer',
     'cord-presence-facepile',

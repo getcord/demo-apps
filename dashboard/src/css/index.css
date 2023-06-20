@@ -140,7 +140,7 @@ cord-floating-threads {
   position: relative;
 }
 
-.cell-presence {
+.cell-with-thread {
   border: 2px solid #e37400;
   position: absolute;
   top: 0;
@@ -150,22 +150,28 @@ cord-floating-threads {
   pointer-events: none;
 }
 
-.cell-presence span {
+/* a triangle in CSS placed in the corner of parent */
+.cell-with-thread::after {
+  content: "";
   position: absolute;
-  top: 0;
-  right: 0;
-  background: #e37400;
-  padding: 4px;
-  line-height: 1em;
-  font-size: 10px;
-  color: white;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 50%;
-  pointer-events: none;
+  border: 8px solid transparent;
+  border-bottom-color: inherit;
+  transform: rotate(45deg);
+  right: -8px;
+  top: -8px;
 }
 
-.threadlist-button {
+/* when cell is selected, make border of .cell-with-thread smaller */
+.ag-theme-alpine .ag-ltr .ag-cell-focus:not(.ag-cell-range-selected):focus-within .cell-with-thread {
+  border-width: 1px;
+}
+
+/* we don't want gaps between cells */
+.ag-theme-alpine .ag-ltr .ag-cell {
+  border: none;
+}
+
+.action-button {
   cursor: pointer;
   max-width: 100%;
   text-align: center;
@@ -185,10 +191,32 @@ cord-floating-threads {
   gap: var(--cord-floating-threads-gap, var(--cord-space-3xs, 4px));
 }
 
-.threadlist-button:hover {
+.action-button:hover {
   color: white;
   background-color: #1a73e8;
 }
+
+.action-button.add-thread {
+  color: white;
+  background-color: #1a73e8;
+}
+.action-button.add-thread:hover {
+  background-color: #114c99;
+}
+.action-button.add-thread:active, .in-thread-mode .action-button.add-thread {
+  background-color: #476b9b;
+}
+
+.in-thread-mode {
+  cursor: url("/images/comment-cursor.svg") 0 34, auto;
+}
+
+/* annotatable elements */
+.in-thread-mode .over-chart-point,
+.in-thread-mode .ag-cell {
+  cursor: url("/images/comment-cursor-active.svg") 0 34, auto;
+}
+
 
 .threadlist-container {
   width: 300px;
@@ -200,4 +228,8 @@ cord-floating-threads {
     0 var(--cord-space-4xs, 2px) var(--cord-space-m, 16px) 0 rgba(0, 0, 0, 0.16)
   );
   border: 1px solid var(--cord-color-base-x-strong, #dadce0);
+}
+
+cord-presence-facepile .cord-avatar-container {
+  border-radius: 50%;
 }

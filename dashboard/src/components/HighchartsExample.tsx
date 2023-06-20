@@ -1,176 +1,109 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import HighchartsReact from 'highcharts-react-official';
 import {
-  useCordAnnotationTargetRef,
-  useCordAnnotationCaptureHandler,
-  useCordAnnotationClickHandler,
-  useCordAnnotationRenderer,
-} from '@cord-sdk/react';
+  useMemo,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useReducer,
+} from 'react';
 import * as Highcharts from 'highcharts';
 import type { TooltipPositionerPointObject } from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
 import cx from 'classnames';
+import { Pin, user } from '@cord-sdk/react';
 import chartData from '../chartData.json';
+import type { ChartThreadMetadata } from '../ThreadsContext';
+import { ThreadsContext } from '../ThreadsContext';
+import { LOCATION } from './Dashboard';
+import { ThreadWrapper } from './ThreadWrapper';
 
-function planarDistance(x1: number, y1: number, x2: number, y2: number) {
-  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-}
+const DATE_RANGE_SELECTOR_OPTIONS = [
+  { start: 1999, end: 2009 },
+  { start: 2010, end: 2020 },
+];
 
-type HighchartsAnnotationLocation = {
-  section: string;
-  series: number;
-  pointIndex: number;
-  x: number;
-  y: number;
+type Props = {
+  chartId: string;
 };
-
-export function HighchartsExample() {
+export function HighchartsExample({ chartId }: Props) {
+  const chartRef = useRef<HighchartsReact.RefObject>(null);
+  const {
+    setOpenThread,
+    threads,
+    requestToOpenThread,
+    setRequestToOpenThread,
+  } = useContext(ThreadsContext)!;
   const [selectedDateRange, setSelectedDateRange] = useState(
     DATE_RANGE_SELECTOR_OPTIONS[0],
   );
-  const highchartsRef = useRef<HighchartsReact.RefObject>(null);
 
-  const location = { section: 'chart' };
-
-  const annotationTargetRef = useCordAnnotationTargetRef<
-    HTMLDivElement,
-    HighchartsAnnotationLocation
-  >(location);
-
+  // Effect to update chart's axis range when selectedDateRange changes
   useEffect(() => {
-    const element = annotationTargetRef.current;
-
-    if (!element) {
-      return;
-    }
-
-    const resizeObserver = new ResizeObserver(() => {
-      highchartsRef.current?.chart.reflow();
-    });
-
-    resizeObserver.observe(element);
-
-    return () => {
-      resizeObserver.unobserve(element);
-    };
-  }, [annotationTargetRef]);
-
-  useEffect(() => {
-    highchartsRef.current?.chart.xAxis[0].setExtremes(
+    chartRef.current?.chart.xAxis[0].setExtremes(
       selectedDateRange.start,
       selectedDateRange.end,
     );
   }, [selectedDateRange]);
 
-  // Runs when users click on the screen to annotate.
-  // The pin will be attached to the closest data point relative to the location of the user click.
-  useCordAnnotationCaptureHandler<HighchartsAnnotationLocation>(
-    location,
-    ({ x, y }) => {
-      const chart = highchartsRef.current?.chart;
-      if (chart) {
-        const { plotLeft, plotTop } = chart;
-        const plotRelativeX = x - plotLeft;
-        const plotRelativeY = y - plotTop;
+  const chartParentRef = useRef<HTMLDivElement>(null);
+  // Effect to update chart so that the requested thread can be displayed
+  useEffect(() => {
+    if (requestToOpenThread === null) {
+      return;
+    }
 
-        let minDistance = Infinity;
-        let closestPoint: Highcharts.Point | undefined;
+    const metadata = threads.get(requestToOpenThread);
+    if (metadata?.type !== 'chart' || metadata.chartId !== chartId) {
+      // request is not for this chart
+      return;
+    }
 
-        for (const series of chart.series) {
-          for (const point of series.points) {
-            const { plotX, plotY } = point;
+    // Make the requested chart series visible
+    const series = chartRef.current?.chart.get(metadata.seriesId) as
+      | Highcharts.Series
+      | undefined;
+    if (!series) {
+      throw new Error('series not found');
+    }
+    series.setVisible(true);
 
-            if (plotX !== undefined && plotY !== undefined) {
-              const distance = planarDistance(
-                plotX,
-                plotY,
-                plotRelativeX,
-                plotRelativeY,
-              );
-
-              if (distance < minDistance) {
-                minDistance = distance;
-                closestPoint = point;
-              }
-            }
-          }
-        }
-
-        if (closestPoint) {
-          return {
-            // Storing the location of the annotated data point.
-            extraLocation: {
-              x: closestPoint.x,
-              y: closestPoint.y,
-              series: closestPoint.series.index,
-              pointIndex: closestPoint.index,
-            },
-            // Showing data point information in annotation pill.
-            label: `${closestPoint.series.name}: ${closestPoint.x}`,
-          };
-        }
-      }
-    },
-  );
-
-  const { redrawAnnotations } =
-    useCordAnnotationRenderer<HighchartsAnnotationLocation>(
-      location,
-      (annotation) => {
-        const chart = highchartsRef.current?.chart;
-        const container = highchartsRef.current?.container?.current;
-
-        if (chart && container) {
-          if (!chart.series[annotation.location.series].visible) {
-            return;
-          }
-
-          return {
-            element: container,
-            coordinates: {
-              x: chart.xAxis[0].toPixels(annotation.location.x, false),
-              y: chart.yAxis[0].toPixels(annotation.location.y, false),
-            },
-          };
-        }
-      },
+    // Adjust the range of the chart axes
+    const rangeForThread = DATE_RANGE_SELECTOR_OPTIONS.find(
+      (range) => range.start <= metadata.x && metadata.x <= range.end,
+    );
+    if (!rangeForThread) {
+      throw new Error(`thread ${requestToOpenThread} cannot be displayed`);
+    }
+    setSelectedDateRange(rangeForThread);
+    // NOTE: Eagerly update the chart axis range, so that the thread we are
+    // going to open does not auto-close because the axis range does not
+    // match
+    chartRef.current?.chart.xAxis[0].setExtremes(
+      rangeForThread.start,
+      rangeForThread.end,
     );
 
-  // Runs when a user clicks on the annotation pill within the sidebar.
-  useCordAnnotationClickHandler<HighchartsAnnotationLocation>(
-    location,
-    (annotation) => {
-      highchartsRef.current?.chart.series[
-        annotation.location.series
-      ].setVisible(true);
+    // Scroll the page to the chart and open the thread
+    chartParentRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+    setRequestToOpenThread(null);
+    // Open the thread with a small delay. Opening the thread immediately
+    // currently stops the scrollIntoView().
+    setTimeout(() => setOpenThread(requestToOpenThread), 300);
+  }, [
+    chartId,
+    threads,
+    requestToOpenThread,
+    setOpenThread,
+    setRequestToOpenThread,
+  ]);
 
-      const chart = highchartsRef.current?.chart;
-
-      chart?.series[annotation.location.series].points[
-        annotation.location.pointIndex
-      ].setState('hover');
-
-      setTimeout(
-        () =>
-          chart?.series[annotation.location.series].points[
-            annotation.location.pointIndex
-          ].setState('normal'),
-        2000,
-      );
-
-      for (const range of DATE_RANGE_SELECTOR_OPTIONS) {
-        if (
-          annotation.location.x >= range.start &&
-          annotation.location.x <= range.end &&
-          range !== selectedDateRange
-        ) {
-          setSelectedDateRange(range);
-          break;
-        }
-      }
-    },
-  );
-
-  const chartOptions = useChartOptions(redrawAnnotations);
+  // A dummy reducer with the sole purpose to re-render this component.
+  // Used to to redraw positions of pins when chart redraws
+  const [_, forceRerender] = useReducer((x) => x + 1, 0);
+  const chartOptions = useChartOptions(chartId, chartParentRef, forceRerender);
 
   return (
     <>
@@ -184,29 +117,96 @@ export function HighchartsExample() {
                   selectedDateRange.start === start &&
                   selectedDateRange.end === end,
               })}
-              onClick={() => {
-                setSelectedDateRange({ start, end });
-              }}
+              onClick={() => setSelectedDateRange({ start, end })}
             >
               {start} - {end}
             </button>
           );
         })}
       </div>
-      <div ref={annotationTargetRef}>
+      <div ref={chartParentRef} style={{ position: 'relative' }}>
         <HighchartsReact
-          ref={highchartsRef}
+          ref={chartRef}
           highcharts={Highcharts}
           options={chartOptions}
         />
+        {chartRef.current?.chart && (
+          <ChartThreads chartId={chartId} chart={chartRef.current.chart} />
+        )}
       </div>
     </>
   );
 }
 
-function useChartOptions(onRender: () => void) {
+function useChartOptions(
+  chartId: string,
+  chartParentRef: React.RefObject<HTMLDivElement>,
+  onRedraw: (() => void) | undefined,
+) {
+  const orgId = user.useViewerData()?.organizationID;
+  const { addThread, setOpenThread, inThreadCreationMode } =
+    useContext(ThreadsContext)!;
+
   return useMemo(
     () => ({
+      plotOptions: {
+        series: {
+          events: {
+            // Add a thread when a series point is clicked
+            click: (evt: Highcharts.PointClickEventObject) => {
+              if (!inThreadCreationMode) {
+                return;
+              }
+              if (!orgId) {
+                throw new Error('org information not ready');
+              }
+              const metadata = {
+                type: 'chart',
+                chartId,
+                seriesId: evt.point.series.userOptions.id!,
+                x: evt.point.x,
+                y: evt.point.y!,
+              } as const;
+              // NOTE: Allow only one thread per point by using the point x,y in threadId
+              // NOTE: Use orgId as part of thread id to have unique ids across orgs
+              const threadId = `${orgId}_${metadata.chartId}_${metadata.seriesId}_${metadata.x}_${metadata.y}`;
+              addThread(threadId, metadata);
+              setOpenThread(threadId);
+            },
+
+            // add custom class to know when cursor is above a point
+            mouseOver: () =>
+              chartParentRef.current?.classList.add('over-chart-point'),
+            mouseOut: () =>
+              chartParentRef.current?.classList.remove('over-chart-point'),
+          },
+          label: {
+            connectorAllowed: false,
+          },
+          pointStart: 1999,
+          marker: {
+            states: {
+              hover: {
+                fillColor: '#e37400',
+              },
+            },
+          },
+        },
+      },
+
+      chart: {
+        style: {
+          fontFamily:
+            'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
+        },
+        events: {
+          redraw: onRedraw,
+        },
+      },
+
+      series: chartData,
+
+      // Standard options from here on
       title: {
         text: null,
       },
@@ -235,22 +235,6 @@ function useChartOptions(onRender: () => void) {
         },
       },
 
-      plotOptions: {
-        series: {
-          label: {
-            connectorAllowed: false,
-          },
-          pointStart: 1999,
-          marker: {
-            states: {
-              hover: {
-                fillColor: '#e37400',
-              },
-            },
-          },
-        },
-      },
-
       tooltip: {
         positioner: function (
           _labelHeight: number,
@@ -263,24 +247,117 @@ function useChartOptions(onRender: () => void) {
           };
         },
       },
-
-      chart: {
-        style: {
-          fontFamily:
-            'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
-        },
-        events: {
-          render: onRender,
-        },
-      },
-
-      series: chartData,
     }),
-    [onRender],
+    [
+      addThread,
+      chartId,
+      chartParentRef,
+      inThreadCreationMode,
+      onRedraw,
+      orgId,
+      setOpenThread,
+    ],
   );
 }
 
-const DATE_RANGE_SELECTOR_OPTIONS = [
-  { start: 1999, end: 2009 },
-  { start: 2010, end: 2020 },
-];
+type ChartThreadsProps = {
+  chartId: ChartThreadMetadata['chartId'];
+  chart: Highcharts.Chart;
+};
+
+function ChartThreads({ chartId, chart }: ChartThreadsProps) {
+  const { threads } = useContext(ThreadsContext)!;
+  return (
+    <>
+      {Array.from(threads)
+        .filter((keyVal): keyVal is [string, ChartThreadMetadata] => {
+          const [_threadId, metadata] = keyVal;
+          return metadata.type === 'chart' && metadata.chartId === chartId;
+        })
+        .map(([threadId, metadata]) => (
+          <ChartThread
+            key={threadId}
+            threadId={threadId}
+            metadata={metadata}
+            chart={chart}
+          />
+        ))}
+    </>
+  );
+}
+
+type ChartThreadProps = {
+  threadId: string;
+  metadata: ChartThreadMetadata;
+  chart: Highcharts.Chart;
+};
+
+function ChartThread({ threadId, metadata, chart }: ChartThreadProps) {
+  const { openThread, setOpenThread } = useContext(ThreadsContext)!;
+  const isVisible = isPointVisible(chart, metadata);
+  const isOpen = openThread === threadId;
+
+  // Effect to close thread if it becomes not visible
+  useEffect(() => {
+    if (!isVisible && isOpen) {
+      setOpenThread(null);
+    }
+  }, [isOpen, isVisible, openThread, setOpenThread, threadId]);
+
+  return (
+    // NOTE: Set the same location prop on Pin and Thread
+    <Pin
+      key={threadId}
+      location={LOCATION}
+      threadId={threadId}
+      style={{
+        position: 'absolute',
+        left: chart.xAxis[0].toPixels(metadata.x, false),
+        top: isVisible ? chart.yAxis[0].toPixels(metadata.y, false) : 0,
+        transform: 'translateY(-100%)',
+        transition: 'top 0.5s, left 0.5s',
+        visibility: isVisible ? 'visible' : 'hidden',
+        zIndex: isOpen ? 1 : 0,
+      }}
+      onClick={() => setOpenThread(isOpen ? null : threadId)}
+    >
+      <ThreadWrapper
+        location={LOCATION}
+        threadId={threadId}
+        metadata={metadata}
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: '100%',
+        }}
+      />
+    </Pin>
+  );
+}
+
+// Check if the point that the thread's metadata is associated with is
+// currently visible
+function isPointVisible(
+  chart: Highcharts.Chart,
+  metadata: ChartThreadMetadata,
+): boolean {
+  const series = chart.get(metadata.seriesId) as Highcharts.Series | undefined;
+  if (!series || !series.visible) {
+    return false;
+  }
+  const point = series.points.find(
+    (p) => p.x === metadata.x && p.y === metadata.y,
+  );
+  if (!point) {
+    return false;
+  }
+  const { min: xMin, max: xMax } = chart.xAxis[0].getExtremes();
+  // NOTE: the check of the yAxis range is not really necessary for this app
+  const { min: yMin, max: yMax } = chart.yAxis[0].getExtremes();
+  return (
+    xMin <= metadata.x &&
+    yMin <= metadata.y &&
+    metadata.x <= xMax &&
+    metadata.y <= yMax
+  );
+}

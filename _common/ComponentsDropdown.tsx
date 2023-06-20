@@ -73,6 +73,12 @@ const ComponentsData = {
     link: 'https://docs.cord.com/components/cord-floating-threads',
     description: 'Renders the threads on the page as annotation pointers.',
   },
+  'cord-pin': {
+    header: 'Pin',
+    icon: sidebarLauncherIcon,
+    link: 'https://docs.cord.com/components/cord-pin',
+    description: 'Renders a pin indicating that comment was left here.',
+  },
 };
 
 export function ComponentsDropdown(props: Props) {

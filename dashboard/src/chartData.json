@@ -1,5 +1,6 @@
 [
   {
+    "id": "unique-id-of-this-series",
     "name": "Recreational books",
     "data": [
       22.69, 24.42, 24.75, 25.9, 26.51, 26.87, 26.98, 27.16, 27.08, 25.72, 23.7,
@@ -8,6 +9,7 @@
     ]
   },
   {
+    "id": "unique-id-of-this-series-2",
     "name": "Educational books",
     "data": [
       8.56, 9.04, 9.23, 9.7, 9.85, 9.88, 9.77, 9.67, 9.42, 9.59, 9.52, 9.82,
@@ -15,5 +17,4 @@
     ]
   }
 ]
-
 

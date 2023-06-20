@@ -1,17 +1,16 @@
-import { autoUpdate, flip, shift, useFloating } from '@floating-ui/react';
-import { useCallback, useState } from 'react';
-import type { MutableRefObject } from 'react';
-import type { HTMLCordFloatingThreadsElement } from '@cord-sdk/types';
+import { useState, useCallback, useContext } from 'react';
 import { ThreadList } from '@cord-sdk/react';
-import { InboxIcon } from './InboxIcon';
+import { autoUpdate, flip, shift, useFloating } from '@floating-ui/react';
+import { ThreadsContext } from '../ThreadsContext';
 import { LOCATION } from './Dashboard';
+import { InboxIcon } from './InboxIcon';
 
-export function ThreadListButton({
-  floatingThreadsRef,
-}: {
-  floatingThreadsRef: MutableRefObject<HTMLCordFloatingThreadsElement | null>;
-}) {
+type Props = {
+  goToThread: (threadId: string) => void;
+};
+export function ThreadListButton({ goToThread }: Props) {
   const [threadListOpen, setThreadListOpen] = useState(false);
+  const { openThread } = useContext(ThreadsContext)!;
 
   const { refs, floatingStyles } = useFloating({
     whileElementsMounted: autoUpdate,
@@ -28,17 +27,10 @@ export function ThreadListButton({
     setThreadListOpen((prev) => !prev);
   }, []);
 
-  const handleOpenThread = useCallback(
-    (threadID: string) => {
-      floatingThreadsRef.current?.openThread(threadID);
-    },
-    [floatingThreadsRef],
-  );
-
   return (
     <>
       <button
-        className="threadlist-button"
+        className="action-button"
         style={
           threadListOpen
             ? { color: '#f8f9fa', backgroundColor: '#476b9b' }
@@ -56,7 +48,12 @@ export function ThreadListButton({
           ref={refs.setFloating}
           style={floatingStyles}
         >
-          <ThreadList location={LOCATION} onThreadClick={handleOpenThread} />
+          <ThreadList
+            location={LOCATION}
+            onThreadClick={goToThread}
+            style={{ maxHeight: '400px' }}
+            highlightThreadId={openThread ?? undefined}
+          />
         </div>
       )}
     </>

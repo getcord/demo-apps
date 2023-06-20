@@ -1,25 +1,30 @@
 import type { MutableRefObject } from 'react';
-import { useRef, useEffect } from 'react';
-import { PagePresence, beta, NotificationListLauncher } from '@cord-sdk/react';
-import type {
-  HTMLCordFloatingThreadsElement,
-  NavigateFn,
-} from '@cord-sdk/types';
+import { useContext, useEffect } from 'react';
+import { PagePresence, NotificationListLauncher } from '@cord-sdk/react';
+import type { NavigateFn } from '@cord-sdk/types';
+import cx from 'classnames';
 
+import { ThreadsContext } from '../ThreadsContext';
 import { HighchartsExample } from './HighchartsExample';
 import { AGGridExample } from './AGGridExample';
 import { ThreadListButton } from './ThreadListButton';
 import { Panel } from './Panel';
 
 export const LOCATION = { page: 'dashboard' };
+export const CHART_ID = 'some-unique-and-stable-id-of-this-chart';
+export const GRID_ID = 'some-unique-and-stable-id-of-this-grid';
 function Dashboard({
   navigateRef,
 }: {
   navigateRef: MutableRefObject<NavigateFn | null>;
 }) {
-  const floatingThreadsRef = useRef<HTMLCordFloatingThreadsElement | null>(
-    null,
-  );
+  const {
+    inThreadCreationMode,
+    setInThreadCreationMode,
+    openThread,
+    setOpenThread,
+    setRequestToOpenThread,
+  } = useContext(ThreadsContext)!;
 
   useEffect(() => {
     navigateRef.current = (_url, _location, { threadID }) => {
@@ -30,22 +35,63 @@ function Dashboard({
       //
       // Full documentation on the navigate hook is here:
       // https://docs.cord.com/js-apis-and-hooks/initialization#navigate-3
-      floatingThreadsRef.current?.openThread(threadID);
+      setRequestToOpenThread(threadID);
       return true;
     };
-  }, [navigateRef]);
+  }, [navigateRef, setRequestToOpenThread]);
+
+  // Effect to close open thread on ESCAPE key press and also stop thread
+  // creation mode
+  useEffect(() => {
+    const close = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpenThread(null);
+        setInThreadCreationMode(false);
+      }
+    };
+    document.addEventListener('keydown', close);
+    return () => document.removeEventListener('keydown', close);
+  }, [setInThreadCreationMode, setOpenThread]);
+
+  // Effect to close thread if user clicks anywhere but a Pin or Thread
+  useEffect(() => {
+    if (openThread) {
+      const close = (event: MouseEvent) => {
+        if (
+          !event.composedPath().some((e) => {
+            if (e instanceof Element) {
+              const elName = e.tagName.toLowerCase();
+              return elName === 'cord-pin' || elName === 'cord-thread';
+            }
+            return false;
+          })
+        ) {
+          // user clicked somewhere that's not the pin nor thread
+          setOpenThread(null);
+        }
+      };
+      document.addEventListener('mousedown', close);
+      return () => document.removeEventListener('mousedown', close);
+    }
+    return () => {};
+  }, [openThread, setOpenThread]);
 
   return (
     <>
-      <div id="dashboard">
+      <div
+        id="dashboard"
+        className={cx({ 'in-thread-mode': inThreadCreationMode })}
+      >
         <div className="header">
           <h1>Your collaborative dashboard</h1>
           <div id="collaboration">
-            <beta.FloatingThreads
-              location={LOCATION}
-              ref={floatingThreadsRef}
-            />
-            <ThreadListButton floatingThreadsRef={floatingThreadsRef} />
+            <button
+              className="action-button add-thread"
+              onClick={() => setInThreadCreationMode((val) => !val)}
+            >
+              Add comment
+            </button>
+            <ThreadListButton goToThread={setRequestToOpenThread} />
             <NotificationListLauncher label="Notifications" />
             <PagePresence location={LOCATION} />
           </div>
@@ -53,11 +99,11 @@ function Dashboard({
 
         <div className="grid">
           <Panel title="Consumer expenditure on books in the United States from 1999 to 2020">
-            <HighchartsExample />
+            <HighchartsExample chartId={CHART_ID} />
           </Panel>
 
           <Panel title="Short list of books found on Goodreads">
-            <AGGridExample />
+            <AGGridExample gridId={GRID_ID} />
           </Panel>
         </div>
       </div>

@@ -1,71 +1,33 @@
-import { useCallback, useMemo, useRef } from 'react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import type { ICellRendererParams } from 'ag-grid-community';
+import type { ICellRendererParams, GridApi } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import { PresenceFacepile, PresenceObserver, user } from '@cord-sdk/react';
 import {
-  presence,
-  PresenceObserver,
-  useCordAnnotationCaptureHandler,
-  useCordAnnotationClickHandler,
-  useCordAnnotationRenderer,
-  useCordAnnotationTargetRef,
-  user,
-} from '@cord-sdk/react';
+  autoUpdate,
+  flip,
+  offset,
+  shift,
+  useFloating,
+} from '@floating-ui/react';
 import books from '../books.json';
+import type { GridThreadMetadata } from '../ThreadsContext';
+import { ThreadsContext } from '../ThreadsContext';
+import { LOCATION } from './Dashboard';
+import { ThreadWrapper } from './ThreadWrapper';
 
-const COLUMN_HEADER_HEIGHT = 48;
-
-type GridLocation = {
-  section: string;
-  row: string;
-  column?: string;
-};
-
-function CellWithAnnotationTargetAndPresence(params: ICellRendererParams) {
-  const location: GridLocation = useMemo(
-    () => ({
-      section: 'grid',
-      row: String(params.rowIndex),
-      column: params.column?.getColId(),
-    }),
-    [params],
-  );
-
-  const annotationTargetRef =
-    useCordAnnotationTargetRef<HTMLDivElement>(location);
-
-  const userPresence = presence.useLocationData(location, {
-    exclude_durable: true,
-  });
-  const presentUsers = useMemo(
-    () => userPresence?.filter((u) => u.ephemeral.locations.length > 0) ?? [],
-    [userPresence],
-  );
-  const userData = user.useUserData(presentUsers.map((u) => u.id));
-  const userNames = presentUsers
-    .filter((u) => !!userData[u.id])
-    .map((u) => userData[u.id]!.shortName ?? userData[u.id]!.name ?? 'Unknown');
-  return (
-    <>
-      <PresenceObserver location={location}>
-        <div ref={annotationTargetRef} className="cell">
-          {params.value}
-        </div>
-      </PresenceObserver>
-      {userNames.length > 0 && (
-        <div className="cell-presence">
-          <span>{userNames.join(', ')}</span>
-        </div>
-      )}
-    </>
-  );
-}
-
-export function AGGridExample() {
+export function AGGridExample({ gridId }: { gridId: string }) {
+  const orgId = user.useViewerData()?.organizationID;
   const gridRef = useRef<AgGridReact>(null);
-  const location = { section: 'grid' };
-  const gridContainerRef = useCordAnnotationTargetRef<HTMLDivElement>(location);
+  const gridContainerRef = useRef<HTMLDivElement>(null);
 
   const onGridReady = useCallback(() => {
     const element = gridContainerRef.current;
@@ -74,111 +36,100 @@ export function AGGridExample() {
       return;
     }
 
+    // the grid needs to be manually resized when the page is resized
     const resizeObserver = new ResizeObserver(() => {
       gridRef.current?.api.sizeColumnsToFit();
     });
     resizeObserver.observe(element);
-  }, [gridContainerRef]);
+  }, []);
 
-  const flashCell = useCallback(
-    (rowID: string | undefined, columnID: string | undefined) => {
-      const grid = gridRef.current;
+  const {
+    openThread,
+    addThread,
+    setOpenThread,
+    threads,
+    requestToOpenThread,
+    setRequestToOpenThread,
+    inThreadCreationMode,
+  } = useContext(ThreadsContext)!;
 
-      if (!grid || rowID === undefined || columnID === undefined) {
-        return;
-      }
-
-      const rowNode = grid.api.getRowNode(rowID);
+  // Effect to show the correct thread when the user requests to open a
+  // specific thread (e.g. by clicking a thread in ThreadList)
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) {
+      // this should not happen, appease typechecker
+      return;
+    }
+    const metadata =
+      requestToOpenThread !== null ? threads.get(requestToOpenThread) : null;
+    if (metadata?.type === 'grid' && metadata.gridId === gridId) {
+      // this is a request for this grid, make the thread visible
+      const { rowId, colId } = metadata;
+      const rowNode = grid.api.getRowNode(rowId);
 
       if (!rowNode) {
+        // unknown rowId, may want to take a custom action, such as display
+        // thread in a full page modal
         return;
       }
 
-      grid.api.flashCells({
-        rowNodes: [rowNode],
-        columns: [columnID],
+      if (!rowNode.displayed) {
+        // remove filters to make sure the row is displayed
+        grid.api.setFilterModel(null);
+      }
+      grid.api.ensureNodeVisible(rowNode); // scroll the table
+
+      // Scroll the page to the table, open the thread and flash the table cell
+      gridContainerRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
       });
-    },
-    [],
-  );
-
-  useCordAnnotationCaptureHandler<GridLocation>(
-    location,
-    (_position, element) => {
-      const grid = gridRef.current;
-      if (!grid) {
-        return;
-      }
-
-      const colId = element.closest('[role=gridcell]')?.getAttribute('col-id');
-      const rowId = element.closest('[role=row]')?.getAttribute('row-id');
-      const cellValue = element.closest('.cell')?.textContent ?? undefined;
-
-      const column = grid.columnApi.getColumn(colId);
-
-      if (rowId && colId && column) {
-        flashCell(rowId, colId);
-        return {
-          extraLocation: {
-            // Deliberately breaking exact match so useCordAnnotationRenderer runs
-            // for additional logic to correctly show/hide pins when scrolled out of view.
-            row: Number(rowId),
-            column: colId,
-          },
-          label: `${column.getColDef().headerName}: ${cellValue}`,
-        };
-      }
-      return;
-    },
-  );
-
-  useCordAnnotationRenderer<GridLocation>(location, (annotation) => {
-    const gridContainer = gridContainerRef.current;
-
-    if (!gridContainer) {
-      return;
+      setRequestToOpenThread(null);
+      grid.api.flashCells({ rowNodes: [rowNode], columns: [colId] });
+      // Open the thread with a small delay. Opening the thread immediately
+      // currently stops the scrollIntoView().
+      setTimeout(() => setOpenThread(requestToOpenThread), 300);
     }
+  }, [
+    threads,
+    gridId,
+    requestToOpenThread,
+    setOpenThread,
+    setRequestToOpenThread,
+  ]);
 
-    const { row, column } = annotation.location;
-    const annotatedCell = gridContainerRef.current?.querySelector(
-      `*[role='row'][row-id='${row}'] *[role='gridcell'][col-id='${column}']`,
-    );
-
-    if (!annotatedCell) {
-      return;
-    }
-
-    const annotatedCellDOMRect = annotatedCell.getBoundingClientRect();
-    const gridContainerDOMRect = gridContainer.getBoundingClientRect();
-
-    if (
-      annotatedCellDOMRect.top <
-        gridContainerDOMRect.top + COLUMN_HEADER_HEIGHT ||
-      annotatedCellDOMRect.top + annotatedCellDOMRect.height / 2 >
-        gridContainerDOMRect.bottom
-    ) {
-      return;
-    }
-
-    return {
-      element: annotatedCell as HTMLElement,
-    };
+  const openThreadMetadata =
+    openThread !== null ? threads.get(openThread) : null;
+  const threadOpenOnThisGrid =
+    openThreadMetadata?.type === 'grid' && openThreadMetadata.gridId === gridId;
+  const { refs, floatingStyles } = useFloating({
+    open: threadOpenOnThisGrid,
+    middleware: [offset(10), flip(), shift()],
+    whileElementsMounted: autoUpdate,
   });
 
-  useCordAnnotationClickHandler<GridLocation>(location, (annotation) => {
-    const grid = gridRef.current;
+  const [rowOfOpenThreadVisible, setRowOfOpenThreadVisible] = useState(true);
 
-    if (!grid) {
-      return;
+  // Effect to re-calculate whether the open thread's row is visible
+  useEffect(() => {
+    if (gridRef.current?.api && threadOpenOnThisGrid) {
+      setRowOfOpenThreadVisible(
+        // NOTE: same logic is needed for columns if horizontal scrolling is allowed
+        isRowInScrollView(gridRef.current.api, openThreadMetadata.rowId),
+      );
     }
+  }, [threadOpenOnThisGrid, openThread, openThreadMetadata]);
 
-    const { row, column } = annotation.location;
-    const rowNode = grid.api.getRowNode(String(row));
+  // This is just boring conversion from "(elem) => void" to ref object
+  // "{current: Element}"
+  const refSetFloating = useAsRefObject(refs.setFloating);
 
-    grid.api.setFilterModel(null);
-    grid.api.ensureNodeVisible(rowNode, 'middle');
-    flashCell(String(row), column);
-  });
+  const cellRenderer = useCallback(
+    (params: ICellRendererParams) =>
+      CellWithThreadAndPresence(params, gridId, refs.setReference),
+    [gridId, refs.setReference],
+  );
 
   return (
     <div
@@ -186,13 +137,125 @@ export function AGGridExample() {
       className={'ag-theme-alpine'}
       ref={gridContainerRef}
     >
+      {threadOpenOnThisGrid && (
+        <ThreadWrapper
+          forwardRef={refSetFloating}
+          location={LOCATION}
+          threadId={openThread!}
+          metadata={openThreadMetadata}
+          style={{
+            ...floatingStyles, // to position the thread next to the pin
+            zIndex: 1, // to be above AgGrid
+            // Hide the thread if its row is scrolled out of view.
+            // Use css visibility: hidden instead of display: none to hide
+            // this thread. display: none would remove the Thread from DOM
+            // and thus would lose the draft message.
+            visibility: rowOfOpenThreadVisible ? 'visible' : 'hidden',
+          }}
+        />
+      )}
       <AgGridReact
         ref={gridRef}
+        getRowId={(params) => getRowId(params.data)}
         rowData={books}
+        defaultColDef={{
+          cellRenderer,
+        }}
         columnDefs={COLUMN_DEFS}
         onGridReady={onGridReady}
-      />
+        suppressRowTransform={true}
+        suppressDragLeaveHidesColumns={true}
+        onBodyScroll={(e) => {
+          // Check if the open thread's row is scrolled out of view
+          if (threadOpenOnThisGrid) {
+            setRowOfOpenThreadVisible(
+              // NOTE: same logic is needed for columns if horizontal scrolling is allowed
+              isRowInScrollView(e.api, openThreadMetadata.rowId),
+            );
+          }
+        }}
+        onCellClicked={(e) => {
+          // On cell click, we might want to open/close/start a thread
+          if (!orgId) {
+            // appease the typechecker
+            throw new Error('org information not ready');
+          }
+
+          const rowId = getRowId(e.data);
+          const colId = e.column.getId();
+          const threadId = makeThreadId({ orgId, gridId, rowId, colId });
+          if (threadId === openThread) {
+            setOpenThread(null);
+          } else if (threads.has(threadId)) {
+            setOpenThread(threadId);
+          } else if (inThreadCreationMode) {
+            const metadata: GridThreadMetadata = {
+              type: 'grid',
+              gridId,
+              rowId,
+              colId,
+            };
+            addThread(threadId, metadata);
+            setOpenThread(threadId);
+          }
+        }}
+      ></AgGridReact>
     </div>
+  );
+}
+
+// Custom table cell renderer with presence and thread indicator
+function CellWithThreadAndPresence(
+  params: ICellRendererParams,
+  gridId: string,
+  setReference: (el: Element | null) => void,
+) {
+  const { threads, openThread } = useContext(ThreadsContext)!;
+  const rowId = getRowId(params.data);
+  const colId = params.column?.getId();
+  const orgId = user.useViewerData()?.organizationID;
+  if (!colId) {
+    throw new Error('unexpected error: missing column id');
+  }
+  const threadId = orgId && makeThreadId({ orgId, gridId, colId, rowId });
+  const threadMetadata =
+    threadId !== undefined ? threads.get(threadId) : undefined;
+
+  const location = useMemo(
+    () => ({ gridId, rowId, colId }),
+    [colId, gridId, rowId],
+  );
+
+  return (
+    <>
+      <PresenceObserver
+        location={location}
+        style={{
+          display: 'flex',
+          gap: '4px',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div
+          style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+          title={params.value}
+        >
+          {params.value}
+        </div>
+        <PresenceFacepile
+          location={location}
+          excludeViewer={false}
+          maxUsers={1}
+        />
+        {threadMetadata && threadId && (
+          <div
+            ref={openThread === threadId ? setReference : undefined}
+            className="cell-with-thread"
+          />
+        )}
+      </PresenceObserver>
+    </>
   );
 }
 
@@ -202,41 +265,94 @@ const COLUMN_DEFS = [
     headerName: 'ISBN',
     filter: true,
     sortable: false,
-    cellRenderer: CellWithAnnotationTargetAndPresence,
   },
   {
     field: 'title',
     headerName: 'Title',
     filter: true,
     sortable: true,
-    cellRenderer: CellWithAnnotationTargetAndPresence,
   },
   {
     field: 'authors',
     headerName: 'Authors',
     filter: true,
     sortable: true,
-    cellRenderer: CellWithAnnotationTargetAndPresence,
   },
   {
     field: 'average_rating',
     headerName: 'Rating',
     filter: true,
     sortable: true,
-    cellRenderer: CellWithAnnotationTargetAndPresence,
   },
   {
     field: 'num_pages',
     headerName: 'Pages',
     filter: true,
     sortable: true,
-    cellRenderer: CellWithAnnotationTargetAndPresence,
   },
   {
     field: 'publication_date',
     headerName: 'Publication Date',
     filter: true,
     sortable: true,
-    cellRenderer: CellWithAnnotationTargetAndPresence,
   },
 ];
+
+// helper function that converts a function style ref into a ref object
+function useAsRefObject(refMethod: (e: HTMLElement | null) => void) {
+  return useMemo(() => {
+    let val: HTMLElement | null = null;
+    return {
+      get current() {
+        return val;
+      },
+      set current(element: HTMLElement | null) {
+        val = element;
+        refMethod(element);
+      },
+    };
+  }, [refMethod]);
+}
+
+// Check if row with id rowId is within the scrollable view
+function isRowInScrollView(api: GridApi<any>, rowId: string): boolean {
+  const rowNode = api.getRowNode(rowId);
+  if (
+    !rowNode ||
+    rowNode.rowTop === null ||
+    rowNode.rowHeight === null ||
+    rowNode.rowHeight === undefined
+  ) {
+    return false;
+  }
+  const { top: visibleTop, bottom: visibleBottom } =
+    api.getVerticalPixelRange();
+  const rowTop = rowNode.rowTop;
+  const rowBottom = rowTop + rowNode.rowHeight;
+  // The row spans pixels from rowTop to rowBottom. The grid
+  // currently displays pixels from visibleTop to visibleBottom.
+  return (
+    (rowTop >= visibleTop && rowTop <= visibleBottom) ||
+    (rowBottom >= visibleTop && rowBottom <= visibleBottom)
+  );
+}
+
+// Given data of a table row, returns the row's unique ID
+function getRowId(data: { bookID: number }) {
+  return data.bookID.toString();
+}
+
+// Constructs a thread ID
+function makeThreadId({
+  orgId,
+  gridId,
+  rowId,
+  colId,
+}: {
+  orgId: string;
+  gridId: string;
+  rowId: string;
+  colId: string;
+}) {
+  return `${orgId}_${gridId}_${rowId}_${colId}`;
+}
