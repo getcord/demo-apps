@@ -6,6 +6,7 @@ import {
   useState,
   useRef,
   useReducer,
+  useCallback,
 } from 'react';
 import * as Highcharts from 'highcharts';
 import type { TooltipPositionerPointObject } from 'highcharts';
@@ -103,7 +104,7 @@ export function HighchartsExample({ chartId }: Props) {
   // A dummy reducer with the sole purpose to re-render this component.
   // Used to to redraw positions of pins when chart redraws
   const [_, forceRerender] = useReducer((x) => x + 1, 0);
-  const chartOptions = useChartOptions(chartId, chartParentRef, forceRerender);
+  const chartOptions = useChartOptions(chartId, chartRef, forceRerender);
 
   return (
     <>
@@ -140,45 +141,55 @@ export function HighchartsExample({ chartId }: Props) {
 
 function useChartOptions(
   chartId: string,
-  chartParentRef: React.RefObject<HTMLDivElement>,
+  chartRef: React.RefObject<HighchartsReact.RefObject>,
   onRedraw: (() => void) | undefined,
 ) {
   const orgId = user.useViewerData()?.organizationID;
   const { addThread, setOpenThread, inThreadCreationMode } =
     useContext(ThreadsContext)!;
 
+  const maybeAddComment = useCallback(() => {
+    const hoverPoint = chartRef.current?.chart.hoverPoint;
+    if (!inThreadCreationMode || !hoverPoint) {
+      return;
+    }
+    if (!orgId) {
+      throw new Error('org information not ready');
+    }
+    const metadata = {
+      type: 'chart',
+      chartId,
+      seriesId: hoverPoint.series.userOptions.id!,
+      x: hoverPoint.x,
+      y: hoverPoint.y!,
+    } as const;
+    // NOTE: Allow only one thread per point by using the point x,y in threadId
+    // NOTE: Use orgId as part of thread id to have unique ids across orgs
+    const threadId = `${orgId}_${metadata.chartId}_${metadata.seriesId}_${metadata.x}_${metadata.y}`;
+    addThread(threadId, metadata);
+    setOpenThread(threadId);
+  }, [
+    addThread,
+    chartId,
+    chartRef,
+    inThreadCreationMode,
+    orgId,
+    setOpenThread,
+  ]);
+
+  const chartContainer = chartRef.current?.container;
+
   return useMemo(
     () => ({
       plotOptions: {
         series: {
           events: {
-            // Add a thread when a series point is clicked
-            click: (evt: Highcharts.PointClickEventObject) => {
-              if (!inThreadCreationMode) {
-                return;
-              }
-              if (!orgId) {
-                throw new Error('org information not ready');
-              }
-              const metadata = {
-                type: 'chart',
-                chartId,
-                seriesId: evt.point.series.userOptions.id!,
-                x: evt.point.x,
-                y: evt.point.y!,
-              } as const;
-              // NOTE: Allow only one thread per point by using the point x,y in threadId
-              // NOTE: Use orgId as part of thread id to have unique ids across orgs
-              const threadId = `${orgId}_${metadata.chartId}_${metadata.seriesId}_${metadata.x}_${metadata.y}`;
-              addThread(threadId, metadata);
-              setOpenThread(threadId);
-            },
-
-            // add custom class to know when cursor is above a point
+            click: maybeAddComment,
+            // Add a custom class to know when cursor is above a point
             mouseOver: () =>
-              chartParentRef.current?.classList.add('over-chart-point'),
+              chartContainer?.current?.classList.add('over-chart-point'),
             mouseOut: () =>
-              chartParentRef.current?.classList.remove('over-chart-point'),
+              chartContainer?.current?.classList.remove('over-chart-point'),
           },
           label: {
             connectorAllowed: false,
@@ -201,6 +212,7 @@ function useChartOptions(
         },
         events: {
           redraw: onRedraw,
+          click: maybeAddComment,
         },
       },
 
@@ -248,15 +260,7 @@ function useChartOptions(
         },
       },
     }),
-    [
-      addThread,
-      chartId,
-      chartParentRef,
-      inThreadCreationMode,
-      onRedraw,
-      orgId,
-      setOpenThread,
-    ],
+    [chartContainer, maybeAddComment, onRedraw],
   );
 }
 
