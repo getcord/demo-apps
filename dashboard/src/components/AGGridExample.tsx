@@ -210,7 +210,7 @@ function CellWithThreadAndPresence(
   gridId: string,
   setReference: (el: Element | null) => void,
 ) {
-  const { threads, openThread } = useContext(ThreadsContext)!;
+  const { threads, openThread, threadsEnabled } = useContext(ThreadsContext)!;
   const rowId = getRowId(params.data);
   const colId = params.column?.getId();
   const orgId = user.useViewerData()?.organizationID;
@@ -248,7 +248,7 @@ function CellWithThreadAndPresence(
           excludeViewer={false}
           maxUsers={1}
         />
-        {threadMetadata && threadId && (
+        {threadsEnabled && threadMetadata && threadId && (
           <div
             ref={openThread === threadId ? setReference : undefined}
             className="cell-with-thread"

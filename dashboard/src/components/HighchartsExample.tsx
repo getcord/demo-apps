@@ -33,6 +33,7 @@ export function HighchartsExample({ chartId }: Props) {
     threads,
     requestToOpenThread,
     setRequestToOpenThread,
+    threadsEnabled,
   } = useContext(ThreadsContext)!;
   const [selectedDateRange, setSelectedDateRange] = useState(
     DATE_RANGE_SELECTOR_OPTIONS[0],
@@ -131,7 +132,7 @@ export function HighchartsExample({ chartId }: Props) {
           highcharts={Highcharts}
           options={chartOptions}
         />
-        {chartRef.current?.chart && (
+        {threadsEnabled && chartRef.current?.chart && (
           <ChartThreads chartId={chartId} chart={chartRef.current.chart} />
         )}
       </div>

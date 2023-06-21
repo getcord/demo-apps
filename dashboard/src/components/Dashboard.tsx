@@ -9,6 +9,7 @@ import { HighchartsExample } from './HighchartsExample';
 import { AGGridExample } from './AGGridExample';
 import { ThreadListButton } from './ThreadListButton';
 import { Panel } from './Panel';
+import { ThreadsToggle } from './ThreadsToggle';
 
 export const LOCATION = { page: 'dashboard' };
 export const CHART_ID = 'some-unique-and-stable-id-of-this-chart';
@@ -24,6 +25,7 @@ function Dashboard({
     openThread,
     setOpenThread,
     setRequestToOpenThread,
+    setThreadsEnabled,
   } = useContext(ThreadsContext)!;
 
   useEffect(() => {
@@ -86,9 +88,13 @@ function Dashboard({
         <div className="header">
           <h1>Your collaborative dashboard</h1>
           <div id="collaboration">
+            <ThreadsToggle />
             <button
               className="action-button add-thread"
-              onClick={() => setInThreadCreationMode((val) => !val)}
+              onClick={() => {
+                setInThreadCreationMode((val) => !val);
+                setThreadsEnabled(true);
+              }}
             >
               Add comment
             </button>
