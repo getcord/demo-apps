@@ -1,5 +1,5 @@
 import type { MutableRefObject } from 'react';
-import { useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { PagePresence, NotificationListLauncher } from '@cord-sdk/react';
 import type { NavigateFn } from '@cord-sdk/types';
 import cx from 'classnames';
@@ -76,6 +76,7 @@ function Dashboard({
     return () => {};
   }, [openThread, setOpenThread]);
 
+  const [threadListOpen, setThreadListOpen] = useState(false);
   return (
     <>
       <div
@@ -91,8 +92,14 @@ function Dashboard({
             >
               Add comment
             </button>
-            <ThreadListButton goToThread={setRequestToOpenThread} />
-            <NotificationListLauncher label="Notifications" />
+            <ThreadListButton
+              open={threadListOpen}
+              setOpen={setThreadListOpen}
+            />
+            <NotificationListLauncher
+              onClick={() => setThreadListOpen(false)}
+              label="Notifications"
+            />
             <PagePresence location={LOCATION} />
           </div>
         </div>

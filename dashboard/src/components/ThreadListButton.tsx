@@ -1,4 +1,4 @@
-import { useState, useCallback, useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { ThreadList } from '@cord-sdk/react';
 import { autoUpdate, flip, shift, useFloating } from '@floating-ui/react';
 import { ThreadsContext } from '../ThreadsContext';
@@ -6,11 +6,11 @@ import { LOCATION } from './Dashboard';
 import { InboxIcon } from './InboxIcon';
 
 type Props = {
-  goToThread: (threadId: string) => void;
+  open: boolean;
+  setOpen: (f: (v: boolean) => boolean) => void;
 };
-export function ThreadListButton({ goToThread }: Props) {
-  const [threadListOpen, setThreadListOpen] = useState(false);
-  const { openThread } = useContext(ThreadsContext)!;
+export function ThreadListButton({ open, setOpen }: Props) {
+  const { openThread, setRequestToOpenThread } = useContext(ThreadsContext)!;
 
   const { refs, floatingStyles } = useFloating({
     whileElementsMounted: autoUpdate,
@@ -24,17 +24,15 @@ export function ThreadListButton({ goToThread }: Props) {
   });
 
   const toggleThreadList = useCallback(() => {
-    setThreadListOpen((prev) => !prev);
-  }, []);
+    setOpen((prev) => !prev);
+  }, [setOpen]);
 
   return (
     <>
       <button
         className="action-button"
         style={
-          threadListOpen
-            ? { color: '#f8f9fa', backgroundColor: '#476b9b' }
-            : undefined
+          open ? { color: '#f8f9fa', backgroundColor: '#476b9b' } : undefined
         }
         ref={refs.setReference}
         onClick={toggleThreadList}
@@ -42,7 +40,7 @@ export function ThreadListButton({ goToThread }: Props) {
         <InboxIcon />
         All comments
       </button>
-      {threadListOpen && (
+      {open && (
         <div
           className="threadlist-container"
           ref={refs.setFloating}
@@ -50,7 +48,7 @@ export function ThreadListButton({ goToThread }: Props) {
         >
           <ThreadList
             location={LOCATION}
-            onThreadClick={goToThread}
+            onThreadClick={setRequestToOpenThread}
             style={{ maxHeight: '400px' }}
             highlightThreadId={openThread ?? undefined}
           />
