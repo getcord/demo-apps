@@ -95,6 +95,7 @@ function Dashboard({
                 setInThreadCreationMode((val) => !val);
                 setThreadsEnabled(true);
               }}
+              type="button"
             >
               Add comment
             </button>

@@ -120,6 +120,7 @@ export function HighchartsExample({ chartId }: Props) {
                   selectedDateRange.end === end,
               })}
               onClick={() => setSelectedDateRange({ start, end })}
+              type="button"
             >
               {start} - {end}
             </button>

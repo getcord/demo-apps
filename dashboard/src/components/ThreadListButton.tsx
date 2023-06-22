@@ -36,6 +36,7 @@ export function ThreadListButton({ open, setOpen }: Props) {
         }
         ref={refs.setReference}
         onClick={toggleThreadList}
+        type="button"
       >
         <InboxIcon />
         All comments
