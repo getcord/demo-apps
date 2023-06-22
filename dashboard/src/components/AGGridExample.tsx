@@ -107,6 +107,7 @@ export function AGGridExample({ gridId }: { gridId: string }) {
     open: threadOpenOnThisGrid,
     middleware: [offset(10), flip(), shift()],
     whileElementsMounted: autoUpdate,
+    transform: false, // allow Thread to use position: fixed for attachment previews
   });
 
   const [rowOfOpenThreadVisible, setRowOfOpenThreadVisible] = useState(true);

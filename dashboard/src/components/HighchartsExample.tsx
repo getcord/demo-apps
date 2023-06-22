@@ -310,6 +310,9 @@ function ChartThread({ threadId, metadata, chart }: ChartThreadProps) {
     }
   }, [isOpen, isVisible, openThread, setOpenThread, threadId]);
 
+  const pointPixelPosX = chart.xAxis[0].toPixels(metadata.x, false);
+  const pointPixelPosY = chart.yAxis[0].toPixels(metadata.y, false);
+
   return (
     // NOTE: Set the same location prop on Pin and Thread
     <Pin
@@ -318,9 +321,14 @@ function ChartThread({ threadId, metadata, chart }: ChartThreadProps) {
       threadId={threadId}
       style={{
         position: 'absolute',
-        left: chart.xAxis[0].toPixels(metadata.x, false),
-        top: isVisible ? chart.yAxis[0].toPixels(metadata.y, false) : 0,
-        transform: 'translateY(-100%)',
+        left: pointPixelPosX,
+        // Align bottom-left corner of the pin to chart point by subtracting
+        // Pin's size. The same effect could be achieved with "transform:
+        // translateY(-100%)" but that breaks the attachment previews of
+        // Thread because CSS transform starts a new containing block.
+        top: isVisible
+          ? `calc(${pointPixelPosY}px - var(--cord-annotation-pin-size))`
+          : 0,
         transition: 'top 0.5s, left 0.5s',
         visibility: isVisible ? 'visible' : 'hidden',
         zIndex: isOpen ? 1 : 0,

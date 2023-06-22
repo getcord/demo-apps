@@ -15,6 +15,7 @@ export function ThreadListButton({ open, setOpen }: Props) {
   const { refs, floatingStyles } = useFloating({
     whileElementsMounted: autoUpdate,
     placement: 'bottom',
+    transform: false,
     middleware: [
       shift({
         padding: 2,

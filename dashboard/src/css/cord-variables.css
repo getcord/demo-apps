@@ -9,6 +9,10 @@ cord-page-presence {
   --cord-avatar-border-radius: 50%;
 }
 
+cord-pin {
+  --cord-annotation-pin-size: 34px;
+}
+
 cord-notification-list-launcher {
   --cord-font-weight-medium: 400;
   --cord-notification-list-launcher-padding: 16px;
