@@ -147,8 +147,12 @@ function useChartOptions(
   onRedraw: (() => void) | undefined,
 ) {
   const orgId = user.useViewerData()?.organizationID;
-  const { addThread, setOpenThread, inThreadCreationMode } =
-    useContext(ThreadsContext)!;
+  const {
+    addThread,
+    setOpenThread,
+    inThreadCreationMode,
+    setInThreadCreationMode,
+  } = useContext(ThreadsContext)!;
 
   const maybeAddComment = useCallback(() => {
     const hoverPoint = chartRef.current?.chart.hoverPoint;
@@ -166,16 +170,18 @@ function useChartOptions(
       y: hoverPoint.y!,
     } as const;
     // NOTE: Allow only one thread per point by using the point x,y in threadId
-    // NOTE: Use orgId as part of thread id to have unique ids across orgs
+    // NOTE: Use orgId as part of thread Id to have unique ids across orgs
     const threadId = `${orgId}_${metadata.chartId}_${metadata.seriesId}_${metadata.x}_${metadata.y}`;
     addThread(threadId, metadata);
     setOpenThread(threadId);
+    setInThreadCreationMode(false);
   }, [
     addThread,
     chartId,
     chartRef,
     inThreadCreationMode,
     orgId,
+    setInThreadCreationMode,
     setOpenThread,
   ]);
 

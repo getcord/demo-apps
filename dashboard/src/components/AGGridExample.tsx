@@ -51,6 +51,7 @@ export function AGGridExample({ gridId }: { gridId: string }) {
     requestToOpenThread,
     setRequestToOpenThread,
     inThreadCreationMode,
+    setInThreadCreationMode,
   } = useContext(ThreadsContext)!;
 
   // Effect to show the correct thread when the user requests to open a
@@ -198,6 +199,7 @@ export function AGGridExample({ gridId }: { gridId: string }) {
             };
             addThread(threadId, metadata);
             setOpenThread(threadId);
+            setInThreadCreationMode(false);
           }
         }}
       ></AgGridReact>
