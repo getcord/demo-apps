@@ -116,7 +116,7 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
     }
     if (hasMore) {
       // NOTE: For this demo, fetch all threads on the page.
-      fetchMore(1000);
+      void fetchMore(1000);
     }
     threadSummaries
       .filter((t) => t.total > 0)

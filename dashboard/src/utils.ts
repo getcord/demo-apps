@@ -15,7 +15,7 @@ export function useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION() {
 
   useEffect(() => {
     if (!cordAuthToken || hasExpired) {
-      fetchCordSampleToken().then((token) => {
+      void fetchCordSampleToken().then((token) => {
         if (token) {
           localStorage.setItem(
             CORD_TOKEN_LOCALSTORAGE_KEY,
