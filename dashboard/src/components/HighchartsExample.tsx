@@ -19,8 +19,8 @@ import { LOCATION } from './Dashboard';
 import { ThreadWrapper } from './ThreadWrapper';
 
 const DATE_RANGE_SELECTOR_OPTIONS = [
-  { start: 1999, end: 2009 },
-  { start: 2010, end: 2020 },
+  { start: 1999, end: 2010 },
+  { start: 2011, end: 2022 },
 ];
 
 type Props = {
@@ -233,7 +233,7 @@ function useChartOptions(
 
       yAxis: {
         title: {
-          text: 'Expenditure in billion U.S. dollars',
+          text: 'Currency in USD',
         },
       },
 

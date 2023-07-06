@@ -112,7 +112,7 @@ function Dashboard({
         </div>
 
         <div className="grid">
-          <Panel title="Consumer expenditure on books in the United States from 1999 to 2020">
+          <Panel title="NYSE stock price from 1999 to 2022">
             <HighchartsExample chartId={CHART_ID} />
           </Panel>
 
