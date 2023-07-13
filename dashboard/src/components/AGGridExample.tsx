@@ -86,11 +86,38 @@ export function AGGridExample({ gridId }: { gridId: string }) {
         behavior: 'smooth',
         block: 'center',
       });
+
       setRequestToOpenThread(null);
-      grid.api.flashCells({ rowNodes: [rowNode], columns: [colId] });
-      // Open the thread with a small delay. Opening the thread immediately
-      // currently stops the scrollIntoView().
-      setTimeout(() => setOpenThread(requestToOpenThread), 300);
+
+      // Only open the thread if the table is in the viewport because
+      // opening the thread immediately currently stops the scrollIntoView().
+      const openThreadIfInView = () => {
+        const gridContainerBottom =
+          gridContainerRef.current?.getBoundingClientRect().bottom;
+        const gridContainerTop =
+          gridContainerRef.current?.getBoundingClientRect().top;
+
+        if (
+          gridContainerBottom &&
+          gridContainerTop &&
+          // Open the thread if the whole table container is in the viewport
+          ((window.innerHeight > gridContainerBottom &&
+            window.innerHeight > gridContainerTop) ||
+            // Also open the thread if the top of the table is outside the viewport
+            // to account for window heights smaller than the table height
+            gridContainerTop < 0)
+        ) {
+          grid.api.flashCells({ rowNodes: [rowNode], columns: [colId] });
+          clearInterval(intervalID);
+          setOpenThread(requestToOpenThread);
+        }
+      };
+
+      // Check every 150ms to see if we have scrolled the table into view
+      const intervalID = setInterval(openThreadIfInView, 150);
+
+      // If for some reason we never open a thread then give up and clean up the setInterval after 2s
+      setTimeout(() => clearInterval(intervalID), 2000);
     }
   }, [
     threads,
