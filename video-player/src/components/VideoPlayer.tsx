@@ -183,6 +183,8 @@ function CommentableVideo({
           <video
             ref={videoRef}
             controls
+            disablePictureInPicture
+            controlsList="nofullscreen"
             autoPlay
             muted
             onClick={onVideoClick}
