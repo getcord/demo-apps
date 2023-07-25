@@ -184,7 +184,6 @@ function CommentableVideo({
             ref={videoRef}
             controls
             disablePictureInPicture
-            controlsList="nofullscreen"
             autoPlay
             muted
             onClick={onVideoClick}
