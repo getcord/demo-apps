@@ -6,6 +6,7 @@
 
 * {
   padding: 0;
+  margin: 0;
 }
 
 html {
@@ -70,7 +71,7 @@ header .button:hover {
   background: #442f71;
   cursor: pointer;
   display: flex;
-  margin: auto;
+  margin-top: 58px;
   max-width: 1300px;
   min-width: 768px;
   padding: 40px;
