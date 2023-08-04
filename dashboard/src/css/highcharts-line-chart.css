@@ -23,11 +23,11 @@
 }
 
 .date-range-selector-option-active {
-  background-color: #7371ee;
+  background-color: #9a6aff;
   color: white;
   cursor: default;
 }
 
 .date-range-selector-option-active:hover {
-  background-color: #7371ee;
+  background-color: #9a6aff;
 }

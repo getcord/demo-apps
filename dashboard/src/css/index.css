@@ -49,7 +49,7 @@ header #links {
 
 header .button {
   color: white;
-  background: #7371ee;
+  background: #9a6aff;
   padding: 8px 16px;
   text-decoration: none;
   border-radius: 50px;
@@ -147,7 +147,7 @@ header .button:hover {
 
 /* a triangle in CSS placed in the corner of parent */
 .cell-with-thread::after {
-  content: "";
+  content: '';
   position: absolute;
   border: 8px solid transparent;
   border-bottom-color: inherit;
@@ -157,7 +157,10 @@ header .button:hover {
 }
 
 /* when cell is selected, make border of .cell-with-thread smaller */
-.ag-theme-alpine .ag-ltr .ag-cell-focus:not(.ag-cell-range-selected):focus-within .cell-with-thread {
+.ag-theme-alpine
+  .ag-ltr
+  .ag-cell-focus:not(.ag-cell-range-selected):focus-within
+  .cell-with-thread {
   border-width: 1px;
 }
 
@@ -198,20 +201,20 @@ header .button:hover {
 .action-button.add-thread:hover {
   background-color: #114c99;
 }
-.action-button.add-thread:active, .in-thread-mode .action-button.add-thread {
+.action-button.add-thread:active,
+.in-thread-mode .action-button.add-thread {
   background-color: #476b9b;
 }
 
 .in-thread-mode {
-  cursor: url("/images/comment-cursor.svg") 0 34, auto;
+  cursor: url('/images/comment-cursor.svg') 0 34, auto;
 }
 
 /* annotatable elements */
 .in-thread-mode .over-chart-point,
 .in-thread-mode .ag-cell {
-  cursor: url("/images/comment-cursor-active.svg") 0 34, auto;
+  cursor: url('/images/comment-cursor-active.svg') 0 34, auto;
 }
-
 
 .threadlist-container {
   width: 300px;
