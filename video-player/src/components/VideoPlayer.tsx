@@ -1,6 +1,12 @@
 import { createRef, useCallback, useContext, useEffect, useState } from 'react';
 import cx from 'classnames';
-import { Composer, Pin, Thread, ThreadedComments } from '@cord-sdk/react';
+import {
+  Composer,
+  Pin,
+  Thread,
+  ThreadedComments,
+  thread,
+} from '@cord-sdk/react';
 import type { Location, MessageInfo } from '@cord-sdk/types';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsProvider, ThreadsContext } from '../ThreadsContext';
@@ -22,6 +28,8 @@ function VideoPin({
 }) {
   const { removeThread, openThread, setOpenThread } =
     useContext(ThreadsContext)!;
+
+  const [showThreadPreviewBubble, setThreadShowPreviewBubble] = useState(false);
 
   const displayOnControls = useCallback(
     (threadMetadata: ThreadMetadata) => {
@@ -60,6 +68,10 @@ function VideoPin({
     [duration],
   );
 
+  const threadData = thread.useThreadData(id);
+
+  const firstMessage = threadData.firstMessage?.plaintext;
+
   return (
     <Pin
       location={location}
@@ -71,7 +83,16 @@ function VideoPin({
         { ['invert-thread-position']: metadata.xPercent > 50 },
       )}
       onClick={onPinClick}
+      onMouseEnter={() => setThreadShowPreviewBubble(true)}
+      onMouseLeave={() => setThreadShowPreviewBubble(false)}
     >
+      {showThreadPreviewBubble &&
+        displayOnControls(metadata) &&
+        firstMessage && (
+          <div className="thread-preview-bubble-container">
+            <p className="thread-preview-bubble">{firstMessage}</p>
+          </div>
+        )}
       <Thread
         threadId={id}
         metadata={metadata}

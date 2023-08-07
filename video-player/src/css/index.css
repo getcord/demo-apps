@@ -50,7 +50,7 @@ header #links {
 
 header .button {
   color: white;
-  background: #9A6AFF;
+  background: #9a6aff;
   padding: 8px 16px;
   text-decoration: none;
   border-radius: 50px;
@@ -109,6 +109,10 @@ header .button:hover {
   padding: 4px 8px;
 }
 
+#add-comment-btn:hover {
+  cursor: pointer;
+}
+
 video {
   border-radius: 8px;
   height: 100%;
@@ -145,6 +149,11 @@ video {
   border: 2px solid #010101;
   height: 24px;
   width: 24px;
+}
+
+.cord-component .cord-avatar-container {
+  border-radius: 50%;
+  height: auto;
 }
 
 @keyframes moveToVideo {
@@ -277,6 +286,30 @@ cord-pin.invert-thread-position cord-thread {
   left: calc(-250px - 8px);
 }
 
+cord-pin .cord-pin-container .cord-avatar-container {
+  cursor: pointer;
+}
+
+cord-pin .thread-preview-bubble {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  font-size: 12px;
+  line-height: 16px;
+  max-width: 160px;
+  margin: 0;
+  overflow: hidden;
+  width: max-content;
+}
+
+cord-pin .thread-preview-bubble-container {
+  background-color: white;
+  border-radius: 4px;
+  padding: 8px;
+  position: absolute;
+  /*  16px = 12px (half of pin) + 4px (gap between preview and top of pin) */
+  transform: translate(-50%, calc(-100% - 16px));
+}
 /* Don't make video timeline disappear */
 video::-webkit-media-controls-panel,
 video::-webkit-media-controls-timeline {
