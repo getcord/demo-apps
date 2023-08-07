@@ -137,15 +137,25 @@ export function StaticContent() {
 }
 
 const generateCodeSnippet = (clientAuthToken: string) => {
-  return `  const client_auth_token = '${clientAuthToken}';
+  return `// Add Cord SDK to the page
   const script = document.createElement('script');
   script.src = 'https://app.cord.com/sdk/v1/sdk.latest.js';
+  // Wait for the script to load to initialize Cord
   script.addEventListener('load', () => {
     window.CordSDK.init({
-        client_auth_token,
-      });
-      const sidebar = document.createElement('cord-sidebar');
-      document.body.appendChild(sidebar);
+      client_auth_token: \`${clientAuthToken}\`,
     });
+    // Create a cord-thread and add it to the page
+    const thread = document.createElement('cord-thread');
+    thread.setAttribute('thread-id', \`my-awesome-thread-id-${crypto.randomUUID()}\`);
+    // Use the new version of Cord components, which are fully CSS customizable
+    thread.setAttribute('use-shadow-root', false);
+    // Style the cord-thread to make it always visible on the page
+    thread.style.position = 'fixed'; 
+    thread.style.top = '45%'; 
+    thread.style.left = '10%'; 
+    thread.style.width = '350px';
+    document.body.appendChild(thread);
+  });
   document.body.appendChild(script);`;
 };
