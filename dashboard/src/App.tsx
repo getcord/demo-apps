@@ -3,8 +3,6 @@ import type { NavigateFn } from '@cord-sdk/types';
 
 import { useRef } from 'react';
 import { InformationHeader } from '../../_common/InformationHeader';
-import { componentsUsed } from '../../_common/componentsList';
-import demoLogo from './images/cord-dashboard-demo-logo.png';
 import Dashboard from './components/Dashboard';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
 import { ThreadsProvider } from './ThreadsContext';
@@ -27,10 +25,7 @@ export default function App() {
       clientAuthToken={authToken}
       navigate={(...args) => navigateRef.current?.(...args) ?? false}
     >
-      <InformationHeader
-        demoLogo={demoLogo}
-        componentNames={componentsUsed.dashboard}
-      />
+      <InformationHeader />
       {authToken && (
         <ThreadsProvider>
           <Dashboard navigateRef={navigateRef} />
