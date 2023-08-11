@@ -1,5 +1,5 @@
 import { useCallback, useContext } from 'react';
-import { ThreadList } from '@cord-sdk/react';
+import { ThreadedComments } from '@cord-sdk/react';
 import { autoUpdate, flip, shift, useFloating } from '@floating-ui/react';
 import { ThreadsContext } from '../ThreadsContext';
 import { LOCATION } from './Dashboard';
@@ -9,7 +9,7 @@ type Props = {
   open: boolean;
   setOpen: (f: (v: boolean) => boolean) => void;
 };
-export function ThreadListButton({ open, setOpen }: Props) {
+export function ThreadedCommentsButton({ open, setOpen }: Props) {
   const { openThread, setRequestToOpenThread } = useContext(ThreadsContext)!;
 
   const { refs, floatingStyles } = useFloating({
@@ -24,9 +24,16 @@ export function ThreadListButton({ open, setOpen }: Props) {
     ],
   });
 
-  const toggleThreadList = useCallback(() => {
+  const toggleThreadedComments = useCallback(() => {
     setOpen((prev) => !prev);
   }, [setOpen]);
+
+  const handleClickMessage = useCallback(
+    ({ threadId }: { threadId: string | null; messageId: string | null }) => {
+      setRequestToOpenThread(threadId);
+    },
+    [setRequestToOpenThread],
+  );
 
   return (
     <>
@@ -36,7 +43,7 @@ export function ThreadListButton({ open, setOpen }: Props) {
           open ? { color: '#f8f9fa', backgroundColor: '#476b9b' } : undefined
         }
         ref={refs.setReference}
-        onClick={toggleThreadList}
+        onClick={toggleThreadedComments}
         type="button"
       >
         <InboxIcon />
@@ -48,10 +55,10 @@ export function ThreadListButton({ open, setOpen }: Props) {
           ref={refs.setFloating}
           style={floatingStyles}
         >
-          <ThreadList
+          <ThreadedComments
             location={LOCATION}
-            onThreadClick={setRequestToOpenThread}
-            style={{ maxHeight: '400px' }}
+            onMessageClick={handleClickMessage}
+            composerPosition="none"
             highlightThreadId={openThread ?? undefined}
           />
         </div>

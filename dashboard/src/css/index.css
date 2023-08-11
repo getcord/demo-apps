@@ -169,7 +169,8 @@ header .button:hover {
   border: none;
 }
 
-.action-button {
+.action-button,
+.cord-button[data-cord-button='open-notification-list'] {
   cursor: pointer;
   max-width: 100%;
   text-align: center;
@@ -189,7 +190,8 @@ header .button:hover {
   gap: var(--cord-floating-threads-gap, var(--cord-space-3xs, 4px));
 }
 
-.action-button:hover {
+.action-button:hover,
+.cord-button[data-cord-button='open-notification-list']:hover {
   color: white;
   background-color: #1a73e8;
 }
@@ -200,6 +202,7 @@ header .button:hover {
 }
 .action-button.add-thread:hover {
   background-color: #114c99;
+  color: white;
 }
 .action-button.add-thread:active,
 .in-thread-mode .action-button.add-thread {
@@ -230,4 +233,12 @@ header .button:hover {
 
 cord-presence-facepile .cord-avatar-container {
   border-radius: 50%;
+}
+
+cord-threaded-comments {
+  max-height: 400px;
+}
+
+cord-notification-list-launcher .cord-button-label {
+  font-size: 14px;
 }

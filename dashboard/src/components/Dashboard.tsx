@@ -7,7 +7,7 @@ import cx from 'classnames';
 import { ThreadsContext } from '../ThreadsContext';
 import { HighchartsExample } from './HighchartsExample';
 import { AGGridExample } from './AGGridExample';
-import { ThreadListButton } from './ThreadListButton';
+import { ThreadedCommentsButton } from './ThreadListButton';
 import { Panel } from './Panel';
 import { ThreadsToggle } from './ThreadsToggle';
 
@@ -99,7 +99,7 @@ function Dashboard({
             >
               Add comment
             </button>
-            <ThreadListButton
+            <ThreadedCommentsButton
               open={threadListOpen}
               setOpen={setThreadListOpen}
             />
