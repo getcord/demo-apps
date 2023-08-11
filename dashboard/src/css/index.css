@@ -20,45 +20,6 @@ body {
     sans-serif;
 }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid #ccc;
-  background: white;
-  line-height: 24px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-}
-
-header #logo {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-header #links {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-header .button {
-  color: white;
-  background: #9a6aff;
-  padding: 8px 16px;
-  text-decoration: none;
-  border-radius: 50px;
-}
-
-header .button:hover {
-  background: #4643e9;
-}
-
 #dashboard {
   color: #4a4a4a;
   font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont,

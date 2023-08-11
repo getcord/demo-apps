@@ -1,8 +1,14 @@
+import cx from 'classnames';
 import cord from './images/cord.svg';
+import './informationHeader.css';
 
-export function InformationHeader() {
+export function InformationHeader({
+  darkTheme = false,
+}: {
+  darkTheme?: boolean;
+}) {
   return (
-    <header>
+    <header className={cx({ ['dark']: darkTheme })}>
       <div id="logo">
         <img src={cord} />
       </div>
