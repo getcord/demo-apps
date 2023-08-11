@@ -25,7 +25,19 @@ export default function App() {
       clientAuthToken={authToken}
       navigate={(...args) => navigateRef.current?.(...args) ?? false}
     >
-      <InformationHeader />
+      <InformationHeader
+        components={[
+          'cord-pin',
+          'cord-thread',
+          'cord-presence-observer',
+          'cord-notification-list-launcher',
+          'cord-threaded-comments',
+          'cord-presence-facepile',
+          'cord-presence-observer',
+          'cord-page-presence',
+        ]}
+        api={['thread', 'user']}
+      />
       {authToken && (
         <ThreadsProvider>
           <Dashboard navigateRef={navigateRef} />

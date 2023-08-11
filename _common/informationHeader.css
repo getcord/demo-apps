@@ -34,3 +34,9 @@ header .button {
 header .button:hover {
   background: #6949ac;
 }
+
+#links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

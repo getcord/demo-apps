@@ -9,7 +9,15 @@ export default function App() {
   return (
     // All the Cord React components must be children of a single CordProvider component.
     <CordProvider clientAuthToken={authToken}>
-      <InformationHeader />
+      <InformationHeader
+        components={[
+          'cord-sidebar',
+          'cord-sidebar-launcher',
+          'cord-presence-observer',
+          'cord-presence-facepile',
+        ]}
+        api={[]}
+      />
       {authToken && <StaticContent />}
     </CordProvider>
   );

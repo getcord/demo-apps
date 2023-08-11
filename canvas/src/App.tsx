@@ -12,7 +12,16 @@ export default function App() {
   return (
     // All the Cord React components must be children of a single CordProvider component.
     <CordProvider clientAuthToken={clientAuthToken}>
-      <InformationHeader />
+      <InformationHeader
+        components={[
+          'cord-thread-list',
+          'cord-page-presence',
+          'cord-floating-threads',
+          'cord-pin',
+          'cord-composer',
+        ]}
+        api={['annotations', 'thread']}
+      />
       <Canvas />
     </CordProvider>
   );
