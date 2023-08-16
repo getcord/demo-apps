@@ -18,7 +18,11 @@ export function InformationHeader({
         <img src={cord} />
       </div>
       <div id="links">
-        <ComponentsList components={components} api={api} />
+        <ComponentsList
+          components={components}
+          api={api}
+          darkMode={darkTheme}
+        />
         <a
           className="button"
           href="https://console.cord.com"
