@@ -152,13 +152,14 @@ video {
   --cord-color-base: #6949ac;
   --cord-color-base-strong: #f6f6f620;
   --cord-color-base-x-strong: #543a8c;
-  --cord-color-content-emphasis: #edfc7e;
+  --cord-color-content-emphasis: #fff;
   --cord-color-content-primary: #fff;
   --cord-color-content-secondary: #b2a5d3;
   --cord-color-notification: #e4d7ff;
   --cord-primary-button-background-color: #edfc7e;
   --cord-secondary-button-content-color: #fff;
   --cord-tertiary-button-content-color: #fff;
+  --cord-color-brand-primary: #fff;
 }
 
 .cord-annotation-pin {
@@ -207,8 +208,8 @@ video {
 }
 
 #video-player-demo-container .cord-tooltip {
-  background: black;
-  color: white;
+  background: #000;
+  color: #fff;
 }
 
 .cord-send-button.cord-disabled {
@@ -225,13 +226,9 @@ video {
   background-color: #442f7190;
 }
 
-.cord-component .cord-button:not(.cord-send-button):hover {
-  color: white;
-}
-
 #video-player-demo-container cord-thread {
   border: none;
-  box-shadow: 0px 2px 16px 0px black;
+  box-shadow: 0px 2px 16px 0px #000;
   width: 250px;
 }
 
@@ -264,7 +261,7 @@ cord-pin .thread-preview-bubble {
 }
 
 cord-pin .thread-preview-bubble-container {
-  background-color: white;
+  background-color: #fff;
   border-radius: 4px;
   padding: 8px;
   position: absolute;
@@ -275,8 +272,4 @@ cord-pin .thread-preview-bubble-container {
 video::-webkit-media-controls-panel,
 video::-webkit-media-controls-timeline {
   opacity: 1 !important;
-}
-
-.cord-component :is(.cord-user-mention, .cord-author-name) {
-  color: white;
 }
