@@ -12,7 +12,6 @@ html,
 body,
 #root {
   height: 100%;
-  overflow-y: hidden;
 }
 
 :root {
@@ -35,4 +34,13 @@ body,
   margin-top: calc(var(--header-height) + var(--margin));
   padding: 48px 64px;
   max-width: 768px;
+}
+
+cord-thread.cord-component {
+  width: 300px;
+  max-height: 400px;
+}
+
+cord-thread.cord-component:hover {
+  z-index: 10;
 }
