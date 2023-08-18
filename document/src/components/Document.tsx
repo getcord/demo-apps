@@ -194,11 +194,32 @@ export function Document() {
     setOpenThread(threadId);
   }, [addThread, orgId, setOpenThread]);
 
+  const handleRemoveThread = useCallback(
+    (threadId: string) => {
+      setThreadsReady((prev) => {
+        const newThreads = new Set([...prev]);
+        newThreads.delete(threadId);
+        return newThreads;
+      });
+      removeThread(threadId);
+      setOpenThread(null);
+    },
+    [removeThread, setOpenThread],
+  );
+
   return (
     <>
       {commentButtonCoords && (
         <CommentButton coords={commentButtonCoords} onClick={addComment} />
       )}
+      {/* Used to catch clicks outside the thread, and close it. */}
+      <div
+        className="thread-underlay"
+        style={{
+          display: openThread ? 'block' : 'none',
+        }}
+        onClick={() => setOpenThread(null)}
+      />
       <div>
         {sortedThreads.map(([threadId, metadata], threadIdx) => {
           const range = getRange(metadata);
@@ -206,6 +227,7 @@ export function Document() {
             return;
           }
           const selectionRects = [...range.getClientRects()];
+          const isOpenThread = openThread === threadId;
 
           return (
             <Fragment key={threadId}>
@@ -222,8 +244,7 @@ export function Document() {
                     <div
                       style={{
                         ...rectPosition,
-                        background:
-                          openThread === threadId ? '#E9E469' : '#F4FFA0',
+                        background: isOpenThread ? '#F5BE4D' : '#E9E469',
                         opacity: 0.6,
                         zIndex: -1,
                       }}
@@ -235,9 +256,9 @@ export function Document() {
                         cursor: 'pointer',
                       }}
                       onClick={() => {
-                        setOpenThread(
-                          openThread === threadId ? null : threadId,
-                        );
+                        if (!isOpenThread) {
+                          setOpenThread(threadId);
+                        }
                       }}
                     />
                   </Fragment>
@@ -250,11 +271,15 @@ export function Document() {
                     observer.observe(el);
                   }
                 }}
+                className={isOpenThread ? 'open-thread' : undefined}
                 style={{
                   position: 'absolute',
                   left:
-                    (threadsPositions[threadIdx]?.left ?? 0) + window.scrollX,
+                    (threadsPositions[threadIdx]?.left ?? 0) +
+                    (isOpenThread ? -THREADS_GAP * 2 : THREADS_GAP),
                   top: (threadsPositions[threadIdx]?.top ?? 0) + window.scrollY,
+                  transition: 'all 0.25s ease 0.1s',
+                  transitionProperty: 'top, left',
                   visibility:
                     threadsReady.has(threadId) && threadsPositions[threadIdx]
                       ? 'visible'
@@ -266,34 +291,21 @@ export function Document() {
                   threadId={threadId}
                   metadata={metadata}
                   showPlaceholder={false}
-                  composerExpanded={openThread === threadId}
-                  autofocus={openThread === threadId}
+                  composerExpanded={isOpenThread}
+                  autofocus={isOpenThread}
                   onFocusComposer={() => setOpenThread(threadId)}
-                  // This should be a click outside rather than blur event
-                  onBlurComposer={() => setOpenThread(null)}
                   onRender={() =>
                     setThreadsReady((prev) => new Set([...prev, threadId]))
                   }
                   onResolved={() => {
-                    setThreadsReady((prev) => {
-                      const newThreads = new Set([...prev]);
-                      newThreads.delete(threadId);
-                      return newThreads;
-                    });
-                    removeThread(threadId);
-                    setOpenThread(null);
+                    handleRemoveThread(threadId);
                   }}
                   onClose={() => {
                     setOpenThread(null);
                   }}
                   onThreadInfoChange={({ messageCount }) => {
                     if (messageCount === 0 && threadsReady.has(threadId)) {
-                      removeThread(threadId);
-                      setThreadsReady((prev) => {
-                        const newThreads = new Set([...prev]);
-                        newThreads.delete(threadId);
-                        return newThreads;
-                      });
+                      handleRemoveThread(threadId);
                     }
                   }}
                 />

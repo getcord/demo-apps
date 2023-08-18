@@ -15,8 +15,12 @@ body,
 }
 
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+  font-family: Roboto -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
     Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+#root {
+  display: flex;
 }
 
 #sheet {
@@ -29,8 +33,10 @@ body,
   display: flex;
   flex-direction: column;
   gap: 8px;
-  height: calc(100% - var(--header-height) - calc(var(--margin) * 2));
-  margin: auto;
+  min-height: 100%;
+  height: fit-content;
+  margin-left: 25%;
+  margin-right: 350px;
   margin-top: calc(var(--header-height) + var(--margin));
   padding: 48px 64px;
   max-width: 768px;
@@ -38,9 +44,208 @@ body,
 
 cord-thread.cord-component {
   width: 300px;
-  max-height: 400px;
+  z-index: 1;
 }
 
 cord-thread.cord-component:hover {
-  z-index: 10;
+  z-index: 5;
+}
+
+.open-thread cord-thread.cord-component {
+  z-index: 5;
+  --cord-color-base: unset;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+}
+
+.thread-underlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: auto;
+}
+
+cord-thread.cord-component {
+  display: flex;
+  width: 256px;
+  padding: 8px;
+  flex-direction: column;
+  gap: 12px;
+  border-radius: 16px;
+  --cord-color-base: #eef2f9;
+
+  --cord-color-content-primary: #1f1f1f;
+  --cord-color-content-secondary: #1f1f1f;
+  --cord-color-content-emphasis: #1f1f1f;
+}
+
+cord-thread .cord-thread-container {
+  margin-bottom: -14px;
+}
+
+.cord-component .cord-message:not(.cord-deleted, .cord-action) {
+  border-radius: 0;
+  gap: 0;
+  grid-template-rows: 18px 16px auto auto;
+  grid-template-columns: 48px auto auto auto 1fr auto;
+  grid-template-areas:
+    'avatar authorName  sentViaIcon . optionsMenu'
+    'avatar timestamp  timestamp . optionsMenu'
+    'messageContent messageContent messageContent messageContent messageContent'
+    'reactions reactions reactions reactions reactions';
+  margin: 16px;
+  margin-top: 0;
+  padding: 0;
+}
+
+.cord-component .cord-message-block:not(:first-child) {
+  border-top: 1px solid lightgray;
+  padding-top: 16px;
+  border-radius: 0;
+}
+
+.cord-component .cord-message-block::first-child {
+  padding-top: 12px;
+}
+
+.cord-component
+  .cord-message.cord-no-reactions:not(.cord-deleted, .cord-action) {
+  grid-template-rows: 18px 16px auto;
+  grid-template-columns: 48px auto auto auto 1fr auto;
+  grid-template-areas:
+    'avatar authorName  sentViaIcon . optionsMenu'
+    'avatar timestamp  timestamp . optionsMenu'
+    'messageContent messageContent messageContent messageContent messageContent';
+}
+
+.cord-component .cord-message .cord-avatar-container {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  grid-area: avatar;
+}
+
+.cord-component .cord-message .cord-timestamp {
+  grid-area: timestamp;
+}
+
+.cord-component .cord-message .cord-author-name {
+  margin: 0;
+}
+
+.cord-component .cord-message .cord-options-menu-trigger {
+  display: contents;
+}
+
+.cord-component
+  .cord-message
+  .cord-options-menu-trigger
+  .cord-message-options-buttons {
+  display: contents;
+}
+
+.cord-message .cord-message-options-buttons [data-cord-button='select-emoji'] {
+  align-self: end;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+  grid-area: messageContent;
+  height: 32px;
+  justify-self: end;
+  translate: 30% 30%;
+  width: 32px;
+}
+
+.cord-component
+  .cord-message
+  .cord-options-menu-trigger
+  .cord-message-options-buttons
+  .cord-button[data-cord-button='thread-options'] {
+  background: transparent;
+  border-radius: 50%;
+  grid-area: optionsMenu;
+  height: 32px;
+  justify-self: flex-end;
+  rotate: 90deg;
+  visibility: visible;
+  width: 32px;
+}
+
+.cord-component
+  .cord-message
+  .cord-options-menu-trigger
+  .cord-message-options-buttons
+  .cord-button[data-cord-button='thread-options']:hover {
+  background: rgba(68, 71, 70, 0.08);
+}
+
+.cord-component .cord-message .cord-message-content {
+  border-radius: 6px;
+  margin-top: 16px;
+  padding: 6px 32px 3px 5px;
+}
+
+.cord-component
+  :is(.cord-scroll-container, .cord-message, .cord-message-content) {
+  background: transparent;
+}
+
+.cord-component .cord-message:hover .cord-message-content {
+  background: rgb(240, 240, 240);
+}
+
+.cord-component .cord-message .cord-reaction-list {
+  margin-top: 5px;
+}
+
+.cord-component .cord-message .cord-reaction-list .cord-pill {
+  align-items: center;
+  background: transparent;
+  border: 1px solid rgb(199, 199, 199);
+  border-radius: 14px;
+  padding: 2px 7px;
+}
+
+.cord-component .cord-message .cord-reaction-list .cord-pill .cord-emoji {
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.cord-component
+  .cord-message
+  .cord-reactions-container
+  [data-cord-button='select-emoji'] {
+  display: none;
+}
+
+.cord-component .cord-thread-seen-by-container {
+  display: none;
+}
+
+.cord-component .cord-composer .cord-placeholder {
+  color: rgb(60, 64, 67);
+}
+
+.cord-component .cord-composer {
+  gap: 0;
+  height: auto;
+  background-color: white;
+  border-radius: 16px;
+  border: 1px solid var(--base-x-strong, #dadce0);
+}
+
+.cord-component .cord-composer .cord-editor-container {
+  margin: 0px 16px;
+  max-height: none;
+  min-height: 20px;
+}
+
+.cord-component .cord-composer .cord-composer-menu {
+  border: none;
+  padding: 0;
+}
+
+.cord-component .cord-composer .cord-button {
+  display: none;
 }

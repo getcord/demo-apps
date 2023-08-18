@@ -80,7 +80,7 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
       void fetchMore(1000);
     }
     threadSummaries
-      .filter((t) => t.total > 0)
+      .filter((t) => t.total > 0 && !t.resolved)
       .forEach((t) => addThread(t.id, t.metadata as ThreadMetadata));
   }, [addThread, fetchMore, hasMore, loading, threadSummaries, threads]);
 
