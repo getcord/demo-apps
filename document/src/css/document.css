@@ -92,7 +92,7 @@ cord-thread .cord-thread-container {
   margin-bottom: -14px;
 }
 
-.cord-component .cord-message:not(.cord-deleted, .cord-action) {
+.cord-message:not(.cord-deleted, .cord-action) {
   border-radius: 0;
   gap: 0;
   grid-template-rows: 18px 16px auto auto;
@@ -117,8 +117,7 @@ cord-thread .cord-thread-container {
   padding-top: 12px;
 }
 
-.cord-component
-  .cord-message.cord-no-reactions:not(.cord-deleted, .cord-action) {
+.cord-message.cord-no-reactions:not(.cord-deleted, .cord-action) {
   grid-template-rows: 18px 16px auto;
   grid-template-columns: 48px auto auto auto 1fr auto;
   grid-template-areas:
@@ -227,6 +226,16 @@ cord-thread .cord-thread-container {
   display: none;
 }
 
+.cord-component .cord-message.cord-editing {
+  grid-template-columns: auto 1fr;
+  grid-template-areas: 'avatar messageContent';
+  grid-template-rows: auto;
+}
+
+.cord-component .cord-message.cord-editing .cord-avatar-container {
+  align-self: center;
+}
+
 .cord-component .cord-thread-seen-by-container {
   display: none;
 }
@@ -241,6 +250,10 @@ cord-thread .cord-thread-container {
   background-color: white;
   border-radius: 16px;
   border: 1px solid var(--base-x-strong, #dadce0);
+}
+
+.cord-component .cord-editing .cord-composer {
+  grid-area: messageContent;
 }
 
 .cord-component .cord-composer .cord-editor-container {
