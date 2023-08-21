@@ -420,7 +420,6 @@ export function Document() {
         className="thread-underlay"
         style={{
           display: openThread ? 'block' : 'none',
-          zIndex: 10,
         }}
         onClick={() => setOpenThread(null)}
       />
