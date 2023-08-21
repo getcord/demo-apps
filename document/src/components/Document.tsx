@@ -1,4 +1,4 @@
-import { Thread, user } from '@cord-sdk/react';
+import { Thread, user, presence, Avatar } from '@cord-sdk/react';
 import type { CSSProperties } from 'react';
 import {
   useMemo,
@@ -15,6 +15,7 @@ import { ThreadsContext } from '../ThreadsContext';
 export const LOCATION = { page: 'document' };
 const COMMENT_BUTTON_MARGIN_PX = 18;
 const THREADS_GAP = 16;
+const AVATARS_GAP = 12;
 type Coordinates = { top: number; left: number };
 
 export function Document() {
@@ -30,7 +31,9 @@ export function Document() {
   const threadsRefs = useRef<HTMLDivElement[] | null>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const orgId = user.useViewerData()?.organizationID;
+  const userData = user.useViewerData();
+  const orgId = userData?.organizationID;
+  const userId = userData?.id;
   const { threads, openThread, addThread, removeThread, setOpenThread } =
     useContext(ThreadsContext)!;
 
@@ -156,6 +159,66 @@ export function Document() {
     };
   }, [handleSelection]);
 
+  const presentUsers = presence.useLocationData(LOCATION, {
+    partial_match: true,
+    exclude_durable: true,
+  });
+
+  // When users hover on an element, we mark them as present
+  // on that element, and mark them as absent from everywhere else.
+  const handleMouseOver = useCallback(
+    (e: MouseEvent) => {
+      if (!window.CordSDK) {
+        return;
+      }
+
+      const toElement = e.target;
+      if (
+        !toElement ||
+        !(toElement instanceof HTMLElement) ||
+        !toElement.id.length ||
+        toElement.id === 'sheet'
+      ) {
+        return;
+      }
+
+      void window.CordSDK.presence.setPresent({
+        ...LOCATION,
+        elementId: toElement.id,
+      });
+
+      const currUserPresence = presentUsers?.find((u) => u.id === userId);
+      if (currUserPresence?.ephemeral.locations.length) {
+        for (const location of currUserPresence.ephemeral.locations) {
+          if (location.elementId === toElement.id) {
+            continue;
+          }
+          void window.CordSDK.presence.setPresent(
+            {
+              ...LOCATION,
+              elementId: location.elementId,
+            },
+            { absent: true },
+          );
+        }
+      }
+    },
+    [presentUsers, userId],
+  );
+
+  useEffect(() => {
+    const { current: sheet } = containerRef;
+    if (!sheet) {
+      return;
+    }
+
+    sheet.addEventListener('mouseover', handleMouseOver);
+
+    return () => {
+      sheet.removeEventListener('mouseover', handleMouseOver);
+    };
+  }, [handleMouseOver]);
+
   // When adding a comment, we want to save enough metadata to be able to
   // then recreate a `Range`. We can leverage the `Range` to draw highlights
   // over the text, and have the browser compute their position for us.
@@ -212,14 +275,6 @@ export function Document() {
       {commentButtonCoords && (
         <CommentButton coords={commentButtonCoords} onClick={addComment} />
       )}
-      {/* Used to catch clicks outside the thread, and close it. */}
-      <div
-        className="thread-underlay"
-        style={{
-          display: openThread ? 'block' : 'none',
-        }}
-        onClick={() => setOpenThread(null)}
-      />
       <div>
         {sortedThreads.map(([threadId, metadata], threadIdx) => {
           const range = getRange(metadata);
@@ -244,9 +299,7 @@ export function Document() {
                     <div
                       style={{
                         ...rectPosition,
-                        background: isOpenThread ? '#F5BE4D' : '#E9E469',
-                        opacity: 0.6,
-                        zIndex: -1,
+                        background: isOpenThread ? '#F5BE4D' : '#FDF2D7',
                       }}
                     />
                     <div
@@ -315,6 +368,32 @@ export function Document() {
         })}
       </div>
       <div id="sheet" ref={containerRef}>
+        {presentUsers?.map((u, idx) => {
+          const { locations } = u.ephemeral;
+          // We made it so user can only be at one location at a time.
+          const elementId = (locations?.[0]?.elementId ?? '') as string;
+          return (
+            <Avatar
+              key={u.id}
+              userId={u.id}
+              style={{
+                position: 'absolute',
+                top: document.getElementById(elementId)?.getBoundingClientRect()
+                  .top,
+                left: `${
+                  (document.getElementById(elementId)?.getBoundingClientRect()
+                    .left ?? 0) -
+                  AVATARS_GAP * 2 - // Move it to the left of the text
+                  idx * AVATARS_GAP // Move each avatar a bit more to the left
+                }px`,
+                zIndex: 1,
+                transition: 'top  0.25s ease 0.1s',
+                visibility:
+                  !elementId || locations.length <= 0 ? 'hidden' : 'visible',
+              }}
+            />
+          );
+        })}
         <h1 id="title">What can you build with Cord?</h1>
         <ul>
           <li id="item-1">
@@ -336,6 +415,15 @@ export function Document() {
           </p>
         </ul>
       </div>
+      {/* Used to catch clicks outside the thread, and close it. */}
+      <div
+        className="thread-underlay"
+        style={{
+          display: openThread ? 'block' : 'none',
+          zIndex: 10,
+        }}
+        onClick={() => setOpenThread(null)}
+      />
     </>
   );
 }

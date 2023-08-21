@@ -8,6 +8,10 @@
   padding: 0;
 }
 
+body {
+  background-color: rgb(249, 251, 253);
+}
+
 html,
 body,
 #root {
@@ -27,7 +31,7 @@ body,
   --header-height: 64px;
   --margin: 32px;
   align-items: flex-start;
-  background-color: transparent;
+  background-color: white;
   border-bottom: none;
   border: 1px solid #c7c7c7;
   display: flex;
@@ -40,6 +44,10 @@ body,
   margin-top: calc(var(--header-height) + var(--margin));
   padding: 48px 64px;
   max-width: 768px;
+}
+
+#sheet > * {
+  isolation: isolate;
 }
 
 cord-thread.cord-component {
@@ -248,4 +256,10 @@ cord-thread .cord-thread-container {
 
 .cord-component .cord-composer .cord-button {
   display: none;
+}
+
+cord-avatar.cord-component .cord-avatar-container {
+  border-radius: 40px;
+  border: 1px solid #2e2e2e;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
 }
