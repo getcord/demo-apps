@@ -85,15 +85,6 @@ function Dashboard({
         <div className="header">
           <h1>Your collaborative dashboard</h1>
           <div id="collaboration">
-            <button
-              className="action-button add-thread"
-              onClick={() => {
-                setInThreadCreationMode((val) => !val);
-              }}
-              type="button"
-            >
-              Add comment
-            </button>
             <ThreadedCommentsButton
               open={threadListOpen}
               setOpen={setThreadListOpen}

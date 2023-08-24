@@ -11,7 +11,7 @@ import {
 import * as Highcharts from 'highcharts';
 import type { TooltipPositionerPointObject } from 'highcharts';
 import cx from 'classnames';
-import { Pin, user } from '@cord-sdk/react';
+import { user } from '@cord-sdk/react';
 import chartData from '../chartData.json';
 import type { ChartThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
@@ -24,6 +24,9 @@ const DATE_RANGE_SELECTOR_OPTIONS = [
   { start: 2007, end: 2013 },
   { start: 2013, end: 2022 },
 ];
+
+const COMMENT_ICON_HEIGHT_PX = 12;
+const GAP_PX = 5;
 
 type Props = {
   chartId: string;
@@ -148,21 +151,17 @@ function useChartOptions(
   onRedraw: (() => void) | undefined,
 ) {
   const orgId = user.useViewerData()?.organizationID;
-  const {
-    addThread,
-    setOpenThread,
-    inThreadCreationMode,
-    setInThreadCreationMode,
-  } = useContext(ThreadsContext)!;
+  const { addThread, setOpenThread } = useContext(ThreadsContext)!;
 
   const maybeAddComment = useCallback(() => {
     const hoverPoint = chartRef.current?.chart.hoverPoint;
-    if (!inThreadCreationMode || !hoverPoint) {
+    if (!hoverPoint) {
       return;
     }
     if (!orgId) {
       throw new Error('org information not ready');
     }
+
     const metadata = {
       type: 'chart',
       chartId,
@@ -175,30 +174,15 @@ function useChartOptions(
     const threadId = `${orgId}_${metadata.chartId}_${metadata.seriesId}_${metadata.x}_${metadata.y}`;
     addThread(threadId, metadata);
     setOpenThread(threadId);
-    setInThreadCreationMode(false);
-  }, [
-    addThread,
-    chartId,
-    chartRef,
-    inThreadCreationMode,
-    orgId,
-    setInThreadCreationMode,
-    setOpenThread,
-  ]);
-
-  const chartContainer = chartRef.current?.container;
+  }, [addThread, chartId, chartRef, orgId, setOpenThread]);
 
   return useMemo(
     () => ({
       plotOptions: {
         series: {
+          cursor: 'pointer',
           events: {
             click: maybeAddComment,
-            // Add a custom class to know when cursor is above a point
-            mouseOver: () =>
-              chartContainer?.current?.classList.add('over-chart-point'),
-            mouseOut: () =>
-              chartContainer?.current?.classList.remove('over-chart-point'),
           },
           label: {
             connectorAllowed: false,
@@ -334,7 +318,7 @@ function useChartOptions(
 
                   <div style="display: flex; align-items: center; gap: 4px">
                     <img src=${commentIcon} />
-                    <span>Add comment</span>
+                    <span>Click to comment</span>
                   </div>
                 </div>
         `;
@@ -342,7 +326,7 @@ function useChartOptions(
         useHTML: true,
       },
     }),
-    [chartContainer, maybeAddComment, onRedraw],
+    [maybeAddComment, onRedraw],
   );
 }
 
@@ -389,38 +373,49 @@ function ChartThread({ threadId, metadata, chart }: ChartThreadProps) {
       setOpenThread(null);
     }
   }, [isOpen, isVisible, openThread, setOpenThread, threadId]);
+  const series = chart.get(metadata.seriesId) as Highcharts.Series & {
+    pointXOffset: number;
+  };
 
-  const pointPixelPosX = chart.xAxis[0].toPixels(metadata.x, false);
-  const pointPixelPosY = chart.yAxis[0].toPixels(metadata.y, false);
+  const pointPixelPosX =
+    series.xAxis.toPixels(metadata.x, false) + series.pointXOffset;
+  const pointPixelPosY = series.yAxis.toPixels(metadata.y, false);
 
   return (
-    // NOTE: Set the same location prop on Pin and Thread
-    <Pin
-      key={threadId}
-      location={LOCATION}
-      threadId={threadId}
+    <div
       style={{
         position: 'absolute',
-        left: pointPixelPosX,
-        // TODO get rid of the Pin
-        top: isVisible ? `calc(${pointPixelPosY}px` : 0,
+        // When not visible, position all the way to the left, to not
+        // add unnecessary horizontal scroll.
+        left: isVisible ? pointPixelPosX + GAP_PX : 0,
+        // When the commented bar is visible, show the comment icon
+        // on top of it.
+        top: isVisible
+          ? `calc(${pointPixelPosY - COMMENT_ICON_HEIGHT_PX - GAP_PX}px`
+          : 0,
         transition: 'top 0.5s, left 0.5s',
         visibility: isVisible ? 'visible' : 'hidden',
         zIndex: isOpen ? 1 : 0,
       }}
-      onClick={() => setOpenThread(isOpen ? null : threadId)}
     >
+      <img
+        key={threadId}
+        src={commentIcon}
+        onClick={() => setOpenThread(isOpen ? null : threadId)}
+        style={{ height: COMMENT_ICON_HEIGHT_PX }}
+      />
+
       <ThreadWrapper
         location={LOCATION}
         threadId={threadId}
         metadata={metadata}
         style={{
           position: 'absolute',
-          left: 0,
-          top: '100%',
+          left: 'calc(100% + 12px)',
+          top: -50,
         }}
       />
-    </Pin>
+    </div>
   );
 }
 
