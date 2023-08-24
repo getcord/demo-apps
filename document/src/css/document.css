@@ -42,6 +42,12 @@ body,
   height: 100%;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 hr {
   border: 0;
   border-top: 1px solid #c7c7c7;
@@ -294,4 +300,14 @@ cord-avatar.cord-component .cord-avatar-container {
   border-radius: 40px;
   border: 1px solid #2e2e2e;
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+}
+
+cord-page-presence.cord-component .cord-avatar-container {
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+}
+
+cord-page-presence.cord-component .cord-avatar-container.cord-present {
+  border: 2px solid #b80672;
 }

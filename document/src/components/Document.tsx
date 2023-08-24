@@ -1,4 +1,4 @@
-import { Thread, user, presence, Avatar } from '@cord-sdk/react';
+import { Thread, user, presence, Avatar, PagePresence } from '@cord-sdk/react';
 import type { CSSProperties } from 'react';
 import {
   useMemo,
@@ -368,7 +368,10 @@ export function Document() {
         })}
       </div>
       <div className="container">
-        <FakeMenu />
+        <div className="header">
+          <FakeMenu />
+          <PagePresence />
+        </div>
         <hr />
         <div id="sheet" ref={containerRef}>
           {presentUsers?.map((u, idx) => {
@@ -381,9 +384,9 @@ export function Document() {
                 userId={u.id}
                 style={{
                   position: 'absolute',
-                  top: document
-                    .getElementById(elementId)
-                    ?.getBoundingClientRect().top,
+                  top:
+                    (document.getElementById(elementId)?.getBoundingClientRect()
+                      .top ?? 0) + window.scrollY,
                   left: `${
                     (document.getElementById(elementId)?.getBoundingClientRect()
                       .left ?? 0) -
