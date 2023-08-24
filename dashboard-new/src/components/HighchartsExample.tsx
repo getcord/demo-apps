@@ -211,9 +211,14 @@ function useChartOptions(
             },
           },
         },
+        column: {
+          pointPadding: 0.2,
+          borderWidth: 0,
+        },
       },
 
       chart: {
+        type: 'column',
         style: {
           fontFamily:
             'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
@@ -241,8 +246,35 @@ function useChartOptions(
         min: 1999,
         max: 2009,
         accessibility: {
-          rangeDescription: 'Range: 1999 to 2020',
+          rangeDescription: 'Range: 1999 to 2022',
         },
+        categories: [
+          '1999',
+          '2000',
+          '2001',
+          '2002',
+          '2003',
+          '2004',
+          '2005',
+          '2006',
+          '2007',
+          '2008',
+          '2009',
+          '2010',
+          '2011',
+          '2012',
+          '2013',
+          '2014',
+          '2015',
+          '2016',
+          '2017',
+          '2018',
+          '2019',
+          '2020',
+          '2021',
+          '2022',
+        ],
+        crosshair: true,
         tickInterval: 1,
       },
 
