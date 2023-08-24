@@ -9,7 +9,7 @@
 }
 
 body {
-  background-color: rgb(249, 251, 253);
+  background-color: #c2e7ff;
 }
 
 html,
@@ -25,24 +25,43 @@ body,
 
 #root {
   display: flex;
+  justify-content: center;
+}
+
+.container {
+  /* background-color: rgb(249, 251, 253); */
+  margin: 80px;
+  padding: 16px 20px;
+  width: 100%;
+  max-width: 1200px;
+  border-radius: 8px;
+  border: 1px solid var(--base-x-strong, #dadce0);
+  background: #f9fbfd;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1),
+    0px 2px 20px 0px rgba(0, 0, 0, 0.16);
+  height: 100%;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #c7c7c7;
 }
 
 #sheet {
   --header-height: 64px;
-  --margin: 32px;
+  --padding: 48px;
   align-items: flex-start;
   background-color: white;
-  border-bottom: none;
   border: 1px solid #c7c7c7;
+  border-bottom: none;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 100%;
+  min-height: calc(100% - var(--padding));
   height: fit-content;
-  margin-left: 25%;
+  margin-left: 5%;
   margin-right: 350px;
-  margin-top: calc(var(--header-height) + var(--margin));
-  padding: 48px 64px;
+  padding: var(--padding);
   max-width: 768px;
 }
 
