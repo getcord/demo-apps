@@ -3,7 +3,7 @@ import { ThreadedComments } from '@cord-sdk/react';
 import { autoUpdate, flip, shift, useFloating } from '@floating-ui/react';
 import { ThreadsContext } from '../ThreadsContext';
 import { LOCATION } from './Dashboard';
-import { InboxIcon } from './InboxIcon';
+import { CommentsIcon } from './CommentsIcon';
 
 type Props = {
   open: boolean;
@@ -39,14 +39,12 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
     <>
       <button
         className="action-button"
-        style={
-          open ? { color: '#f8f9fa', backgroundColor: '#476b9b' } : undefined
-        }
+        style={open ? { backgroundColor: '#6a6b6c' } : undefined}
         ref={refs.setReference}
         onClick={toggleThreadedComments}
         type="button"
       >
-        <InboxIcon />
+        <CommentsIcon />
         All comments
       </button>
       {open && (

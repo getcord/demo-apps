@@ -65,10 +65,6 @@ type ThreadsContextType = {
   setInThreadCreationMode: (
     v: boolean | ((oldVal: boolean) => boolean),
   ) => void;
-
-  // Enables hiding all conversations on the page
-  threadsEnabled: boolean;
-  setThreadsEnabled: (v: boolean | ((oldVal: boolean) => boolean)) => void;
 };
 export const ThreadsContext = createContext<ThreadsContextType | undefined>(
   undefined,
@@ -132,8 +128,6 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
   const [inThreadCreationMode, setInThreadCreationMode] =
     useState<boolean>(false);
 
-  const [threadsEnabled, setThreadsEnabled] = useState<boolean>(true);
-
   const context = useMemo(
     () => ({
       threads,
@@ -145,8 +139,6 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
       setRequestToOpenThread,
       inThreadCreationMode,
       setInThreadCreationMode,
-      threadsEnabled,
-      setThreadsEnabled,
     }),
     [
       threads,
@@ -155,7 +147,6 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
       openThread,
       requestToOpenThread,
       inThreadCreationMode,
-      threadsEnabled,
     ],
   );
   return (

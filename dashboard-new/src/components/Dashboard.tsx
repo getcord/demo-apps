@@ -7,8 +7,7 @@ import cx from 'classnames';
 import { ThreadsContext } from '../ThreadsContext';
 import { HighchartsExample } from './HighchartsExample';
 import { AGGridExample } from './AGGridExample';
-import { ThreadedCommentsButton } from './ThreadListButton';
-import { ThreadsToggle } from './ThreadsToggle';
+import { ThreadedCommentsButton } from './ThreadedCommentsButton';
 
 export const LOCATION = { page: 'dashboard' };
 export const CHART_ID = 'some-unique-and-stable-id-of-this-chart';
@@ -24,7 +23,6 @@ function Dashboard({
     openThread,
     setOpenThread,
     setRequestToOpenThread,
-    setThreadsEnabled,
   } = useContext(ThreadsContext)!;
 
   useEffect(() => {
@@ -87,12 +85,10 @@ function Dashboard({
         <div className="header">
           <h1>Your collaborative dashboard</h1>
           <div id="collaboration">
-            <ThreadsToggle />
             <button
               className="action-button add-thread"
               onClick={() => {
                 setInThreadCreationMode((val) => !val);
-                setThreadsEnabled(true);
               }}
               type="button"
             >
@@ -102,11 +98,10 @@ function Dashboard({
               open={threadListOpen}
               setOpen={setThreadListOpen}
             />
+            <PagePresence location={LOCATION} />
             <NotificationListLauncher
               onClick={() => setThreadListOpen(false)}
-              label="Notifications"
             />
-            <PagePresence location={LOCATION} />
           </div>
         </div>
 

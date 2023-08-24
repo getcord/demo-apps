@@ -1,5 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
 
+:root {
+  --purple: #9a6aff;
+  --purple-dark: #442f71;
+  --orange: #fa7351;
+  --grey-x-light: #97979f;
+  --grey-light: #6a6b6c;
+  --grey-dark: #2e2e2e;
+  --grey-x-dark: #1d1f24;
+  --black: #121314;
+  --white: #edeff1;
+  --pink: #e95b94;
+
+  --cord-color-base: var(--grey-x-dark);
+  --cord-color-base-strong: #f6f6f620;
+  --cord-color-base-x-strong: var(--grey-light);
+  --cord-color-content-emphasis: var(--white);
+  --cord-color-content-primary: var(--white);
+  --cord-color-content-secondary: var(--grey-light);
+  --cord-color-notification: var(--pink);
+  --cord-primary-button-background-color: #edfc7e;
+  --cord-secondary-button-content-color: var(--white);
+  --cord-tertiary-button-content-color: var(--white);
+  --cord-color-brand-primary: var(--white);
+
+  /* Drop shadow large */
+  box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.16);
+}
+
 *,
 *::before,
 *::after {
@@ -21,9 +49,8 @@ body {
 }
 
 #dashboard {
-  font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: Roboto, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: var(--white);
   max-width: 1200px;
   margin: auto;
@@ -141,44 +168,26 @@ body {
   border-style: none;
   text-transform: none;
   border-radius: var(--cord-border-radius-medium, var(--cord-space-3xs, 4px));
-  padding: 16px;
-  color: #1a73e8;
-  background-color: #e8f0fe;
+  padding: 10px;
+  color: var(--white);
+  background-color: var(--grey-dark);
   gap: var(--cord-floating-threads-gap, var(--cord-space-3xs, 4px));
 }
 
 .action-button:hover,
 .cord-button[data-cord-button='open-notification-list']:hover {
-  color: white;
-  background-color: #1a73e8;
+  color: var(--white);
+  background-color: var(--grey-light);
 }
 
-.action-button.add-thread {
-  color: white;
-  background-color: #1a73e8;
-}
-.action-button.add-thread:hover {
-  background-color: #114c99;
-  color: white;
-}
-.action-button.add-thread:active,
+.action-button:active,
 .in-thread-mode .action-button.add-thread {
-  background-color: #476b9b;
-}
-
-.in-thread-mode {
-  cursor: url('/images/comment-cursor.svg') 0 34, auto;
-}
-
-/* annotatable elements */
-.in-thread-mode .over-chart-point,
-.in-thread-mode .ag-cell {
-  cursor: url('/images/comment-cursor-active.svg') 0 34, auto;
+  background-color: var(--grey-light);
 }
 
 .threadlist-container {
   width: 300px;
-  background: white;
+  background: var(--white);
   border-radius: 4px;
   z-index: 9;
   box-shadow: var(
@@ -198,4 +207,18 @@ cord-threaded-comments {
 
 cord-notification-list-launcher .cord-button-label {
   font-size: 14px;
+}
+
+cord-page-presence.cord-component .cord-avatar-container {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.cord-badge::after {
+  color: var(--white);
+}
+
+cord-thread.cord-component {
+  border-radius: 8px;
 }

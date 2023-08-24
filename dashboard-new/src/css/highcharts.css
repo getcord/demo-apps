@@ -1,12 +1,3 @@
-:root {
-  --purple: #9a6aff;
-  --purple-dark: #442f71;
-  --orange: #fa7351;
-  --grey-dark: #2e2e2e;
-  --black: #121314;
-  --white: #edeff1;
-}
-
 .date-range-selector {
   align-items: center;
   display: flex;

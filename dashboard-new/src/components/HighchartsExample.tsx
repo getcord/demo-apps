@@ -34,7 +34,6 @@ export function HighchartsExample({ chartId }: Props) {
     threads,
     requestToOpenThread,
     setRequestToOpenThread,
-    threadsEnabled,
   } = useContext(ThreadsContext)!;
   const [selectedDateRange, setSelectedDateRange] = useState(
     DATE_RANGE_SELECTOR_OPTIONS[0],
@@ -134,7 +133,7 @@ export function HighchartsExample({ chartId }: Props) {
           highcharts={Highcharts}
           options={chartOptions}
         />
-        {threadsEnabled && chartRef.current?.chart && (
+        {chartRef.current?.chart && (
           <ChartThreads chartId={chartId} chart={chartRef.current.chart} />
         )}
       </div>
@@ -375,13 +374,8 @@ function ChartThread({ threadId, metadata, chart }: ChartThreadProps) {
       style={{
         position: 'absolute',
         left: pointPixelPosX,
-        // Align bottom-left corner of the pin to chart point by subtracting
-        // Pin's size. The same effect could be achieved with "transform:
-        // translateY(-100%)" but that breaks the attachment previews of
-        // Thread because CSS transform starts a new containing block.
-        top: isVisible
-          ? `calc(${pointPixelPosY}px - var(--cord-annotation-pin-size))`
-          : 0,
+        // TODO get rid of the Pin
+        top: isVisible ? `calc(${pointPixelPosY}px` : 0,
         transition: 'top 0.5s, left 0.5s',
         visibility: isVisible ? 'visible' : 'hidden',
         zIndex: isOpen ? 1 : 0,
