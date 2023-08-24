@@ -17,6 +17,7 @@ import type { ChartThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
 import { LOCATION } from './Dashboard';
 import { ThreadWrapper } from './ThreadWrapper';
+import commentIcon from './CommentIcon.svg';
 
 const DATE_RANGE_SELECTOR_OPTIONS = [
   { start: 1999, end: 2006 },
@@ -302,6 +303,7 @@ function useChartOptions(
       },
 
       tooltip: {
+        // Always show tooltip below the bar
         positioner: function (
           _labelHeight: number,
           _labelWidth: number,
@@ -312,6 +314,32 @@ function useChartOptions(
             y: point.plotY + 20,
           };
         },
+        borderRadius: 12,
+        padding: 12,
+        borderColor: 'transparent',
+        backgroundColor: '#00000c',
+        style: {
+          color: '#edeff1',
+        },
+        formatter: function (): string {
+          const { x, y, color, series } = this as any;
+          return `
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <div><b>${x}</b></div>
+
+                  <div style="display: flex; align-items: center; gap: 4px">
+                    <span style="color: ${color};">●</span>
+                    ${series.name}: <b>${y}</b>
+                  </div>
+
+                  <div style="display: flex; align-items: center; gap: 4px">
+                    <img src=${commentIcon} />
+                    <span>Add comment</span>
+                  </div>
+                </div>
+        `;
+        },
+        useHTML: true,
       },
     }),
     [chartContainer, maybeAddComment, onRedraw],
