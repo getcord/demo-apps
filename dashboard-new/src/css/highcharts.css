@@ -1,6 +1,14 @@
+:root {
+  --purple: #9a6aff;
+  --purple-dark: #442f71;
+  --orange: #fa7351;
+  --grey-dark: #2e2e2e;
+  --black: #121314;
+  --white: #edeff1;
+}
+
 .date-range-selector {
   align-items: center;
-  background-color: white;
   display: flex;
   gap: 4px;
   padding: 4px 0px 8px;
@@ -8,10 +16,10 @@
 }
 
 .date-range-selector-option {
-  background-color: white;
+  background-color: var(--purple-dark);
   border-radius: 4px;
   border: 0;
-  color: #4a4a4a;
+  color: var(--white);
   cursor: pointer;
   font-family: inherit;
   font-size: 16px;
@@ -19,15 +27,15 @@
 }
 
 .date-range-selector-option:hover {
-  background-color: #dadce0;
+  background-color: var(--purple);
 }
 
 .date-range-selector-option-active {
-  background-color: #9a6aff;
+  background-color: var(--purple);
   color: white;
   cursor: default;
 }
 
 .date-range-selector-option-active:hover {
-  background-color: #9a6aff;
+  background-color: var(--purple);
 }

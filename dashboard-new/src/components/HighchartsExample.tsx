@@ -19,8 +19,9 @@ import { LOCATION } from './Dashboard';
 import { ThreadWrapper } from './ThreadWrapper';
 
 const DATE_RANGE_SELECTOR_OPTIONS = [
-  { start: 1999, end: 2010 },
-  { start: 2011, end: 2022 },
+  { start: 1999, end: 2006 },
+  { start: 2007, end: 2013 },
+  { start: 2013, end: 2022 },
 ];
 
 type Props = {
@@ -214,6 +215,8 @@ function useChartOptions(
         column: {
           pointPadding: 0.2,
           borderWidth: 0,
+          pointWidth: 22,
+          borderRadius: 4,
         },
       },
 
@@ -223,6 +226,7 @@ function useChartOptions(
           fontFamily:
             'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
         },
+        backgroundColor: '#2E2E2E',
         events: {
           redraw: onRedraw,
           click: maybeAddComment,
@@ -239,6 +243,12 @@ function useChartOptions(
       yAxis: {
         title: {
           text: 'Currency in USD',
+        },
+        gridLineColor: 'transparent',
+        labels: {
+          style: {
+            color: '#edeff1',
+          },
         },
       },
 
@@ -274,16 +284,21 @@ function useChartOptions(
           '2021',
           '2022',
         ],
-        crosshair: true,
+        crosshair: { color: '#442f71' },
         tickInterval: 1,
+        labels: {
+          style: {
+            color: '#edeff1',
+          },
+        },
       },
 
       legend: {
         layout: 'horizontal',
-        align: 'center',
+        align: 'right',
         verticalAlign: 'bottom',
         itemStyle: {
-          color: '#4A4A4A',
+          color: '#edeff1',
         },
       },
 

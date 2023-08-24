@@ -37,6 +37,7 @@ export default function App() {
           'cord-page-presence',
         ]}
         api={['thread', 'user']}
+        darkTheme
       />
       {authToken && (
         <ThreadsProvider>

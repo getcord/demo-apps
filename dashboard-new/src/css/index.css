@@ -11,7 +11,7 @@
 }
 
 body {
-  background: #f0f0f0;
+  background: var(--black);
   margin: 0;
   padding: 0;
   padding-top: 73px;
@@ -21,15 +21,12 @@ body {
 }
 
 #dashboard {
-  color: #4a4a4a;
   font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
     sans-serif;
-  padding: 32px;
-}
-
-#dashboard.with-sidebar {
-  margin-right: 320px;
+  color: var(--white);
+  max-width: 1200px;
+  margin: auto;
 }
 
 #dashboard .header {
@@ -56,11 +53,10 @@ body {
 }
 
 #dashboard .panel {
-  background: white;
-  padding: 32px;
-  border: 1px solid #dadce0;
-  box-shadow: 0px 2px 4px 0px #00000014;
-  border-radius: 2px;
+  background: var(--grey-dark);
+  padding: 40px 139px;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
 }
 
 #dashboard .panel h2 {

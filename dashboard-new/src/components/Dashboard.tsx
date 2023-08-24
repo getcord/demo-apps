@@ -8,7 +8,6 @@ import { ThreadsContext } from '../ThreadsContext';
 import { HighchartsExample } from './HighchartsExample';
 import { AGGridExample } from './AGGridExample';
 import { ThreadedCommentsButton } from './ThreadListButton';
-import { Panel } from './Panel';
 import { ThreadsToggle } from './ThreadsToggle';
 
 export const LOCATION = { page: 'dashboard' };
@@ -112,13 +111,13 @@ function Dashboard({
         </div>
 
         <div className="grid">
-          <Panel title="NYSE stock price from 1999 to 2022">
+          <div className="panel">
             <HighchartsExample chartId={CHART_ID} />
-          </Panel>
+          </div>
 
-          <Panel title="Short list of books found on Goodreads">
+          <div className="panel">
             <AGGridExample gridId={GRID_ID} />
-          </Panel>
+          </div>
         </div>
       </div>
     </>
