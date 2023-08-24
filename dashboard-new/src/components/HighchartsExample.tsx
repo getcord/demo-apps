@@ -412,7 +412,7 @@ function ChartThread({ threadId, metadata, chart }: ChartThreadProps) {
         style={{
           position: 'absolute',
           left: 'calc(100% + 12px)',
-          top: -50,
+          top: -(2 * GAP_PX),
         }}
       />
     </div>

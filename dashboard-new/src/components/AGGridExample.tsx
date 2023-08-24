@@ -23,6 +23,7 @@ import type { GridThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
 import { LOCATION } from './Dashboard';
 import { ThreadWrapper } from './ThreadWrapper';
+import commentIcon from './CommentIcon.svg';
 
 export function AGGridExample({ gridId }: { gridId: string }) {
   const orgId = user.useViewerData()?.organizationID;
@@ -50,8 +51,6 @@ export function AGGridExample({ gridId }: { gridId: string }) {
     threads,
     requestToOpenThread,
     setRequestToOpenThread,
-    inThreadCreationMode,
-    setInThreadCreationMode,
   } = useContext(ThreadsContext)!;
 
   // Effect to show the correct thread when the user requests to open a
@@ -217,7 +216,7 @@ export function AGGridExample({ gridId }: { gridId: string }) {
             setOpenThread(null);
           } else if (threads.has(threadId)) {
             setOpenThread(threadId);
-          } else if (inThreadCreationMode) {
+          } else {
             const metadata: GridThreadMetadata = {
               type: 'grid',
               gridId,
@@ -226,7 +225,6 @@ export function AGGridExample({ gridId }: { gridId: string }) {
             };
             addThread(threadId, metadata);
             setOpenThread(threadId);
-            setInThreadCreationMode(false);
           }
         }}
       ></AgGridReact>
@@ -279,9 +277,9 @@ function CellWithThreadAndPresence(
           maxUsers={1}
         />
         {threadMetadata && threadId && (
-          <div
+          <img
+            src={commentIcon}
             ref={openThread === threadId ? setReference : undefined}
-            className="cell-with-thread"
           />
         )}
       </PresenceObserver>

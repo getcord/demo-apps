@@ -86,6 +86,10 @@ body {
   border-radius: 8px;
 }
 
+#dashboard .panel.ag-grid {
+  background: var(--black);
+}
+
 #dashboard .panel h2 {
   margin-bottom: 8px;
 }
@@ -117,27 +121,6 @@ body {
 
 .cell {
   position: relative;
-}
-
-.cell-with-thread {
-  border: 2px solid #e37400;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  pointer-events: none;
-}
-
-/* a triangle in CSS placed in the corner of parent */
-.cell-with-thread::after {
-  content: '';
-  position: absolute;
-  border: 8px solid transparent;
-  border-bottom-color: inherit;
-  transform: rotate(45deg);
-  right: -8px;
-  top: -8px;
 }
 
 /* when cell is selected, make border of .cell-with-thread smaller */
@@ -180,8 +163,7 @@ body {
   background-color: var(--grey-light);
 }
 
-.action-button:active,
-.in-thread-mode .action-button.add-thread {
+.action-button:active {
   background-color: var(--grey-light);
 }
 

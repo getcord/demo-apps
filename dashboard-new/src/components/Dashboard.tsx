@@ -2,7 +2,6 @@ import type { MutableRefObject } from 'react';
 import { useState, useContext, useEffect } from 'react';
 import { PagePresence, NotificationListLauncher } from '@cord-sdk/react';
 import type { NavigateFn } from '@cord-sdk/types';
-import cx from 'classnames';
 
 import { ThreadsContext } from '../ThreadsContext';
 import { HighchartsExample } from './HighchartsExample';
@@ -17,13 +16,8 @@ function Dashboard({
 }: {
   navigateRef: MutableRefObject<NavigateFn | null>;
 }) {
-  const {
-    inThreadCreationMode,
-    setInThreadCreationMode,
-    openThread,
-    setOpenThread,
-    setRequestToOpenThread,
-  } = useContext(ThreadsContext)!;
+  const { openThread, setOpenThread, setRequestToOpenThread } =
+    useContext(ThreadsContext)!;
 
   useEffect(() => {
     navigateRef.current = (_url, _location, { threadID }) => {
@@ -45,12 +39,11 @@ function Dashboard({
     const close = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setOpenThread(null);
-        setInThreadCreationMode(false);
       }
     };
     document.addEventListener('keydown', close);
     return () => document.removeEventListener('keydown', close);
-  }, [setInThreadCreationMode, setOpenThread]);
+  }, [setOpenThread]);
 
   // Effect to close thread if user clicks anywhere but a Pin or Thread
   useEffect(() => {
@@ -78,10 +71,7 @@ function Dashboard({
   const [threadListOpen, setThreadListOpen] = useState(false);
   return (
     <>
-      <div
-        id="dashboard"
-        className={cx({ 'in-thread-mode': inThreadCreationMode })}
-      >
+      <div id="dashboard">
         <div className="header">
           <h1>Your collaborative dashboard</h1>
           <div id="collaboration">
@@ -101,7 +91,7 @@ function Dashboard({
             <HighchartsExample chartId={CHART_ID} />
           </div>
 
-          <div className="panel">
+          <div className="panel ag-grid">
             <AGGridExample gridId={GRID_ID} />
           </div>
         </div>

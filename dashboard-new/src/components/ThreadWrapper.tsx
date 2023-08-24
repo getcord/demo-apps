@@ -42,7 +42,6 @@ export function ThreadWrapper({
   return (
     <Thread
       forwardRef={forwardRef}
-      showHeader={true}
       location={location}
       threadId={threadId}
       metadata={metadata}

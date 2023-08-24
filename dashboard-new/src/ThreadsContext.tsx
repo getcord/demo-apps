@@ -59,12 +59,6 @@ type ThreadsContextType = {
   // }, [requestToOpenThread, setRequestToOpenThread, setOpenThread]);
   requestToOpenThread: string | null;
   setRequestToOpenThread: (threadId: string | null) => void;
-
-  // True if user can leave threads at the moment
-  inThreadCreationMode: boolean;
-  setInThreadCreationMode: (
-    v: boolean | ((oldVal: boolean) => boolean),
-  ) => void;
 };
 export const ThreadsContext = createContext<ThreadsContextType | undefined>(
   undefined,
@@ -125,9 +119,6 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
     null,
   );
 
-  const [inThreadCreationMode, setInThreadCreationMode] =
-    useState<boolean>(false);
-
   const context = useMemo(
     () => ({
       threads,
@@ -137,17 +128,8 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
       setOpenThread,
       requestToOpenThread,
       setRequestToOpenThread,
-      inThreadCreationMode,
-      setInThreadCreationMode,
     }),
-    [
-      threads,
-      addThread,
-      removeThread,
-      openThread,
-      requestToOpenThread,
-      inThreadCreationMode,
-    ],
+    [threads, addThread, removeThread, openThread, requestToOpenThread],
   );
   return (
     <ThreadsContext.Provider value={context}>
