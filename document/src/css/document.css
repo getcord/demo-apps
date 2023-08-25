@@ -311,3 +311,7 @@ cord-page-presence.cord-component .cord-avatar-container {
 cord-page-presence.cord-component .cord-avatar-container.cord-present {
   border: 2px solid #b80672;
 }
+
+cord-page-presence.cord-component .cord-facepile {
+  gap: 8px;
+}
