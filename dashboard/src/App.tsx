@@ -29,7 +29,6 @@ export default function App() {
         components={[
           'cord-pin',
           'cord-thread',
-          'cord-presence-observer',
           'cord-notification-list-launcher',
           'cord-threaded-comments',
           'cord-presence-facepile',
