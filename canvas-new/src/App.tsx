@@ -1,6 +1,7 @@
 import { CordProvider } from '@cord-sdk/react';
 
 import { InformationHeader } from '../../_common/InformationHeader';
+import { CanvasAndCommentsProvider } from './CanvasAndCommentsContext';
 import Canvas from './components/Canvas';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
 
@@ -16,7 +17,11 @@ export default function App() {
         components={['cord-thread', 'cord-pin']}
         api={['thread']}
       />
-      <Canvas />
+      {clientAuthToken && (
+        <CanvasAndCommentsProvider>
+          <Canvas />
+        </CanvasAndCommentsProvider>
+      )}
     </CordProvider>
   );
 }

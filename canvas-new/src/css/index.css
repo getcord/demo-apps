@@ -22,3 +22,49 @@ body {
   height: 100vh;
   position: relative;
 }
+
+.canvasButtonGroup {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.canvasButtonGroup button {
+  align-items: center;
+  background: #fff;
+  border-radius: 64px;
+  border: 1px solid #dadce0;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+}
+
+.canvasButtonGroup button img {
+  width: 16px;
+  height: 16px;
+}
+
+.canvasButtonGroup button:active {
+  box-shadow: 0 0 0 #ffffff;
+}
+
+.commentingModeCursor {
+  cursor: url('/images/Pin.png') 0 32, pointer;
+}
+
+/* Cord Component - TODO move to own file */
+cord-pin.cord-component {
+  position: absolute;
+  /* Adjust translate if pin size changes */
+  transform: translate(0px, -34px);
+}
+
+cord-thread.cord-component {
+  position: absolute;
+  left: 40px;
+}
