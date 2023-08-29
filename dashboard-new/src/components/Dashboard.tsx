@@ -86,14 +86,12 @@ function Dashboard({
           </div>
         </div>
 
-        <div className="grid">
+        <div className="grid highcharts">
           <div className="panel">
             <HighchartsExample chartId={CHART_ID} />
           </div>
 
-          <div className="panel ag-grid">
-            <AGGridExample gridId={GRID_ID} />
-          </div>
+          <AGGridExample gridId={GRID_ID} />
         </div>
       </div>
     </>

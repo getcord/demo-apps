@@ -19,7 +19,7 @@
   --cord-color-content-primary: var(--white);
   --cord-color-content-secondary: var(--grey-light);
   --cord-color-notification: var(--pink);
-  --cord-primary-button-background-color: #edfc7e;
+  --cord-primary-button-background-color: var(--purple);
   --cord-secondary-button-content-color: var(--white);
   --cord-tertiary-button-content-color: var(--white);
   --cord-color-brand-primary: var(--white);
@@ -86,8 +86,10 @@ body {
   border-radius: 8px;
 }
 
-#dashboard .panel.ag-grid {
-  background: var(--black);
+#dashboard .panel.highcharts {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 #dashboard .panel h2 {
@@ -96,8 +98,7 @@ body {
 
 #dashboard .grid {
   display: grid;
-  grid-gap: 32px;
-  grid-template-columns: minmax(0, 1fr);
+  grid-gap: 40px;
 }
 
 #collaboration {
@@ -116,7 +117,6 @@ body {
 
 #grid-container {
   height: 400px;
-  margin: 0 auto;
 }
 
 .cell {
@@ -170,16 +170,16 @@ body {
 .threadlist-container {
   width: 300px;
   background: var(--white);
+  margin-top: 6px;
   border-radius: 4px;
   z-index: 9;
   box-shadow: var(
     --cord-shadow-large,
     0 var(--cord-space-4xs, 2px) var(--cord-space-m, 16px) 0 rgba(0, 0, 0, 0.16)
   );
-  border: 1px solid var(--cord-color-base-x-strong, #dadce0);
 }
 
-cord-presence-facepile .cord-avatar-container {
+.cord-component .cord-avatar-container {
   border-radius: 50%;
 }
 
@@ -189,6 +189,13 @@ cord-threaded-comments {
 
 cord-notification-list-launcher .cord-button-label {
   font-size: 14px;
+}
+
+cord-notification-list-launcher
+  .cord-button[data-cord-button='open-notification-list']
+  .cord-icon
+  path:first-of-type {
+  fill: var(--white);
 }
 
 cord-page-presence.cord-component .cord-avatar-container {
@@ -203,4 +210,8 @@ cord-page-presence.cord-component .cord-avatar-container {
 
 cord-thread.cord-component {
   border-radius: 8px;
+}
+
+.cord-message .cord-timestamp {
+  display: none;
 }

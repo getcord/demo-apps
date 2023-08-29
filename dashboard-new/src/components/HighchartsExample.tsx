@@ -284,6 +284,9 @@ function useChartOptions(
         itemStyle: {
           color: '#edeff1',
         },
+        itemHoverStyle: {
+          color: '#97979f',
+        },
       },
 
       tooltip: {
