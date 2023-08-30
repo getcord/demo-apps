@@ -1,7 +1,7 @@
 import { Stage, Layer, Rect, Circle, RegularPolygon } from 'react-konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import cx from 'classnames';
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { Pin, Thread } from '@cord-sdk/react';
 import type { ThreadMetadata } from '../canvasUtils';
 import {
@@ -22,7 +22,13 @@ export default function Canvas() {
     setInThreadCreationMode,
     removeThreadIfEmpty,
     addThread,
+    isPanningCanvas,
+    setIsPanningCanvas,
+    recomputePinPositions,
   } = useContext(CanvasAndCommentsContext)!;
+
+  const timeoutPanningRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const updateCanvasSize = useCallback(() => {
     const stage = canvasStageRef.current;
     if (!canvasContainerRef.current || !stage) {
@@ -147,6 +153,58 @@ export default function Canvas() {
     return () => window.removeEventListener('keydown', onEscapePress);
   }, [onEscapePress]);
 
+  const onStageWheel = useCallback(
+    ({ evt }: KonvaEventObject<WheelEvent>) => {
+      evt.preventDefault();
+      setIsPanningCanvas(true);
+      // Improving the panning experience over canvas
+      if (timeoutPanningRef.current !== null) {
+        clearTimeout(timeoutPanningRef.current);
+      }
+      timeoutPanningRef.current = setTimeout(
+        () => setIsPanningCanvas(false),
+        300,
+      );
+
+      const isPinchToZoom = evt.ctrlKey;
+      const stage = canvasStageRef.current;
+      if (!stage) {
+        return;
+      }
+      if (isPinchToZoom) {
+        // https://konvajs.org/docs/sandbox/Zooming_Relative_To_Pointer.html
+        const scaleBy = 1.03;
+        let direction = evt.deltaY > 0 ? 1 : -1;
+        // When we zoom on trackpads,
+        // e.evt.ctrlKey is true so in that case lets revert direction.
+        if (evt.ctrlKey) {
+          direction = -direction;
+        }
+        const oldScale = stage.scaleX();
+        const newScale =
+          direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+        const pointer = stage.getPointerPosition() ?? { x: 0, y: 0 };
+        const mousePointTo = {
+          x: (pointer.x - stage.x()) / oldScale,
+          y: (pointer.y - stage.y()) / oldScale,
+        };
+
+        stage.scale({ x: newScale, y: newScale });
+        stage.position({
+          x: pointer.x - mousePointTo.x * newScale,
+          y: pointer.y - mousePointTo.y * newScale,
+        });
+      } else {
+        // Just panning the canvas
+        const { deltaX, deltaY } = evt;
+        const { x, y } = stage.getPosition();
+        stage.position({ x: x - deltaX, y: y - deltaY });
+      }
+      recomputePinPositions();
+    },
+    [canvasStageRef, setIsPanningCanvas, recomputePinPositions],
+  );
+
   return (
     <div
       className="canvasAndCordContainer"
@@ -161,6 +219,7 @@ export default function Canvas() {
         })}
         name="stage"
         onClick={onStageClick}
+        onWheel={onStageWheel}
       >
         <Layer>
           <Circle radius={60} fill="#0ACF83" x={380} y={410} name="circle" />
@@ -204,6 +263,7 @@ export default function Canvas() {
             left: pin.x,
             top: pin.y,
             zIndex: openThread?.threadID === pin.threadID ? 1 : 0,
+            pointerEvents: isPanningCanvas ? 'none' : 'auto',
           }}
           onClick={() => {
             if (openThread?.threadID === pin.threadID && !openThread.empty) {

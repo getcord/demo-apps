@@ -11,7 +11,7 @@ import {
 import { thread } from '@cord-sdk/react';
 import type { Location } from '@cord-sdk/types';
 import type { OpenThread, Pin } from './canvasUtils';
-import { getPinFromThread } from './canvasUtils';
+import { getPinFromThread, computePinPosition } from './canvasUtils';
 
 // Context for storing all thread related information
 type CanvasAndCommentsContextType = {
@@ -34,6 +34,13 @@ type CanvasAndCommentsContextType = {
   // The stage (canvas), and container of the canvas
   canvasStageRef: RefObject<Stage>;
   canvasContainerRef: RefObject<HTMLDivElement>;
+
+  // Panning on Canvas
+  isPanningCanvas: boolean;
+  setIsPanningCanvas: React.Dispatch<React.SetStateAction<boolean>>;
+
+  // Updates all the thread co-ordinates relative to the canvas
+  recomputePinPositions: () => void;
 };
 export const CanvasAndCommentsContext = createContext<
   CanvasAndCommentsContextType | undefined
@@ -78,6 +85,29 @@ export function CanvasAndCommentsProvider({
   const [inThreadCreationMode, setInThreadCreationMode] =
     useState<boolean>(false);
 
+  const [isPanningCanvas, setIsPanningCanvas] = useState<boolean>(false);
+
+  const recomputePinPositions = useCallback(() => {
+    if (!canvasStageRef.current) {
+      return;
+    }
+    const stage = canvasStageRef.current;
+    setThreads((oldThreads) => {
+      const updatedThreads = new Map<string, Pin>();
+      Array.from(oldThreads).forEach(([id, oldThread]) => {
+        const updatedPin = computePinPosition(
+          stage,
+          id,
+          oldThread.threadMetadata,
+        );
+        if (updatedPin) {
+          updatedThreads.set(id, updatedPin);
+        }
+      });
+
+      return updatedThreads;
+    });
+  }, []);
   // Fetch existing threads associated with location
   const {
     threads: threadSummaries,
@@ -129,8 +159,19 @@ export function CanvasAndCommentsProvider({
       setInThreadCreationMode,
       canvasStageRef,
       canvasContainerRef,
+      isPanningCanvas,
+      setIsPanningCanvas,
+      recomputePinPositions,
     }),
-    [addThread, inThreadCreationMode, openThread, removeThreadIfEmpty, threads],
+    [
+      addThread,
+      inThreadCreationMode,
+      isPanningCanvas,
+      openThread,
+      removeThreadIfEmpty,
+      threads,
+      recomputePinPositions,
+    ],
   );
   return (
     <CanvasAndCommentsContext.Provider value={context}>

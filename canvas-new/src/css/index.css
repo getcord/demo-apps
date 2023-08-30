@@ -21,6 +21,8 @@ body {
   background: #f6f6f6;
   height: 100vh;
   position: relative;
+  /* Prevents scroll bars from appearing for the canvas */
+  overflow: hidden;
 }
 
 .canvasButtonGroup {
@@ -30,6 +32,8 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
+  /* The buttons will appear above the canvas and pins */
+  z-index: 2;
 }
 
 .canvasButtonGroup button {

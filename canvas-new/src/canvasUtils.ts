@@ -66,31 +66,7 @@ export function getPinFromThread(
   if (!metadata) {
     return null;
   }
-  const { elementName, relativeX, relativeY } = metadata;
-
-  if (elementName === 'stage') {
-    return {
-      threadID: thread.id,
-      threadMetadata: metadata,
-      x: relativeX,
-      y: relativeY,
-    };
-  } else {
-    const node = stage.findOne(`.${elementName}`);
-    if (!node) {
-      return null;
-    }
-    const { stageX, stageY, scale } = getStageData(stage);
-
-    const elementPosition = node.getPosition();
-
-    return {
-      threadID: thread.id,
-      threadMetadata: metadata,
-      x: stageX + (elementPosition.x + relativeX) * scale,
-      y: stageY + (elementPosition.y + relativeY) * scale,
-    };
-  }
+  return computePinPosition(stage, thread.id, metadata);
 }
 
 function extractDataFromThreadMetadata(
@@ -116,4 +92,37 @@ function extractDataFromThreadMetadata(
     relativeX: metadata.relativeX,
     relativeY: metadata.relativeY,
   };
+}
+
+export function computePinPosition(
+  stage: Stage,
+  threadID: string,
+  metadata: ThreadMetadata,
+): Pin | null {
+  const { elementName, relativeX, relativeY } = metadata;
+
+  const { stageX, stageY, scale } = getStageData(stage);
+
+  if (elementName === 'stage') {
+    return {
+      threadID,
+      threadMetadata: metadata,
+      x: stageX + relativeX * scale,
+      y: stageY + relativeY * scale,
+    };
+  } else {
+    const node = stage.findOne(`.${elementName}`);
+    if (!node) {
+      return null;
+    }
+
+    const elementPosition = node.getPosition();
+
+    return {
+      threadID,
+      threadMetadata: metadata,
+      x: stageX + (elementPosition.x + relativeX) * scale,
+      y: stageY + (elementPosition.y + relativeY) * scale,
+    };
+  }
 }
