@@ -205,6 +205,26 @@ export default function Canvas() {
     [canvasStageRef, setIsPanningCanvas, recomputePinPositions],
   );
 
+  const onElementDrag = useCallback(
+    (_e: KonvaEventObject<DragEvent>) => {
+      const stage = canvasStageRef.current;
+      if (!stage) {
+        return;
+      }
+
+      recomputePinPositions();
+      removeThreadIfEmpty(openThread);
+      setOpenThread(null);
+    },
+    [
+      canvasStageRef,
+      openThread,
+      recomputePinPositions,
+      removeThreadIfEmpty,
+      setOpenThread,
+    ],
+  );
+
   return (
     <div
       className="canvasAndCordContainer"
@@ -222,7 +242,15 @@ export default function Canvas() {
         onWheel={onStageWheel}
       >
         <Layer>
-          <Circle radius={60} fill="#0ACF83" x={380} y={410} name="circle" />
+          <Circle
+            radius={60}
+            fill="#0ACF83"
+            x={380}
+            y={410}
+            name="circle"
+            draggable={!inThreadCreationMode}
+            onDragMove={onElementDrag}
+          />
           <Rect
             fill={'#1ABCFE'}
             width={120}
@@ -230,6 +258,8 @@ export default function Canvas() {
             x={180}
             y={200}
             name="square"
+            draggable={!inThreadCreationMode}
+            onDragMove={onElementDrag}
           />
           <RegularPolygon
             sides={4}
@@ -238,6 +268,8 @@ export default function Canvas() {
             x={480}
             y={100}
             name="diamond"
+            draggable={!inThreadCreationMode}
+            onDragMove={onElementDrag}
           />
         </Layer>
       </Stage>
