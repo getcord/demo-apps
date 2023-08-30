@@ -1,7 +1,17 @@
-import type { ReactNode, RefObject } from 'react';
+import type { PropsWithChildren, RefObject } from 'react';
 import type { Stage } from 'konva/lib/Stage';
-import { createContext, useCallback, useState, useMemo, useRef } from 'react';
+import {
+  createContext,
+  useCallback,
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+} from 'react';
+import { thread } from '@cord-sdk/react';
+import type { Location } from '@cord-sdk/types';
 import type { OpenThread, Pin } from './canvasUtils';
+import { getPinFromThread } from './canvasUtils';
 
 // Context for storing all thread related information
 type CanvasAndCommentsContextType = {
@@ -31,9 +41,8 @@ export const CanvasAndCommentsContext = createContext<
 
 export function CanvasAndCommentsProvider({
   children,
-}: {
-  children: ReactNode;
-}) {
+  location,
+}: PropsWithChildren<{ location: Location }>) {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const canvasStageRef = useRef<Stage>(null);
   const [threads, setThreads] = useState<Map<string, Pin>>(new Map());
@@ -68,6 +77,46 @@ export function CanvasAndCommentsProvider({
 
   const [inThreadCreationMode, setInThreadCreationMode] =
     useState<boolean>(false);
+
+  // Fetch existing threads associated with location
+  const {
+    threads: threadSummaries,
+    hasMore,
+    loading,
+    fetchMore,
+  } = thread.useLocationData(location, { includeResolved: false });
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    if (hasMore) {
+      // NOTE: For this demo, fetch all threads on the page.
+      void fetchMore(1000);
+    }
+
+    if (!canvasStageRef.current) {
+      return;
+    }
+
+    const stage = canvasStageRef.current;
+    threadSummaries
+      .filter(
+        (t) => t.total > 0 || openThread?.threadID === t.id || !t.resolved,
+      )
+      .forEach((t) => {
+        const pinData = getPinFromThread(stage, t);
+        if (pinData) {
+          addThread(t.id, pinData);
+        }
+      });
+  }, [
+    addThread,
+    fetchMore,
+    hasMore,
+    loading,
+    openThread?.threadID,
+    threadSummaries,
+  ]);
 
   const context = useMemo(
     () => ({

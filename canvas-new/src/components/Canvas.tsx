@@ -3,11 +3,10 @@ import type { KonvaEventObject } from 'konva/lib/Node';
 import cx from 'classnames';
 import { useCallback, useContext, useEffect } from 'react';
 import { Pin, Thread } from '@cord-sdk/react';
-
+import type { ThreadMetadata } from '../canvasUtils';
 import {
   createNewPin,
   getStageData,
-  generatePinThreadID,
   EXAMPLE_CORD_LOCATION,
 } from '../canvasUtils';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
@@ -104,8 +103,14 @@ export default function Canvas() {
         y = stageY + (elementPosition.y + relativeY) * scale;
       }
 
+      const threadMetadata: ThreadMetadata = {
+        relativeX,
+        relativeY,
+        elementName,
+      };
+
       const pin = createNewPin({
-        threadID: generatePinThreadID(elementName, relativeX, relativeY),
+        threadMetadata,
         x,
         y,
       });
@@ -198,6 +203,7 @@ export default function Canvas() {
           style={{
             left: pin.x,
             top: pin.y,
+            zIndex: openThread?.threadID === pin.threadID ? 1 : 0,
           }}
           onClick={() => {
             if (openThread?.threadID === pin.threadID && !openThread.empty) {
@@ -214,6 +220,7 @@ export default function Canvas() {
           <Thread
             location={EXAMPLE_CORD_LOCATION}
             threadId={pin.threadID}
+            metadata={pin.threadMetadata}
             style={{
               visibility:
                 openThread?.threadID === pin.threadID ? 'visible' : 'hidden',
