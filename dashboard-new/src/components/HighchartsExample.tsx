@@ -305,6 +305,7 @@ function useChartOptions(
         padding: 12,
         borderColor: 'transparent',
         backgroundColor: '#00000c',
+        outside: true,
         style: {
           color: '#edeff1',
         },
