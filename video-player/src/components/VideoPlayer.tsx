@@ -68,9 +68,13 @@ function VideoPin({
     [duration],
   );
 
-  const threadData = thread.useThreadData(id);
-
-  const firstMessage = threadData.firstMessage?.plaintext;
+  /**
+   * NOTE: useThreadData creates a thread if one doesn't already exists.
+   * For this reason, we are passing the same `location` to it.
+   * Failing to do so might result in the thread being created at the
+   * default location (the current window URL)
+   */
+  const { firstMessage } = thread.useThreadData(id, { location });
 
   return (
     <Pin
@@ -88,9 +92,9 @@ function VideoPin({
     >
       {showThreadPreviewBubble &&
         displayOnControls(metadata) &&
-        firstMessage && (
+        firstMessage?.plaintext && (
           <div className="thread-preview-bubble-container">
-            <p className="thread-preview-bubble">{firstMessage}</p>
+            <p className="thread-preview-bubble">{firstMessage.plaintext}</p>
           </div>
         )}
       <Thread
