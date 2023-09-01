@@ -1,7 +1,7 @@
 import { Stage, Layer, Rect, Circle, RegularPolygon } from 'react-konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import cx from 'classnames';
-import { useCallback, useContext, useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Pin, Thread } from '@cord-sdk/react';
 import type { ThreadMetadata } from '../canvasUtils';
 import {
@@ -10,6 +10,7 @@ import {
   EXAMPLE_CORD_LOCATION,
 } from '../canvasUtils';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
+import { CanvasCommentsList } from './CanvasCommentsList';
 
 export default function Canvas() {
   const {
@@ -26,6 +27,8 @@ export default function Canvas() {
     setIsPanningCanvas,
     recomputePinPositions,
   } = useContext(CanvasAndCommentsContext)!;
+
+  const [showCommentList, setShowCommentList] = useState<boolean>(false);
 
   const timeoutPanningRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -226,11 +229,7 @@ export default function Canvas() {
   );
 
   return (
-    <div
-      className="canvasAndCordContainer"
-      ref={canvasContainerRef}
-      style={{ height: '100vh' }}
-    >
+    <div className="canvasAndCordContainer" ref={canvasContainerRef}>
       <Stage
         id="stage"
         ref={canvasStageRef}
@@ -284,11 +283,19 @@ export default function Canvas() {
           <img src={'/images/Pin.png'} alt="Chat bubble" />
           <span>{inThreadCreationMode ? 'Cancel' : 'Add Comment'}</span>
         </button>
-        {/* TODO : Add comment list button */}
+        <button
+          type="button"
+          onClick={() => {
+            setShowCommentList((prev) => !prev);
+          }}
+        >
+          {showCommentList ? 'Hide Comments List' : 'Show Comments List'}
+        </button>
       </div>
       {Array.from(threads).map(([id, pin]) => (
         <Pin
           key={id}
+          id={id}
           location={EXAMPLE_CORD_LOCATION}
           threadId={pin.threadID}
           style={{
@@ -312,7 +319,7 @@ export default function Canvas() {
           <Thread
             location={EXAMPLE_CORD_LOCATION}
             threadId={pin.threadID}
-            metadata={pin.threadMetadata}
+            metadata={pin.thread.metadata}
             style={{
               visibility:
                 openThread?.threadID === pin.threadID ? 'visible' : 'hidden',
@@ -330,6 +337,12 @@ export default function Canvas() {
           />
         </Pin>
       ))}
+      <div
+        className="commentsListContainer"
+        style={{ display: showCommentList ? 'block' : 'none' }}
+      >
+        <CanvasCommentsList />
+      </div>
     </div>
   );
 }

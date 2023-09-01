@@ -17,6 +17,11 @@ body {
     sans-serif;
 }
 
+:root {
+  --comments-list-width: 300px;
+  --header-height: 64px;
+}
+
 .canvasAndCordContainer {
   background: #f6f6f6;
   height: 100vh;
@@ -71,4 +76,80 @@ cord-pin.cord-component {
 cord-thread.cord-component {
   position: absolute;
   left: 40px;
+}
+
+/* Comments List */
+
+.commentsListContainer {
+  position: absolute;
+  right: 0;
+  top: var(--header-height);
+  bottom: 0;
+  background: #ffffff;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: var(--comments-list-width);
+  /* Shown above the canvas */
+  z-index: 2;
+}
+
+.commentsListContainer .empty {
+  text-align: center;
+}
+
+.commentsListContainer .cord-message {
+  grid-template-columns: repeat(2, auto) 2fr 16px;
+  grid-template-rows: 24px repeat(3, auto);
+  grid-template-areas:
+    'avatar . . . optionsMenu '
+    'authorName timestamp . . .'
+    'messageContent messageContent messageContent messageContent .'
+    'reactions reactions reactions reactions .';
+  gap: 8px;
+  border-radius: 0;
+  background-color: transparent;
+  padding-bottom: 8px;
+}
+
+/* The messages in the comments list */
+
+.commentsListContainer
+  .cord-message
+  :is(.cord-reactions-container, [data-cord-button='select-emoji']) {
+  display: none;
+}
+
+.commentsListContainer
+  .cord-message
+  .cord-message-options-buttons
+  [data-cord-button='thread-options'] {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.commentsListContainer .commentReplies {
+  padding: 8px 8px 16px 8px;
+  color: #696a6c;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.commentsListContainer .messageContainer {
+  padding: 8px 12px 0 12px;
+  position: relative;
+}
+
+.commentsListContainer hr {
+  border: none;
+  border-bottom: 1px solid #dadce0;
+  margin: 0 4px;
+}
+
+.commentsListContainer .messageContainer:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.commentsListContainer .messageContainer.openThread {
+  background-color: rgb(84, 141, 84, 0.06);
 }

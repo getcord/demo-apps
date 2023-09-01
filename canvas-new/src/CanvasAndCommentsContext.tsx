@@ -11,7 +11,7 @@ import {
 import { thread } from '@cord-sdk/react';
 import type { Location } from '@cord-sdk/types';
 import type { OpenThread, Pin } from './canvasUtils';
-import { getPinFromThread, computePinPosition } from './canvasUtils';
+import { updatePinPositionOnStage, getPinFromThread } from './canvasUtils';
 
 // Context for storing all thread related information
 type CanvasAndCommentsContextType = {
@@ -56,9 +56,6 @@ export function CanvasAndCommentsProvider({
 
   const addThread = useCallback((threadId: string, metadata: Pin) => {
     setThreads((oldThreads) => {
-      if (oldThreads.has(threadId)) {
-        return oldThreads;
-      }
       const newThreads = new Map(oldThreads);
       newThreads.set(threadId, metadata);
       return newThreads;
@@ -95,11 +92,7 @@ export function CanvasAndCommentsProvider({
     setThreads((oldThreads) => {
       const updatedThreads = new Map<string, Pin>();
       Array.from(oldThreads).forEach(([id, oldThread]) => {
-        const updatedPin = computePinPosition(
-          stage,
-          id,
-          oldThread.threadMetadata,
-        );
+        const updatedPin = updatePinPositionOnStage(stage, oldThread);
         if (updatedPin) {
           updatedThreads.set(id, updatedPin);
         }
