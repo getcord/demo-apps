@@ -127,11 +127,10 @@ export function CanvasAndCommentsProvider({
     if (!canvasStageRef.current) {
       return;
     }
-
     const stage = canvasStageRef.current;
     threadSummaries
       .filter(
-        (t) => t.total > 0 || openThread?.threadID === t.id || !t.resolved,
+        (t) => !t.resolved && (t.total > 0 || openThread?.threadID === t.id),
       )
       .forEach((t) => {
         const pinData = getPinFromThread(stage, t);
