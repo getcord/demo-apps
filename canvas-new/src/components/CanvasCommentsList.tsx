@@ -4,9 +4,6 @@ import cx from 'classnames';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
 import { getPinPositionOnStage, isPinInView } from '../canvasUtils';
 
-// Also a css variable in the index.css
-const COMMENTS_LIST_WIDTH = 300;
-
 export function CanvasCommentsList() {
   const {
     threads,
@@ -14,6 +11,7 @@ export function CanvasCommentsList() {
     canvasStageRef,
     setOpenThread,
     recomputePinPositions,
+    commentsListContainerRef,
   } = useContext(CanvasAndCommentsContext)!;
 
   const navigateToPin = useCallback(
@@ -25,7 +23,7 @@ export function CanvasCommentsList() {
         return;
       }
 
-      if (!canvasStageRef.current) {
+      if (!canvasStageRef.current || !commentsListContainerRef.current) {
         return;
       }
 
@@ -49,7 +47,7 @@ export function CanvasCommentsList() {
       }
 
       const stageCenter = {
-        x: (stageWidth - COMMENTS_LIST_WIDTH) / 2, // Ignore the comments list as well
+        x: (stageWidth - commentsListContainerRef.current.clientWidth) / 2, // Ignore the comments list as well
         y: stageHeight / 2,
       };
 
@@ -60,13 +58,19 @@ export function CanvasCommentsList() {
       recomputePinPositions();
       setOpenThread({ threadID: foundPin.threadID, empty: false });
     },
-    [canvasStageRef, setOpenThread, threads, recomputePinPositions],
+    [
+      threads,
+      canvasStageRef,
+      commentsListContainerRef,
+      recomputePinPositions,
+      setOpenThread,
+    ],
   );
 
   const threadsInfo = useMemo(() => {
     return Array.from(threads);
   }, [threads]);
-
+  console.log('list', { threadsInfo });
   return (
     <>
       {threadsInfo.length === 0 ? (

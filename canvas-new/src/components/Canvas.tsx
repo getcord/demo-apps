@@ -26,6 +26,7 @@ export default function Canvas() {
     isPanningCanvas,
     setIsPanningCanvas,
     recomputePinPositions,
+    commentsListContainerRef,
   } = useContext(CanvasAndCommentsContext)!;
 
   const [showCommentList, setShowCommentList] = useState<boolean>(false);
@@ -339,6 +340,7 @@ export default function Canvas() {
       ))}
       <div
         className="commentsListContainer"
+        ref={commentsListContainerRef}
         style={{ display: showCommentList ? 'block' : 'none' }}
       >
         <CanvasCommentsList />

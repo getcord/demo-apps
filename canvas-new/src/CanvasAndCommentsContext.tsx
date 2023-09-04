@@ -41,6 +41,9 @@ type CanvasAndCommentsContextType = {
 
   // Updates all the thread co-ordinates relative to the canvas
   recomputePinPositions: () => void;
+
+  // The container of the list of comments on the right has side of canvas
+  commentsListContainerRef: RefObject<HTMLDivElement>;
 };
 export const CanvasAndCommentsContext = createContext<
   CanvasAndCommentsContextType | undefined
@@ -52,6 +55,9 @@ export function CanvasAndCommentsProvider({
 }: PropsWithChildren<{ location: Location }>) {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const canvasStageRef = useRef<Stage>(null);
+
+  const commentsListContainerRef = useRef<HTMLDivElement>(null);
+
   const [threads, setThreads] = useState<Map<string, Pin>>(new Map());
 
   const addThread = useCallback((threadId: string, metadata: Pin) => {
@@ -154,6 +160,7 @@ export function CanvasAndCommentsProvider({
       isPanningCanvas,
       setIsPanningCanvas,
       recomputePinPositions,
+      commentsListContainerRef,
     }),
     [
       addThread,
