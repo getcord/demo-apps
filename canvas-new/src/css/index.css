@@ -63,7 +63,7 @@ body {
 }
 
 .commentingModeCursor {
-  cursor: url('/images/Pin.png') 0 32, pointer;
+  cursor: url('/images/Pin.svg') 0 32, pointer;
 }
 
 /* Cord Component - TODO move to own file */
