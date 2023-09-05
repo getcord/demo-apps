@@ -70,9 +70,9 @@ export function CanvasCommentsList() {
   const threadsInfo = useMemo(() => {
     return Array.from(threads);
   }, [threads]);
-  console.log('list', { threadsInfo });
+
   return (
-    <>
+    <div className="commentsListContainer" ref={commentsListContainerRef}>
       {threadsInfo.length === 0 ? (
         <p className="empty">No comments</p>
       ) : (
@@ -101,6 +101,6 @@ export function CanvasCommentsList() {
           }
         })
       )}
-    </>
+    </div>
   );
 }

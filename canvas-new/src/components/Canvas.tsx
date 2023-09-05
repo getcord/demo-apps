@@ -1,7 +1,7 @@
 import { Stage, Layer, Rect, Circle, RegularPolygon } from 'react-konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import cx from 'classnames';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { Pin, Thread } from '@cord-sdk/react';
 import type { ThreadMetadata } from '../canvasUtils';
 import {
@@ -26,10 +26,7 @@ export default function Canvas() {
     isPanningCanvas,
     setIsPanningCanvas,
     recomputePinPositions,
-    commentsListContainerRef,
   } = useContext(CanvasAndCommentsContext)!;
-
-  const [showCommentList, setShowCommentList] = useState<boolean>(false);
 
   const timeoutPanningRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -284,14 +281,6 @@ export default function Canvas() {
           <img src={'/images/Pin.png'} alt="Chat bubble" />
           <span>{inThreadCreationMode ? 'Cancel' : 'Add Comment'}</span>
         </button>
-        <button
-          type="button"
-          onClick={() => {
-            setShowCommentList((prev) => !prev);
-          }}
-        >
-          {showCommentList ? 'Hide Comments List' : 'Show Comments List'}
-        </button>
       </div>
       {Array.from(threads).map(([id, pin]) => (
         <Pin
@@ -338,13 +327,7 @@ export default function Canvas() {
           />
         </Pin>
       ))}
-      <div
-        className="commentsListContainer"
-        ref={commentsListContainerRef}
-        style={{ display: showCommentList ? 'block' : 'none' }}
-      >
-        <CanvasCommentsList />
-      </div>
+      <CanvasCommentsList />
     </div>
   );
 }
