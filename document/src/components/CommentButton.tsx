@@ -33,7 +33,7 @@ export function CommentButton({
       onClick={onClick}
     >
       <AddCommentIcon />
-      Add comment
+      <span style={{ userSelect: 'none' }}>Add comment</span>
     </button>
   );
 }
