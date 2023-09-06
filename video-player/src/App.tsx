@@ -17,7 +17,6 @@ export default function App() {
           'cord-composer',
         ]}
         api={['thread']}
-        darkTheme={true}
       />
       {authToken && <VideoPlayer />}
     </CordProvider>

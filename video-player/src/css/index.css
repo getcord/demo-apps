@@ -10,11 +10,19 @@
 }
 
 html {
+  --black: #000;
+  --grey-dark: #2e2e2e;
+  --grey-light: #97979f;
+  --white: #fff;
+  --purple-dark: #442f71;
+  --purple: #6949ac;
+  --yellow-dark: #e9e469;
+  --pink: #e95b94;
   height: 100%;
 }
 
 body {
-  background: #442f71;
+  background: var(--yellow-dark);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -29,7 +37,7 @@ body {
 }
 
 #video-player-demo-container {
-  background: #442f71;
+  background: var(--purple-dark);
   cursor: pointer;
   display: flex;
   margin-top: 58px;
@@ -62,7 +70,7 @@ body {
   background-color: #edfc7e;
   border-radius: 40px;
   border: none;
-  color: #442f71;
+  color: var(--purple-dark);
   display: flex;
   gap: 8px;
   height: 40px;
@@ -107,7 +115,7 @@ video {
 
 .pin-on-control .cord-avatar-container {
   border-radius: 50%;
-  border: 2px solid #010101;
+  border: 2px solid var(--black);
   height: 24px;
   width: 24px;
 }
@@ -149,17 +157,14 @@ video {
 
 /* Cord components  */
 #video-player-demo-container {
-  --cord-color-base: #6949ac;
-  --cord-color-base-strong: #f6f6f620;
-  --cord-color-base-x-strong: #543a8c;
-  --cord-color-content-emphasis: #fff;
-  --cord-color-content-primary: #fff;
-  --cord-color-content-secondary: #b2a5d3;
-  --cord-color-notification: #e4d7ff;
-  --cord-primary-button-background-color: #edfc7e;
-  --cord-secondary-button-content-color: #fff;
-  --cord-tertiary-button-content-color: #fff;
-  --cord-color-brand-primary: #fff;
+  --cord-color-base: var(--grey-dark);
+  --cord-color-base-strong: rgba(var(--grey-light), 0.2);
+  --cord-color-content-emphasis: var(--white);
+  --cord-color-content-primary: var(--white);
+  --cord-color-notification: var(--pink);
+  --cord-secondary-button-content-color: var(--white);
+  --cord-tertiary-button-content-color: var(--white);
+  --cord-color-brand-primary: var(--white);
 }
 
 .cord-annotation-pin {
@@ -169,7 +174,7 @@ video {
 }
 
 #video-player-demo-container .cord-threaded-comments {
-  border-color: #6949ac;
+  border-color: var(--purple);
   border-radius: 8px;
   height: calc(100% - 80px);
   position: absolute;
@@ -178,7 +183,7 @@ video {
 }
 
 .cord-threaded-comments .cord-threaded-comments-thread {
-  border-bottom: 1px solid #442f71;
+  border-bottom: 1px solid var(--purple-dark);
   padding-bottom: 12px;
 }
 
@@ -187,7 +192,7 @@ video {
 }
 
 #commentWrapper .cord-composer-menu {
-  border-top: 1px solid #442f71;
+  border-top: 1px solid var(--purple-dark);
 }
 
 #videoWrapper cord-pin {
@@ -195,8 +200,8 @@ video {
 }
 
 #commentWrapper .cord-composer {
-  background-color: #6949ac;
-  border: 1px solid #6949ac;
+  background-color: var(--purple);
+  border: 1px solid var(--purple);
 }
 
 #commentableVideo .cord-composer {
@@ -208,8 +213,8 @@ video {
 }
 
 #video-player-demo-container .cord-tooltip {
-  background: #000;
-  color: #fff;
+  background: var(--black);
+  color: var(--white);
 }
 
 .cord-send-button.cord-disabled {
@@ -217,18 +222,22 @@ video {
 }
 
 .cord-send-button:not(.cord-disabled):hover {
-  background-color: #e9e469;
+  background-color: var(--yellow-dark);
+}
+
+.cord-composer-primary-buttons .cord-close-button:hover {
+  background-color: var(--grey-light);
 }
 
 :is(.cord-threaded-comments, cord-thread)
   .cord-message-options-buttons
   .cord-button:hover {
-  background-color: #442f7190;
+  background-color: var(--grey-light);
 }
 
 #video-player-demo-container cord-thread {
   border: none;
-  box-shadow: 0px 2px 16px 0px #000;
+  box-shadow: 0px 2px 16px 0px var(--black);
   width: 250px;
 }
 
@@ -261,7 +270,7 @@ cord-pin .thread-preview-bubble {
 }
 
 cord-pin .thread-preview-bubble-container {
-  background-color: #fff;
+  background-color: var(--white);
   border-radius: 4px;
   padding: 8px;
   position: absolute;
