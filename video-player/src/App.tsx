@@ -10,7 +10,13 @@ export default function App() {
     // All the Cord React components must be children of a single CordProvider component.
     <CordProvider clientAuthToken={authToken}>
       <InformationHeader
-        components={['cord-threaded-comments', 'cord-thread', 'cord-pin']}
+        components={[
+          'cord-threaded-comments',
+          'cord-thread',
+          'cord-pin',
+          'cord-page-presence',
+          'cord-notification-list-launcher',
+        ]}
         api={['thread']}
       />
       {authToken && <VideoPlayer />}

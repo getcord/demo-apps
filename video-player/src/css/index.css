@@ -42,14 +42,26 @@ body {
   justify-content: center;
 }
 
+#top-bar {
+  display: flex;
+  align-items: center;
+  margin: 0 40px;
+  justify-content: space-between;
+}
+
+#content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #video-player-demo-container {
   display: flex;
   max-width: 1400px;
   min-width: 768px;
   padding: 16px;
-  position: relative;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 16px;
 }
 
 #commentableVideo {
@@ -254,4 +266,44 @@ cord-pin .thread-preview-bubble-container {
 video::-webkit-media-controls-panel,
 video::-webkit-media-controls-timeline {
   opacity: 1 !important;
+}
+
+cord-notification-list-launcher
+  [data-cord-button='open-notification-list']
+  .cord-icon {
+  display: none;
+}
+
+cord-notification-list-launcher {
+  background: var(--white);
+  --cord-secondary-button-content-color: var(--black);
+  --border-radius: 32px;
+  border-radius: var(--border-radius);
+  height: 40px;
+  display: flex;
+}
+
+cord-notification-list-launcher [data-cord-button='open-notification-list'] {
+  width: 320px;
+  padding: 0 16px;
+  justify-content: start;
+}
+
+cord-notification-list-launcher
+  [data-cord-button='open-notification-list']:hover {
+  border-radius: var(--border-radius);
+  background-color: var(--grey-light);
+}
+
+cord-page-presence .cord-avatar-container {
+  height: 40px;
+  width: 40px;
+}
+
+cord-notification-list-launcher .cord-button.cord-badge::after {
+  top: unset;
+  transform: unset;
+  color: var(--white);
+  border: 0;
+  right: 16px;
 }

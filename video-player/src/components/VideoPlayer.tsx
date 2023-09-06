@@ -1,6 +1,13 @@
 import { createRef, useCallback, useContext, useEffect, useState } from 'react';
 import cx from 'classnames';
-import { Pin, Thread, ThreadedComments, thread } from '@cord-sdk/react';
+import {
+  Pin,
+  Thread,
+  ThreadedComments,
+  thread,
+  PagePresence,
+  NotificationListLauncher,
+} from '@cord-sdk/react';
 import type { Location, MessageInfo } from '@cord-sdk/types';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsProvider, ThreadsContext } from '../ThreadsContext';
@@ -185,47 +192,53 @@ function CommentableVideo({
 
   return (
     <div id="video-player-demo-container">
-      <div id="commentableVideo">
-        <div id="videoWrapper">
-          <video
-            ref={videoRef}
-            controls
-            disablePictureInPicture
-            autoPlay
-            muted
-            onClick={onVideoClick}
-            onTimeUpdate={onVideoTimeUpdate}
-            src={video}
-          />
-          {/* Used to catch clicks outside the thread, and close it. */}
-          <div
-            className="thread-underlay"
-            style={{
-              display: openThread !== null ? 'block' : 'none',
-            }}
-            onClick={() => setOpenThread(null)}
-          />
-          {Array.from(threads).map(([key, value]) => {
-            return (
-              <VideoPin
-                key={key}
-                id={key}
-                location={location}
-                metadata={value}
-                currentTime={currentTime}
-                duration={duration}
-              />
-            );
-          })}
-        </div>
+      <div id="top-bar">
+        <PagePresence />
+        <NotificationListLauncher label="Notifications" />
       </div>
-      <ThreadedComments
-        location={location}
-        composerPosition="none"
-        messageOrder="newest_on_top"
-        onMessageClick={onMessageClick}
-        highlightThreadId={openThread ?? undefined}
-      />
+      <div id="content">
+        <div id="commentableVideo">
+          <div id="videoWrapper">
+            <video
+              ref={videoRef}
+              controls
+              disablePictureInPicture
+              autoPlay
+              muted
+              onClick={onVideoClick}
+              onTimeUpdate={onVideoTimeUpdate}
+              src={video}
+            />
+            {/* Used to catch clicks outside the thread, and close it. */}
+            <div
+              className="thread-underlay"
+              style={{
+                display: openThread !== null ? 'block' : 'none',
+              }}
+              onClick={() => setOpenThread(null)}
+            />
+            {Array.from(threads).map(([key, value]) => {
+              return (
+                <VideoPin
+                  key={key}
+                  id={key}
+                  location={location}
+                  metadata={value}
+                  currentTime={currentTime}
+                  duration={duration}
+                />
+              );
+            })}
+          </div>
+        </div>
+        <ThreadedComments
+          location={location}
+          composerPosition="none"
+          messageOrder="newest_on_top"
+          onMessageClick={onMessageClick}
+          highlightThreadId={openThread ?? undefined}
+        />
+      </div>
     </div>
   );
 }
