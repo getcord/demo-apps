@@ -224,6 +224,7 @@ function CommentableVideo({
         composerPosition="none"
         messageOrder="newest_on_top"
         onMessageClick={onMessageClick}
+        highlightThreadId={openThread ?? undefined}
       />
     </div>
   );

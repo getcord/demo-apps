@@ -156,6 +156,11 @@ video {
   align-self: stretch;
 }
 
+.cord-threaded-comments-thread.cord-highlighted {
+  background-color: var(--black);
+  border-radius: 16px;
+}
+
 #video-player-demo-container .cord-threaded-comments-thread-list {
   gap: 24px;
 }
