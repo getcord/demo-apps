@@ -8,7 +8,7 @@ import {
   PagePresence,
   NotificationListLauncher,
 } from '@cord-sdk/react';
-import type { Location, MessageInfo } from '@cord-sdk/types';
+import type { Location, MessageInfo, Point2D } from '@cord-sdk/types';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsProvider, ThreadsContext } from '../ThreadsContext';
 
@@ -125,6 +125,8 @@ function CommentableVideo({
   const videoRef = createRef<HTMLVideoElement>();
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [cursorTooltipPosition, setCursorTooltipPosition] =
+    useState<Point2D | null>(null);
 
   const onVideoClick = useCallback(
     (e: React.MouseEvent<HTMLVideoElement>) => {
@@ -190,56 +192,82 @@ function CommentableVideo({
     return () => document.removeEventListener('keydown', close);
   }, [setOpenThread]);
 
+  const handleMouseMoveOnCommentableElement = useCallback(
+    ({ clientX: x, clientY: y }: React.MouseEvent<HTMLVideoElement>) => {
+      setCursorTooltipPosition({ x, y });
+    },
+    [],
+  );
+  const handleLeaveCommentableElement = useCallback(
+    () => setCursorTooltipPosition(null),
+    [],
+  );
+
   return (
-    <div id="video-player-demo-container">
-      <div id="top-bar">
-        <PagePresence />
-        <NotificationListLauncher label="Notifications" />
-      </div>
-      <div id="content">
-        <div id="commentableVideo">
-          <div id="videoWrapper">
-            <video
-              ref={videoRef}
-              controls
-              disablePictureInPicture
-              autoPlay
-              muted
-              onClick={onVideoClick}
-              onTimeUpdate={onVideoTimeUpdate}
-              src={video}
-            />
-            {/* Used to catch clicks outside the thread, and close it. */}
-            <div
-              className="thread-underlay"
-              style={{
-                display: openThread !== null ? 'block' : 'none',
-              }}
-              onClick={() => setOpenThread(null)}
-            />
-            {Array.from(threads).map(([key, value]) => {
-              return (
-                <VideoPin
-                  key={key}
-                  id={key}
-                  location={location}
-                  metadata={value}
-                  currentTime={currentTime}
-                  duration={duration}
-                />
-              );
-            })}
-          </div>
+    <>
+      <div id="video-player-demo-container">
+        <div id="top-bar">
+          <PagePresence />
+          <NotificationListLauncher label="Notifications" />
         </div>
-        <ThreadedComments
-          location={location}
-          composerPosition="none"
-          messageOrder="newest_on_top"
-          onMessageClick={onMessageClick}
-          highlightThreadId={openThread ?? undefined}
-        />
+        <div id="content">
+          <div id="commentableVideo">
+            <div id="videoWrapper">
+              <video
+                ref={videoRef}
+                controls
+                disablePictureInPicture
+                autoPlay
+                muted
+                onClick={onVideoClick}
+                onTimeUpdate={onVideoTimeUpdate}
+                src={video}
+                onMouseMove={handleMouseMoveOnCommentableElement}
+                onMouseLeave={handleLeaveCommentableElement}
+              />
+              {/* Used to catch clicks outside the thread, and close it. */}
+              <div
+                className="thread-underlay"
+                style={{
+                  display: openThread !== null ? 'block' : 'none',
+                }}
+                onClick={() => setOpenThread(null)}
+              />
+              {Array.from(threads).map(([key, value]) => {
+                return (
+                  <VideoPin
+                    key={key}
+                    id={key}
+                    location={location}
+                    metadata={value}
+                    currentTime={currentTime}
+                    duration={duration}
+                  />
+                );
+              })}
+            </div>
+          </div>
+          <ThreadedComments
+            location={location}
+            composerPosition="none"
+            messageOrder="newest_on_top"
+            onMessageClick={onMessageClick}
+            highlightThreadId={openThread ?? undefined}
+          />
+        </div>
       </div>
-    </div>
+      {cursorTooltipPosition && (
+        <div
+          className="cursor-tooltip"
+          style={{
+            left: `calc(16px + ${cursorTooltipPosition.x}px)`,
+            top: `calc(20px + ${cursorTooltipPosition.y}px)`,
+          }}
+        >
+          Click to comment
+        </div>
+      )}
+    </>
   );
 }
 
