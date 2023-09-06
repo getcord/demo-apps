@@ -1,12 +1,6 @@
 import { createRef, useCallback, useContext, useEffect, useState } from 'react';
 import cx from 'classnames';
-import {
-  Composer,
-  Pin,
-  Thread,
-  ThreadedComments,
-  thread,
-} from '@cord-sdk/react';
+import { Pin, Thread, ThreadedComments, thread } from '@cord-sdk/react';
 import type { Location, MessageInfo } from '@cord-sdk/types';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsProvider, ThreadsContext } from '../ThreadsContext';
@@ -121,15 +115,9 @@ function CommentableVideo({
 }) {
   const { threads, addThread, setOpenThread, openThread } =
     useContext(ThreadsContext)!;
-  const [inThreadCreationMode, setInThreadCreationMode] = useState(false);
   const videoRef = createRef<HTMLVideoElement>();
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-
-  const onButtonClick = useCallback(() => {
-    videoRef.current!.pause();
-    setInThreadCreationMode(true);
-  }, [videoRef]);
 
   const onVideoClick = useCallback(
     (e: React.MouseEvent<HTMLVideoElement>) => {
@@ -139,9 +127,8 @@ function CommentableVideo({
       if (!(e.target instanceof HTMLVideoElement)) {
         return;
       }
-      if (!inThreadCreationMode) {
-        return;
-      }
+
+      videoRef.current.pause();
       e.preventDefault();
       const rect = e.target.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -154,9 +141,8 @@ function CommentableVideo({
         timestamp,
       });
       setOpenThread(threadID);
-      setInThreadCreationMode(false);
     },
-    [inThreadCreationMode, videoRef, addThread, setOpenThread],
+    [videoRef, addThread, setOpenThread],
   );
 
   const onVideoTimeUpdate = useCallback(() => {
@@ -191,20 +177,16 @@ function CommentableVideo({
     const close = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setOpenThread(null);
-        setInThreadCreationMode(false);
       }
     };
     document.addEventListener('keydown', close);
     return () => document.removeEventListener('keydown', close);
-  }, [setInThreadCreationMode, setOpenThread]);
+  }, [setOpenThread]);
 
   return (
     <div id="video-player-demo-container">
       <div id="commentableVideo">
-        <div
-          id="videoWrapper"
-          className={cx({ 'in-thread-mode': inThreadCreationMode })}
-        >
+        <div id="videoWrapper">
           <video
             ref={videoRef}
             controls
@@ -235,29 +217,6 @@ function CommentableVideo({
               />
             );
           })}
-        </div>
-        <div id="commentWrapper">
-          <button
-            id="add-comment-btn"
-            type="button"
-            onClick={onButtonClick}
-            className={cx({ 'in-thread-mode': inThreadCreationMode })}
-          >
-            <svg
-              width="21"
-              height="20"
-              viewBox="0 0 21 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M3.5 10C3.5 6.13401 6.63401 3 10.5 3C14.366 3 17.5 6.13401 17.5 10C17.5 13.866 14.366 17 10.5 17H4.16667C3.79848 17 3.5 16.7015 3.5 16.3333V10Z"
-                fill="currentColor"
-              />
-            </svg>
-            Comment on a frame
-          </button>
-          <Composer location={location} showExpanded />
         </div>
       </div>
       <ThreadedComments

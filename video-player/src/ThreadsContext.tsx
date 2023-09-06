@@ -28,12 +28,6 @@ type ThreadsContextType = {
   // The id of the thread open on this page (or null if none is open)
   openThread: string | null;
   setOpenThread: (arg: string | null) => void;
-
-  // True if user can leave threads at the moment
-  inThreadCreationMode: boolean;
-  setInThreadCreationMode: (
-    v: boolean | ((oldVal: boolean) => boolean),
-  ) => void;
 };
 export const ThreadsContext = createContext<ThreadsContextType | undefined>(
   undefined,
@@ -93,9 +87,6 @@ export function ThreadsProvider({
 
   const [openThread, setOpenThread] = useState<string | null>(null);
 
-  const [inThreadCreationMode, setInThreadCreationMode] =
-    useState<boolean>(false);
-
   const context = useMemo(
     () => ({
       threads,
@@ -103,10 +94,8 @@ export function ThreadsProvider({
       removeThread,
       openThread,
       setOpenThread,
-      inThreadCreationMode,
-      setInThreadCreationMode,
     }),
-    [threads, addThread, removeThread, openThread, inThreadCreationMode],
+    [threads, addThread, removeThread, openThread],
   );
   return (
     <ThreadsContext.Provider value={context}>
