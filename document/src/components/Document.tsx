@@ -41,20 +41,9 @@ export function Document() {
   // Sorted from top to bottom as they should appear on screen.
   const sortedThreads = useMemo(() => {
     return Array.from(threads).sort(
-      (
-        [
-          _aId,
-          {
-            metadata: { topPx: aTopPx },
-          },
-        ],
-        [
-          _bId,
-          {
-            metadata: { topPx: bTopPx },
-          },
-        ],
-      ) => aTopPx - bTopPx,
+      ([_aId, { metadata: metadataA }], [_bId, { metadata: metadataB }]) =>
+        (getRange(metadataA)?.getBoundingClientRect().top ?? 0) -
+        (getRange(metadataB)?.getBoundingClientRect().top ?? 0),
     );
   }, [threads]);
 
@@ -74,15 +63,10 @@ export function Document() {
       return;
     }
 
-    const [
-      _topThreadId,
-      {
-        metadata: { topPx },
-      },
-    ] = sortedThreads[0];
+    const [_topThreadId, { metadata }] = sortedThreads[0];
     const newThreadPositions: Coordinates[] = [
       {
-        top: topPx,
+        top: getRange(metadata)?.getBoundingClientRect().top ?? 0,
         left: containerRect.right + THREADS_GAP,
       },
     ];
@@ -91,12 +75,10 @@ export function Document() {
       const threadAboveTopPx = newThreadPositions[threadAboveIdx].top;
       const threadAboveRef = threadsRefs.current[threadAboveIdx];
       const threadAboveHeight = threadAboveRef.getBoundingClientRect().height;
-      const [
-        _threadId,
-        {
-          metadata: { topPx: currentThreadTopPx },
-        },
-      ] = sortedThreads[i];
+      const [_threadId, { metadata: currentThreadMetadata }] = sortedThreads[i];
+
+      const currentThreadTopPx =
+        getRange(currentThreadMetadata)?.getBoundingClientRect().top ?? 0;
 
       const shouldShiftThreadDown =
         newThreadPositions[threadAboveIdx].top +
@@ -270,7 +252,6 @@ export function Document() {
       endNodeId: endElement.id,
       startOffset,
       endOffset,
-      topPx: startElement.getClientRects()[0].top,
     } as const;
     const threadId = crypto.randomUUID();
     addThread(threadId, metadata, 0);
@@ -355,7 +336,10 @@ export function Document() {
                       // Make threads slide in from the right
                       containerRef.current?.getBoundingClientRect().right ??
                       0) + (isOpenThread ? -THREADS_GAP * 2 : THREADS_GAP),
-                  top: threadsPositions[threadIdx]?.top ?? metadata.topPx,
+                  top:
+                    threadsPositions[threadIdx]?.top ??
+                    getRange(metadata)?.getBoundingClientRect().top ??
+                    0,
                   transition: 'all 0.25s ease 0.1s',
                   transitionProperty: 'top, left',
                   visibility: threadsReady.has(threadId) ? 'visible' : 'hidden',

@@ -14,7 +14,6 @@ export type ThreadMetadata = {
   startOffset: number;
   endNodeId: string;
   endOffset: number;
-  topPx: number;
 };
 
 // Context for storing all thread related information
