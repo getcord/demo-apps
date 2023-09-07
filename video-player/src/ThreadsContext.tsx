@@ -19,9 +19,16 @@ export type ThreadMetadata = {
 type ThreadsContextType = {
   // Map of all threads on current page, mapping from thread's ID to its
   // metadata
-  threads: ReadonlyMap<string, ThreadMetadata>;
+  threads: ReadonlyMap<
+    string,
+    { metadata: ThreadMetadata; totalMessages: number }
+  >;
   // Adds a thread to the threads map
-  addThread: (threadId: string, metadata: ThreadMetadata) => void;
+  addThread: (
+    threadId: string,
+    metadata: ThreadMetadata,
+    totalMessages: number,
+  ) => void;
   // Removes a thread from the threads map
   removeThread: (threadId: string) => void;
 
@@ -37,17 +44,17 @@ export function ThreadsProvider({
   children,
   location,
 }: PropsWithChildren<{ location: Location }>) {
-  const [threads, setThreads] = useState<Map<string, ThreadMetadata>>(
-    new Map(),
-  );
+  const [threads, setThreads] = useState<
+    Map<string, { metadata: ThreadMetadata; totalMessages: number }>
+  >(new Map());
   const addThread = useCallback(
-    (threadId: string, metadata: ThreadMetadata) =>
+    (threadId: string, metadata: ThreadMetadata, totalMessages: number) =>
       setThreads((oldThreads) => {
         if (oldThreads.has(threadId)) {
           return oldThreads;
         }
         const newThreads = new Map(oldThreads);
-        newThreads.set(threadId, metadata);
+        newThreads.set(threadId, { metadata, totalMessages });
         return newThreads;
       }),
     [],
@@ -82,7 +89,7 @@ export function ThreadsProvider({
     }
     threadSummaries
       .filter((t) => t.total > 0 && Object.keys(t.metadata).length > 0)
-      .forEach((t) => addThread(t.id, t.metadata as ThreadMetadata));
+      .forEach((t) => addThread(t.id, t.metadata as ThreadMetadata, t.total));
   }, [addThread, fetchMore, hasMore, loading, threadSummaries, threads]);
 
   const [openThread, setOpenThread] = useState<string | null>(null);

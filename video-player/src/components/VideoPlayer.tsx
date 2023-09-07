@@ -20,12 +20,14 @@ function VideoPin({
   location,
   currentTime,
   duration,
+  onCloseThread,
 }: {
   id: string;
   metadata: ThreadMetadata;
   location: Location;
   currentTime: number;
   duration: number;
+  onCloseThread: () => void;
 }) {
   const { removeThread, openThread, setOpenThread } =
     useContext(ThreadsContext)!;
@@ -44,7 +46,7 @@ function VideoPin({
 
   const onPinClick = useCallback(() => {
     if (openThread === id) {
-      setOpenThread(null);
+      onCloseThread();
     } else {
       setOpenThread(id);
       const video = document.querySelector('video');
@@ -53,7 +55,7 @@ function VideoPin({
         video.pause();
       }
     }
-  }, [id, metadata.timestamp, openThread, setOpenThread]);
+  }, [id, metadata.timestamp, openThread, setOpenThread, onCloseThread]);
 
   const getPinCSSVariables = useCallback(
     (threadMetadata: ThreadMetadata): React.CSSProperties | undefined => {
@@ -120,7 +122,7 @@ function CommentableVideo({
   video: string;
   location: Location;
 }) {
-  const { threads, addThread, setOpenThread, openThread } =
+  const { threads, addThread, removeThread, setOpenThread, openThread } =
     useContext(ThreadsContext)!;
   const videoRef = createRef<HTMLVideoElement>();
   const [currentTime, setCurrentTime] = useState(0);
@@ -144,11 +146,15 @@ function CommentableVideo({
       const y = e.clientY - rect.top;
       const timestamp = videoRef.current.currentTime;
       const threadID = `video-thread-${x}-${y}-${timestamp}`;
-      addThread(threadID, {
-        xPercent: (x / rect.width) * 100,
-        yPercent: (y / rect.height) * 100,
-        timestamp,
-      });
+      addThread(
+        threadID,
+        {
+          xPercent: (x / rect.width) * 100,
+          yPercent: (y / rect.height) * 100,
+          timestamp,
+        },
+        0,
+      );
       setOpenThread(threadID);
     },
     [videoRef, addThread, setOpenThread],
@@ -167,7 +173,7 @@ function CommentableVideo({
       if (!videoRef.current) {
         return;
       }
-      const threadMetadata = threads.get(mi.threadId);
+      const threadMetadata = threads.get(mi.threadId)?.metadata;
       if (!threadMetadata) {
         console.log(`Thread ${mi.threadId} not found`);
         return;
@@ -180,17 +186,31 @@ function CommentableVideo({
     [videoRef, setOpenThread, threads],
   );
 
-  // Effect to close open thread on ESCAPE key press and also stop thread
-  // creation mode
-  useEffect(() => {
-    const close = (e: KeyboardEvent) => {
+  const handleCloseThread = useCallback(() => {
+    if (!openThread) {
+      return;
+    }
+
+    if (threads.get(openThread)?.totalMessages === 0) {
+      removeThread(openThread);
+    }
+    setOpenThread(null);
+  }, [openThread, removeThread, setOpenThread, threads]);
+
+  const handlePressEscape = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setOpenThread(null);
+        handleCloseThread();
       }
-    };
-    document.addEventListener('keydown', close);
-    return () => document.removeEventListener('keydown', close);
-  }, [setOpenThread]);
+    },
+    [handleCloseThread],
+  );
+
+  // Close open thread when users press ESCAPE
+  useEffect(() => {
+    document.addEventListener('keydown', handlePressEscape);
+    return () => document.removeEventListener('keydown', handlePressEscape);
+  }, [handlePressEscape]);
 
   const handleMouseMoveOnCommentableElement = useCallback(
     ({ clientX: x, clientY: y }: React.MouseEvent<HTMLVideoElement>) => {
@@ -232,17 +252,18 @@ function CommentableVideo({
                 style={{
                   display: openThread !== null ? 'block' : 'none',
                 }}
-                onClick={() => setOpenThread(null)}
+                onClick={handleCloseThread}
               />
-              {Array.from(threads).map(([key, value]) => {
+              {Array.from(threads).map(([key, { metadata }]) => {
                 return (
                   <VideoPin
                     key={key}
                     id={key}
                     location={location}
-                    metadata={value}
+                    metadata={metadata}
                     currentTime={currentTime}
                     duration={duration}
+                    onCloseThread={handleCloseThread}
                   />
                 );
               })}
