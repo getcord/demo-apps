@@ -41,7 +41,20 @@ export function Document() {
   // Sorted from top to bottom as they should appear on screen.
   const sortedThreads = useMemo(() => {
     return Array.from(threads).sort(
-      ([_aId, { topPx: aTopPx }], [_bId, { topPx: bTopPx }]) => aTopPx - bTopPx,
+      (
+        [
+          _aId,
+          {
+            metadata: { topPx: aTopPx },
+          },
+        ],
+        [
+          _bId,
+          {
+            metadata: { topPx: bTopPx },
+          },
+        ],
+      ) => aTopPx - bTopPx,
     );
   }, [threads]);
 
@@ -65,7 +78,12 @@ export function Document() {
       return;
     }
 
-    const [_topThreadId, { topPx }] = sortedThreads[0];
+    const [
+      _topThreadId,
+      {
+        metadata: { topPx },
+      },
+    ] = sortedThreads[0];
     const newThreadPositions: Coordinates[] = [
       {
         top: topPx,
@@ -77,7 +95,12 @@ export function Document() {
       const threadAboveTopPx = newThreadPositions[threadAboveIdx].top;
       const threadAboveRef = threadsRefs.current[threadAboveIdx];
       const threadAboveHeight = threadAboveRef.getBoundingClientRect().height;
-      const [_threadId, { topPx: currentThreadTopPx }] = sortedThreads[i];
+      const [
+        _threadId,
+        {
+          metadata: { topPx: currentThreadTopPx },
+        },
+      ] = sortedThreads[i];
 
       const shouldShiftThreadDown =
         newThreadPositions[threadAboveIdx].top +
@@ -254,7 +277,7 @@ export function Document() {
       topPx: startElement.getClientRects()[0].top,
     } as const;
     const threadId = crypto.randomUUID();
-    addThread(threadId, metadata);
+    addThread(threadId, metadata, 0);
     setOpenThread(threadId);
   }, [addThread, orgId, setOpenThread]);
 
@@ -277,7 +300,7 @@ export function Document() {
         <CommentButton coords={commentButtonCoords} onClick={addComment} />
       )}
       <div>
-        {sortedThreads.map(([threadId, metadata], threadIdx) => {
+        {sortedThreads.map(([threadId, { metadata }], threadIdx) => {
           const range = getRange(metadata);
           if (!range) {
             return;
@@ -387,7 +410,13 @@ export function Document() {
         style={{
           display: openThread ? 'block' : 'none',
         }}
-        onClick={() => setOpenThread(null)}
+        onClick={() => {
+          if (openThread && threads.get(openThread)?.totalMessages === 0) {
+            handleRemoveThread(openThread);
+          } else {
+            setOpenThread(null);
+          }
+        }}
       />
     </>
   );
