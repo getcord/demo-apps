@@ -21,8 +21,8 @@ import commentIcon from './CommentIcon.svg';
 
 const DATE_RANGE_SELECTOR_OPTIONS = [
   { start: 1999, end: 2006 },
-  { start: 2007, end: 2013 },
-  { start: 2013, end: 2022 },
+  { start: 2007, end: 2014 },
+  { start: 2015, end: 2022 },
 ];
 
 const COMMENT_ICON_HEIGHT_PX = 12;
