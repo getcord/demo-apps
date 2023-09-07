@@ -66,7 +66,7 @@ export function Document() {
     const [_topThreadId, { metadata }] = sortedThreads[0];
     const newThreadPositions: Coordinates[] = [
       {
-        top: getRange(metadata)?.getBoundingClientRect().top ?? 0,
+        top: getTopPxFromMetadata(metadata),
         left: containerRect.right + THREADS_GAP,
       },
     ];
@@ -77,8 +77,7 @@ export function Document() {
       const threadAboveHeight = threadAboveRef.getBoundingClientRect().height;
       const [_threadId, { metadata: currentThreadMetadata }] = sortedThreads[i];
 
-      const currentThreadTopPx =
-        getRange(currentThreadMetadata)?.getBoundingClientRect().top ?? 0;
+      const currentThreadTopPx = getTopPxFromMetadata(currentThreadMetadata);
 
       const shouldShiftThreadDown =
         newThreadPositions[threadAboveIdx].top +
@@ -93,8 +92,29 @@ export function Document() {
         left: containerRect.right + THREADS_GAP,
       };
     }
+
+    // When users open a thread, scroll all the threads upwards,
+    // such that the open thread sits next to the commented line.
+    if (openThread) {
+      const openThreadIdx = sortedThreads.findIndex(
+        ([threadId]) => threadId === openThread,
+      )!;
+      const openThreadInitialTopPx = getTopPxFromMetadata(
+        sortedThreads[openThreadIdx][1].metadata,
+      );
+      const openThreadShiftedTopPx = newThreadPositions[openThreadIdx].top;
+
+      if (openThreadInitialTopPx - openThreadShiftedTopPx < 0) {
+        const amountShifted = openThreadInitialTopPx - openThreadShiftedTopPx;
+
+        for (const threadPosition of newThreadPositions) {
+          threadPosition.top += amountShifted;
+        }
+      }
+    }
+
     return newThreadPositions;
-  }, [sortedThreads]);
+  }, [openThread, sortedThreads]);
 
   const handleUpdateThreadPositions = useCallback(() => {
     setThreadsPositions((prev) => {
@@ -338,8 +358,7 @@ export function Document() {
                       0) + (isOpenThread ? -THREADS_GAP * 2 : THREADS_GAP),
                   top:
                     threadsPositions[threadIdx]?.top ??
-                    getRange(metadata)?.getBoundingClientRect().top ??
-                    0,
+                    getTopPxFromMetadata(metadata),
                   transition: 'all 0.25s ease 0.1s',
                   transitionProperty: 'top, left',
                   visibility: threadsReady.has(threadId) ? 'visible' : 'hidden',
@@ -447,4 +466,10 @@ function getRange(metadata: ThreadMetadata) {
   }
 
   return range;
+}
+
+function getTopPxFromMetadata(metadata: ThreadMetadata) {
+  return (
+    (getRange(metadata)?.getBoundingClientRect().top ?? 0) + window.scrollY
+  );
 }
