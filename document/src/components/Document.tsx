@@ -65,11 +65,7 @@ export function Document() {
   // the above thread (top coordinate + height) is over the current thread,
   // we shift the current thread down just enough to not overlap.
   const getThreadsPositions = useCallback(() => {
-    if (
-      !threadsRefs.current?.length ||
-      !sortedThreads.length ||
-      threadsReady.size !== sortedThreads.length
-    ) {
+    if (!threadsRefs.current?.length || !sortedThreads.length) {
       return;
     }
 
@@ -116,7 +112,7 @@ export function Document() {
       };
     }
     return newThreadPositions;
-  }, [sortedThreads, threadsReady]);
+  }, [sortedThreads]);
 
   const handleUpdateThreadPositions = useCallback(() => {
     setThreadsPositions((prev) => {
@@ -362,10 +358,7 @@ export function Document() {
                   top: threadsPositions[threadIdx]?.top ?? metadata.topPx,
                   transition: 'all 0.25s ease 0.1s',
                   transitionProperty: 'top, left',
-                  visibility:
-                    threadsReady.has(threadId) && threadsPositions[threadIdx]
-                      ? 'visible'
-                      : 'hidden',
+                  visibility: threadsReady.has(threadId) ? 'visible' : 'hidden',
                 }}
               >
                 <Thread
