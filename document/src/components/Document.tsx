@@ -294,6 +294,28 @@ export function Document() {
     [removeThread, setOpenThread],
   );
 
+  const handleClickEsc = useCallback(
+    (e: KeyboardEvent) => {
+      if (!openThread || e.key !== 'Escape') {
+        return;
+      }
+
+      if (openThread && threads.get(openThread)?.totalMessages === 0) {
+        handleRemoveThread(openThread);
+      } else {
+        setOpenThread(null);
+      }
+    },
+    [handleRemoveThread, openThread, setOpenThread, threads],
+  );
+  useEffect(() => {
+    document.addEventListener('keydown', handleClickEsc);
+
+    return () => {
+      document.removeEventListener('keydown', handleClickEsc);
+    };
+  }, [handleClickEsc]);
+
   return (
     <>
       {commentButtonCoords && (
@@ -364,7 +386,9 @@ export function Document() {
                     setOpenThread(null);
                   }}
                   onThreadInfoChange={({ messageCount }) => {
-                    if (messageCount === 0 && threadsReady.has(threadId)) {
+                    const userDeletedLastMessage =
+                      messageCount === 0 && threadsReady.has(threadId);
+                    if (userDeletedLastMessage) {
                       handleRemoveThread(threadId);
                     }
                   }}
