@@ -147,8 +147,8 @@ export function Document() {
       const range = selection.getRangeAt(0);
       const { top, left } = range.getClientRects()[0];
       setCommentButtonCoords({
-        top: top + window.scrollY,
-        left: left + window.scrollX,
+        top: top,
+        left: left,
       });
     }
   }, []);
@@ -306,13 +306,15 @@ export function Document() {
                     observer.observe(el);
                   }
                 }}
-                className={isOpenThread ? 'open-thread' : undefined}
+                onClick={() => setOpenThread(threadId)}
                 style={{
                   position: 'absolute',
                   left:
-                    (threadsPositions[threadIdx]?.left ?? 0) +
-                    (isOpenThread ? -THREADS_GAP * 2 : THREADS_GAP),
-                  top: threadsPositions[threadIdx]?.top ?? 0,
+                    (threadsPositions[threadIdx]?.left ??
+                      // Make threads slide in from the right
+                      containerRef.current?.getBoundingClientRect().right ??
+                      0) + (isOpenThread ? -THREADS_GAP * 2 : THREADS_GAP),
+                  top: threadsPositions[threadIdx]?.top ?? metadata.topPx,
                   transition: 'all 0.25s ease 0.1s',
                   transitionProperty: 'top, left',
                   visibility:
@@ -325,10 +327,10 @@ export function Document() {
                   location={LOCATION}
                   threadId={threadId}
                   metadata={metadata}
+                  className={isOpenThread ? 'open-thread' : undefined}
                   showPlaceholder={false}
                   composerExpanded={isOpenThread}
                   autofocus={isOpenThread}
-                  onFocusComposer={() => setOpenThread(threadId)}
                   onRender={() =>
                     setThreadsReady((prev) => new Set([...prev, threadId]))
                   }

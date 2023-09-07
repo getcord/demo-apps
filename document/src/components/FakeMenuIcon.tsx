@@ -1,11 +1,9 @@
-import type { CSSProperties } from 'react';
-
 export function FakeMenu() {
   return (
     <svg width="446" height="43" fill="none" xmlns="http://www.w3.org/2000/svg">
       <mask
         id="a"
-        style={{ 'mask-type': 'alpha' } as CSSProperties}
+        style={{ maskType: 'alpha' }}
         maskUnits="userSpaceOnUse"
         x="0"
         y="4"
