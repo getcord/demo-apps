@@ -237,6 +237,16 @@ video {
   width: 250px;
 }
 
+cord-pin .cord-pin-container {
+  transition: transform 0.2s;
+}
+
+cord-pin .cord-pin-container:hover {
+  /* To get to 40x40 from starting size of 34px */
+  transform: scale(1.1765);
+  transform-origin: bottom left;
+}
+
 cord-pin cord-thread {
   border-radius: 2px;
   left: calc(100% + 8px);
