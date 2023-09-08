@@ -21,7 +21,8 @@ html {
   --grey-light: #97979f;
   --white: #fff;
   --purple-dark: #442f71;
-  --purple: #6949ac;
+  --purple: #9a6aff;
+
   --yellow-dark: #e9e469;
   --pink: #e95b94;
   height: 100%;
@@ -142,6 +143,9 @@ video {
 }
 
 .cursor-tooltip {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
   position: absolute;
   padding: 4px 8px 5px 8px;
   border-radius: 2px 11px 11px 11px;
