@@ -227,7 +227,7 @@ function CommentableVideo({
     <>
       <div id="video-player-demo-container">
         <div id="top-bar">
-          <PagePresence />
+          <PagePresence location={location} />
           <NotificationListLauncher label="Notifications" />
         </div>
         <div id="content">
