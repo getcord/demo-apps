@@ -317,6 +317,7 @@ cord-notification-list-launcher
 }
 
 cord-page-presence .cord-avatar-container {
+  box-shadow: 4px 0px 0px var(--yellow-dark);
   height: 40px;
   width: 40px;
 }
