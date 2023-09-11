@@ -172,7 +172,7 @@ video {
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
-  position: absolute;
+  position: fixed;
   padding: 4px 8px 5px 8px;
   border-radius: 2px 11px 11px 11px;
   background: var(--purple);
