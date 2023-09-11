@@ -117,9 +117,11 @@ function VideoPin({
 
 function CommentableVideo({
   video,
+  videoSubs,
   location,
 }: {
   video: string;
+  videoSubs: string;
   location: Location;
 }) {
   const { threads, addThread, removeThread, setOpenThread, openThread } =
@@ -246,7 +248,17 @@ function CommentableVideo({
                 src={video}
                 onMouseMove={handleMouseMoveOnCommentableElement}
                 onMouseLeave={handleLeaveCommentableElement}
-              />
+                crossOrigin="anonymous"
+              >
+                <source src={video} type="video/mp4" />
+                <track
+                  default
+                  kind="captions"
+                  label="English captions"
+                  srcLang="en"
+                  src={videoSubs}
+                />
+              </video>
               {/* Used to catch clicks outside the thread, and close it. */}
               <div
                 className="thread-underlay"
@@ -294,11 +306,18 @@ function CommentableVideo({
   );
 }
 
-export function VideoPlayer() {
+export function VideoPlayer({
+  video,
+  videoSubs,
+}: {
+  video: string;
+  videoSubs: string;
+}) {
   return (
     <ThreadsProvider location={LOCATION}>
       <CommentableVideo
-        video="https://cdn.cord.com/cord-Meet-the-Team.mp4"
+        video={video}
+        videoSubs={videoSubs}
         location={LOCATION}
       />
     </ThreadsProvider>

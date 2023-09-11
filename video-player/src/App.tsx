@@ -19,7 +19,16 @@ export default function App() {
         ]}
         api={['thread']}
       />
-      {authToken && <VideoPlayer />}
+      {authToken && (
+        <VideoPlayer
+          video={
+            'https://cdn.cord.com/cord-website-video/cord-website-video-1080P.mp4'
+          }
+          videoSubs={
+            'https://cdn.cord.com/cord-website-video/cord-website-video.vtt'
+          }
+        />
+      )}
     </CordProvider>
   );
 }
