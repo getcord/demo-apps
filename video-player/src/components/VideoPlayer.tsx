@@ -242,6 +242,7 @@ function CommentableVideo({
                 muted
                 onClick={onVideoClick}
                 onTimeUpdate={onVideoTimeUpdate}
+                onCanPlay={onVideoTimeUpdate}
                 src={video}
                 onMouseMove={handleMouseMoveOnCommentableElement}
                 onMouseLeave={handleLeaveCommentableElement}
