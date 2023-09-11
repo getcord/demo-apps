@@ -31,7 +31,6 @@ body,
 }
 
 .container {
-  /* background-color: rgb(249, 251, 253); */
   margin: 80px;
   padding: 16px 20px;
   width: 100%;
@@ -106,6 +105,7 @@ cord-thread.cord-component.open-thread {
   z-index: 5;
   --cord-color-base: unset;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+  gap: 12px;
 }
 
 cord-thread:not(.open-thread) .cord-composer {
@@ -124,9 +124,8 @@ cord-thread:not(.open-thread) .cord-composer {
 cord-thread.cord-component {
   display: flex;
   width: 256px;
-  padding: 16px;
+  padding: 12px;
   flex-direction: column;
-  gap: 12px;
   border-radius: 16px;
   border: 0;
   z-index: 1;
@@ -151,7 +150,8 @@ cord-thread .cord-thread-container {
     'avatar timestamp  timestamp . optionsMenu'
     'messageContent messageContent messageContent messageContent messageContent'
     'reactions reactions reactions reactions reactions';
-  margin: 16px;
+  margin: 0 12px 16px;
+  padding-left: 5px;
   margin-top: 0;
   padding: 0;
 }
@@ -233,7 +233,7 @@ cord-thread .cord-thread-container {
 .cord-component .cord-message .cord-message-content {
   border-radius: 6px;
   margin-top: 4px;
-  padding: 6px 32px 3px 5px;
+  padding: 6px 32px 3px 0;
 }
 
 .cord-component
@@ -279,6 +279,10 @@ cord-thread .cord-thread-container {
   align-self: center;
 }
 
+.cord-component .cord-message .cord-menu {
+  background: white;
+}
+
 .cord-component .cord-thread-seen-by-container {
   display: none;
 }
@@ -293,6 +297,7 @@ cord-thread .cord-thread-container {
   background-color: white;
   border-radius: 16px;
   border: 1px solid var(--grey-light);
+  margin: 4px;
 }
 
 .cord-component .cord-editing .cord-composer {
@@ -332,4 +337,8 @@ cord-page-presence.cord-component .cord-avatar-container.cord-present {
 
 cord-page-presence.cord-component .cord-facepile {
   gap: 8px;
+}
+
+emoji-picker.cord-emoji-picker {
+  --background: white;
 }
