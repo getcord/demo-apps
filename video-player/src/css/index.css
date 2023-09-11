@@ -27,6 +27,7 @@ html {
   --pink: #e95b94;
   height: 100%;
   --scrollbar-thumb: #504f4f;
+  --video-border-radius: 32px;
 }
 
 body {
@@ -90,9 +91,9 @@ body {
 
 #commentableVideo {
   display: flex;
-  width: calc(100% - 400px);
+  width: calc(100% - var(--threaded-comments-width));
   background: var(--grey-dark);
-  border-radius: 32px;
+  border-radius: var(--video-border-radius);
   align-self: stretch;
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.16);
 }
@@ -103,6 +104,7 @@ body {
 }
 
 video {
+  border-radius: var(--video-border-radius);
   height: 100%;
   width: 100%;
   object-fit: fill;
