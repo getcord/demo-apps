@@ -164,7 +164,7 @@ video {
   --cord-tertiary-button-content-color: var(--white);
   --cord-color-brand-primary: var(--white);
 
-  --threaded-comments-width: 330px;
+  --threaded-comments-width: 280px;
 }
 
 .cord-annotation-pin {
