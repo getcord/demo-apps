@@ -65,17 +65,25 @@ function VideoPin({
 
     setOpenThread(id);
     const video = document.querySelector('video');
-    if (video instanceof HTMLVideoElement) {
-      video.currentTime = metadata.timestamp;
-      video.pause();
+
+    if (!(video instanceof HTMLVideoElement)) {
+      return;
     }
+
+    // Want to pause the video without moving the video frame when a user
+    // clicks on a pin that is on the video
+    if (displayOnControls(metadata)) {
+      video.currentTime = metadata.timestamp;
+    }
+    video.pause();
   }, [
-    id,
-    metadata.timestamp,
     openThread,
-    removeThread,
-    setOpenThread,
     threads,
+    id,
+    setOpenThread,
+    displayOnControls,
+    metadata,
+    removeThread,
   ]);
 
   const getPinCSSVariables = useCallback(
