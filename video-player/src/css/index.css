@@ -69,8 +69,8 @@ body {
 #top-bar {
   display: flex;
   align-items: center;
-  margin: 0 40px;
   justify-content: space-between;
+  margin: 0 60px;
 }
 
 #content {
@@ -93,7 +93,7 @@ body {
 
 #commentableVideo {
   display: flex;
-  width: calc(100% - var(--threaded-comments-width));
+  width: calc(100% - 400px);
   background: var(--grey-dark);
   border-radius: var(--video-border-radius);
   align-self: stretch;
@@ -106,7 +106,6 @@ body {
 }
 
 video {
-  border-radius: var(--video-border-radius);
   height: 100%;
   width: 100%;
   object-fit: fill;
@@ -209,6 +208,10 @@ video {
   align-self: stretch;
 
   width: var(--threaded-comments-width);
+}
+
+.cord-threaded-comments-thread {
+  margin-right: 6px;
 }
 
 .cord-threaded-comments-thread.cord-highlighted {
