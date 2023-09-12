@@ -50,7 +50,10 @@ export function ThreadsProvider({
   const addThread = useCallback(
     (threadId: string, metadata: ThreadMetadata, totalMessages: number) =>
       setThreads((oldThreads) => {
-        if (oldThreads.has(threadId)) {
+        if (
+          oldThreads.has(threadId) &&
+          oldThreads.get(threadId)?.totalMessages === totalMessages
+        ) {
           return oldThreads;
         }
         const newThreads = new Map(oldThreads);

@@ -20,16 +20,14 @@ function VideoPin({
   location,
   currentTime,
   duration,
-  onCloseThread,
 }: {
   id: string;
   metadata: ThreadMetadata;
   location: Location;
   currentTime: number;
   duration: number;
-  onCloseThread: () => void;
 }) {
-  const { removeThread, openThread, setOpenThread } =
+  const { threads, removeThread, openThread, setOpenThread } =
     useContext(ThreadsContext)!;
 
   const [showThreadPreviewBubble, setThreadShowPreviewBubble] = useState(false);
@@ -45,17 +43,33 @@ function VideoPin({
   );
 
   const onPinClick = useCallback(() => {
-    if (openThread === id) {
-      onCloseThread();
-    } else {
-      setOpenThread(id);
-      const video = document.querySelector('video');
-      if (video instanceof HTMLVideoElement) {
-        video.currentTime = metadata.timestamp;
-        video.pause();
-      }
+    const isOpenThreadEmpty =
+      openThread && threads.get(openThread)?.totalMessages === 0;
+
+    if (isOpenThreadEmpty) {
+      removeThread(openThread);
     }
-  }, [id, metadata.timestamp, openThread, setOpenThread, onCloseThread]);
+
+    // Clicking on the openThread's pin will close the thread.
+    if (openThread === id) {
+      setOpenThread(null);
+      return;
+    }
+
+    setOpenThread(id);
+    const video = document.querySelector('video');
+    if (video instanceof HTMLVideoElement) {
+      video.currentTime = metadata.timestamp;
+      video.pause();
+    }
+  }, [
+    id,
+    metadata.timestamp,
+    openThread,
+    removeThread,
+    setOpenThread,
+    threads,
+  ]);
 
   const getPinCSSVariables = useCallback(
     (threadMetadata: ThreadMetadata): React.CSSProperties | undefined => {
@@ -131,6 +145,20 @@ function CommentableVideo({
   const [duration, setDuration] = useState(0);
   const [cursorTooltipPosition, setCursorTooltipPosition] =
     useState<Point2D | null>(null);
+  const [tooltipCursorText, setTooltipCursorText] = useState<
+    'Click to comment' | 'Click to resume'
+  >('Click to comment');
+
+  const handleCloseThread = useCallback(() => {
+    if (!openThread) {
+      return;
+    }
+
+    if (threads.get(openThread)?.totalMessages === 0) {
+      removeThread(openThread);
+    }
+    setOpenThread(null);
+  }, [openThread, removeThread, setOpenThread, threads]);
 
   const onVideoClick = useCallback(
     (e: React.MouseEvent<HTMLVideoElement>) => {
@@ -141,7 +169,19 @@ function CommentableVideo({
         return;
       }
 
+      if (videoRef.current.paused) {
+        void videoRef.current.play();
+      } else {
+        videoRef.current.pause();
+      }
+
+      if (openThread) {
+        handleCloseThread();
+        return;
+      }
+
       videoRef.current.pause();
+
       e.preventDefault();
       const rect = e.target.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -159,7 +199,7 @@ function CommentableVideo({
       );
       setOpenThread(threadID);
     },
-    [videoRef, addThread, setOpenThread],
+    [videoRef, openThread, addThread, setOpenThread, handleCloseThread],
   );
 
   const onVideoTimeUpdate = useCallback(() => {
@@ -180,6 +220,7 @@ function CommentableVideo({
         console.log(`Thread ${mi.threadId} not found`);
         return;
       }
+
       videoRef.current.currentTime = threadMetadata.timestamp;
       videoRef.current.pause();
       window.scroll({ top: 0, behavior: 'smooth' });
@@ -187,17 +228,6 @@ function CommentableVideo({
     },
     [videoRef, setOpenThread, threads],
   );
-
-  const handleCloseThread = useCallback(() => {
-    if (!openThread) {
-      return;
-    }
-
-    if (threads.get(openThread)?.totalMessages === 0) {
-      removeThread(openThread);
-    }
-    setOpenThread(null);
-  }, [openThread, removeThread, setOpenThread, threads]);
 
   const handlePressEscape = useCallback(
     (e: KeyboardEvent) => {
@@ -207,6 +237,15 @@ function CommentableVideo({
     },
     [handleCloseThread],
   );
+
+  const onVideoPlay = useCallback(() => {
+    setTooltipCursorText('Click to comment');
+    handleCloseThread();
+  }, [handleCloseThread]);
+
+  const onVideoPause = useCallback(() => {
+    setTooltipCursorText('Click to resume');
+  }, []);
 
   // Close open thread when users press ESCAPE
   useEffect(() => {
@@ -233,6 +272,14 @@ function CommentableVideo({
           <NotificationListLauncher label="Notifications" />
         </div>
         <div id="content">
+          {/* Used to catch clicks outside the thread, and close it. */}
+          <div
+            className="thread-underlay"
+            style={{
+              display: openThread !== null ? 'block' : 'none',
+            }}
+            onClick={handleCloseThread}
+          />
           <div id="commentableVideo">
             <div id="videoWrapper">
               <video
@@ -249,6 +296,8 @@ function CommentableVideo({
                 onMouseMove={handleMouseMoveOnCommentableElement}
                 onMouseLeave={handleLeaveCommentableElement}
                 crossOrigin="anonymous"
+                onPause={onVideoPause}
+                onPlay={onVideoPlay}
               >
                 <source src={video} type="video/mp4" />
                 <track
@@ -259,14 +308,6 @@ function CommentableVideo({
                   src={videoSubs}
                 />
               </video>
-              {/* Used to catch clicks outside the thread, and close it. */}
-              <div
-                className="thread-underlay"
-                style={{
-                  display: openThread !== null ? 'block' : 'none',
-                }}
-                onClick={handleCloseThread}
-              />
               {Array.from(threads).map(([key, { metadata }]) => {
                 return (
                   <VideoPin
@@ -276,7 +317,6 @@ function CommentableVideo({
                     metadata={metadata}
                     currentTime={currentTime}
                     duration={duration}
-                    onCloseThread={handleCloseThread}
                   />
                 );
               })}
@@ -299,7 +339,7 @@ function CommentableVideo({
             top: `calc(20px + ${cursorTooltipPosition.y}px)`,
           }}
         >
-          Click to comment
+          {tooltipCursorText}
         </div>
       )}
     </>
