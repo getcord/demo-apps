@@ -80,10 +80,6 @@ hr {
   isolation: isolate;
 }
 
-#sheet ul {
-  list-style-position: inside;
-}
-
 .comment-button {
   align-items: center;
   background: var(--black);
