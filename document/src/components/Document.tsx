@@ -29,7 +29,7 @@ export function Document() {
   // we initially render threads as `hidden`, because we need to know
   // their height to position them correctly.
   const [threadsReady, setThreadsReady] = useState<Set<string>>(new Set());
-  const threadsRefs = useRef<HTMLDivElement[] | null>([]);
+  const threadsRefs = useRef<(HTMLDivElement | undefined)[] | null>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const userData = user.useViewerData();
@@ -74,7 +74,8 @@ export function Document() {
       const threadAboveIdx = i - 1;
       const threadAboveTopPx = newThreadPositions[threadAboveIdx].top;
       const threadAboveRef = threadsRefs.current[threadAboveIdx];
-      const threadAboveHeight = threadAboveRef.getBoundingClientRect().height;
+      const threadAboveHeight =
+        threadAboveRef?.getBoundingClientRect().height ?? 0;
       const [_threadId, { metadata: currentThreadMetadata }] = sortedThreads[i];
 
       const currentThreadTopPx = getTopPxFromMetadata(currentThreadMetadata);
