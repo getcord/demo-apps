@@ -116,11 +116,22 @@ body {
   transform: translateY(-100%);
 }
 
-.custom-controls-container .progress-bar-foreground:hover::after {
+.timeline-container .progress-bar-foreground::after {
+  --thumb-size: 12px;
   content: '';
-  display: block;
-  width: 8px;
-  height: 8px;
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  background: var(--white);
+  border-radius: 50%;
+  top: -4px;
+  left: calc(100% - calc(var(--thumb-size) / 2));
+  position: absolute;
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.timeline-container:hover .progress-bar-foreground::after {
+  opacity: 1;
 }
 
 .timeline-container {
