@@ -18,6 +18,7 @@ import {
 import type { Location, MessageInfo, Point2D } from '@cord-sdk/types';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsProvider, ThreadsContext } from '../ThreadsContext';
+import { CustomControls } from './CustomControls';
 
 const LOCATION = { page: 'video' };
 
@@ -208,6 +209,7 @@ function CommentableVideo({
   const videoRef = createRef<HTMLVideoElement>();
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [cursorTooltipPosition, setCursorTooltipPosition] =
     useState<Point2D | null>(null);
   const [tooltipCursorText, setTooltipCursorText] = useState<
@@ -304,11 +306,13 @@ function CommentableVideo({
   );
 
   const onVideoPlay = useCallback(() => {
+    setIsPlaying(true);
     setTooltipCursorText('Click to comment');
     handleCloseThread();
   }, [handleCloseThread]);
 
   const onVideoPause = useCallback(() => {
+    setIsPlaying(false);
     setTooltipCursorText('Click to resume');
   }, []);
 
@@ -327,6 +331,16 @@ function CommentableVideo({
   const handleLeaveCommentableElement = useCallback(
     () => setCursorTooltipPosition(null),
     [],
+  );
+
+  const updateCurrentTime = useCallback(
+    (newTime: number) => {
+      if (!videoRef.current) {
+        return;
+      }
+      videoRef.current.currentTime = newTime;
+    },
+    [videoRef],
   );
 
   return (
@@ -349,12 +363,11 @@ function CommentableVideo({
             <div id="videoWrapper">
               <video
                 ref={videoRef}
-                controls
                 disablePictureInPicture
                 controlsList="nofullscreen"
                 onClick={onVideoClick}
                 onTimeUpdate={onVideoTimeUpdate}
-                onCanPlay={onVideoTimeUpdate}
+                onCanPlay={() => onVideoTimeUpdate()}
                 src={video}
                 onMouseMove={handleMouseMoveOnCommentableElement}
                 onMouseLeave={handleLeaveCommentableElement}
@@ -371,6 +384,14 @@ function CommentableVideo({
                   src={videoSubs}
                 />
               </video>
+              <CustomControls
+                duration={duration}
+                currentTime={currentTime}
+                isPlaying={isPlaying}
+                onPlay={() => videoRef.current?.play()}
+                onPause={() => videoRef.current?.pause()}
+                onSeek={updateCurrentTime}
+              />
               {Array.from(threads).map(([key, { metadata }]) => {
                 return (
                   <VideoPin

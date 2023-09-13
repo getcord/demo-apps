@@ -80,6 +80,54 @@ body {
   max-height: 800px;
 }
 
+.custom-controls-container {
+  position: absolute;
+  bottom: 0;
+  background-color: transparent;
+  color: white;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+
+  --timeline-height: 4px;
+}
+
+.custom-controls {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  gap: 8px;
+}
+
+.custom-controls-container .progress-bar-background {
+  width: 100%;
+  height: var(--timeline-height);
+  background: var(--grey-light);
+  border-radius: 2px;
+}
+
+.custom-controls-container .progress-bar-foreground {
+  height: var(--timeline-height);
+  background-color: var(--white);
+  border-radius: 2px;
+  /* Make it overlap with the background */
+  transform: translateY(-100%);
+}
+
+.custom-controls-container .progress-bar-foreground:hover::after {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+}
+
+.timeline-container {
+  /* Padding bottom Makes it easier to click it */
+  padding-bottom: 20px;
+}
+
 #video-player-demo-container {
   display: flex;
   margin: auto;
