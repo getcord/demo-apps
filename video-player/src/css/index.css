@@ -89,6 +89,9 @@ body {
   display: flex;
   flex-direction: column;
   padding: 0 16px;
+  /* Users can drag to seek the video. This prevents 
+     users from selecting e.g. the elapsed time */
+  user-select: none;
 
   --timeline-height: 4px;
 }
@@ -130,7 +133,7 @@ body {
   transition: opacity 200ms;
 }
 
-.timeline-container:hover .progress-bar-foreground::after {
+.timeline-container:is(:hover, .seeking) .progress-bar-foreground::after {
   opacity: 1;
 }
 

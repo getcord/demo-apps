@@ -1,9 +1,9 @@
 import {
-  createRef,
   useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import cx from 'classnames';
@@ -206,7 +206,7 @@ function CommentableVideo({
 }) {
   const { threads, addThread, removeThread, setOpenThread, openThread } =
     useContext(ThreadsContext)!;
-  const videoRef = createRef<HTMLVideoElement>();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);

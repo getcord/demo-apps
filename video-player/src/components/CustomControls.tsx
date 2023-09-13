@@ -1,4 +1,5 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
+import cx from 'classnames';
 
 export function CustomControls({
   duration,
@@ -15,6 +16,8 @@ export function CustomControls({
   onPause: () => void;
   onSeek: (newTime: number) => void;
 }) {
+  // Local state so that dragging the thumb has 0 delay.
+  const [seekXCoord, setSeekXCoord] = useState<number | null>(null);
   const progressRef = useRef<HTMLDivElement | null>(null);
 
   const handleTogglePlaying = useCallback(() => {
@@ -31,18 +34,44 @@ export function CustomControls({
         return 0;
       }
 
-      const { width, left } = progressRef.current.getBoundingClientRect();
-      return ((cursorX - left) / width) * duration;
+      const { width, left, right } =
+        progressRef.current.getBoundingClientRect();
+      const safeCursorX = Math.min(Math.max(cursorX, left), right);
+      return ((safeCursorX - left) / width) * duration;
     },
     [duration],
   );
 
-  const handleClickProgress = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      onSeek(getTimeAtCursor(e.clientX));
-    },
+  const handleSeek = useCallback(
+    (e: React.MouseEvent<HTMLElement> | MouseEvent) =>
+      onSeek(getTimeAtCursor(e.clientX)),
     [getTimeAtCursor, onSeek],
   );
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      setSeekXCoord(e.clientX);
+      handleSeek(e);
+    },
+    [handleSeek],
+  );
+
+  const handleStopSeeking = useCallback(() => {
+    setSeekXCoord(null);
+    window.removeEventListener('mousemove', handleMouseMove);
+    window.removeEventListener('mouseup', handleStopSeeking);
+  }, [handleMouseMove]);
+
+  const handleStartSeeking = useCallback(() => {
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleStopSeeking);
+  }, [handleMouseMove, handleStopSeeking]);
+
+  const getProgressBarWidth = useCallback(() => {
+    const time =
+      seekXCoord !== null ? getTimeAtCursor(seekXCoord) : currentTime;
+    return duration > 0 ? `${(time / duration) * 100}%` : 0;
+  }, [currentTime, duration, getTimeAtCursor, seekXCoord]);
 
   return (
     <div className="custom-controls-container">
@@ -74,15 +103,18 @@ export function CustomControls({
         {secondsToFormattedTimestamp(currentTime)}
       </div>
       <div
-        className="timeline-container"
-        onClick={handleClickProgress}
+        className={cx('timeline-container', {
+          ['seeking']: seekXCoord !== null,
+        })}
+        onClick={handleSeek}
+        onMouseDown={handleStartSeeking}
         ref={progressRef}
       >
         <div className="progress-bar-background" />
         <div
           className="progress-bar-foreground"
           style={{
-            width: duration > 0 ? `${(currentTime / duration) * 100}%` : 0,
+            width: getProgressBarWidth(),
           }}
         />
       </div>
