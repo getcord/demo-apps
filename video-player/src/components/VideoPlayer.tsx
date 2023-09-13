@@ -214,7 +214,7 @@ function CommentableVideo({
     useState<Point2D | null>(null);
   const [tooltipCursorText, setTooltipCursorText] = useState<
     'Click to comment' | 'Click to resume'
-  >('Click to comment');
+  >(isPlaying ? 'Click to comment' : 'Click to resume');
 
   const handleCloseThread = useCallback(() => {
     if (!openThread) {
@@ -246,8 +246,6 @@ function CommentableVideo({
         handleCloseThread();
         return;
       }
-
-      videoRef.current.pause();
 
       e.preventDefault();
       const rect = e.target.getBoundingClientRect();
