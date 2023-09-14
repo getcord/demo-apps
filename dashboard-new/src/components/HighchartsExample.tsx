@@ -26,7 +26,8 @@ const DATE_RANGE_SELECTOR_OPTIONS = [
 ];
 
 const COMMENT_ICON_HEIGHT_PX = 12;
-const GAP_PX = 5;
+const COMMENT_ICON_TOP_OFFSET_PX = 3;
+const GAP_PX = 8;
 
 type Props = {
   chartId: string;
@@ -169,6 +170,7 @@ function useChartOptions(
       x: hoverPoint.x,
       y: hoverPoint.y!,
     } as const;
+    console.log({ hoverPoint });
     // NOTE: Allow only one thread per point by using the point x,y in threadId
     // NOTE: Use orgId as part of thread Id to have unique ids across orgs
     const threadId = `${orgId}_${metadata.chartId}_${metadata.seriesId}_${metadata.x}_${metadata.y}`;
@@ -205,7 +207,7 @@ function useChartOptions(
       },
 
       chart: {
-        type: 'column',
+        type: 'line',
         style: {
           fontFamily:
             'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
@@ -226,7 +228,7 @@ function useChartOptions(
 
       yAxis: {
         title: {
-          text: 'Currency in USD',
+          text: 'Valuation in USD billions ',
         },
         gridLineColor: 'transparent',
         labels: {
@@ -311,6 +313,9 @@ function useChartOptions(
         },
         formatter: function (): string {
           const { x, y, color, series } = this as any;
+          // Extra space at end is needed to ensure Highcharts
+          // tooltip container sizes enough to correctly  capture all content
+          const commentCTA = 'Click to comment' + ' ';
           return `
                 <div style="display: flex; flex-direction: column; gap: 8px">
                   <div><b>${x}</b></div>
@@ -322,7 +327,7 @@ function useChartOptions(
 
                   <div style="display: flex; align-items: center; gap: 4px">
                     <img src=${commentIcon} />
-                    <span>Click to comment</span>
+                    <span>${commentCTA}</span>
                   </div>
                 </div>
         `;
@@ -381,8 +386,7 @@ function ChartThread({ threadId, metadata, chart }: ChartThreadProps) {
     pointXOffset: number;
   };
 
-  const pointPixelPosX =
-    series.xAxis.toPixels(metadata.x, false) + series.pointXOffset;
+  const pointPixelPosX = series.xAxis.toPixels(metadata.x, false);
   const pointPixelPosY = series.yAxis.toPixels(metadata.y, false);
 
   return (
@@ -391,11 +395,16 @@ function ChartThread({ threadId, metadata, chart }: ChartThreadProps) {
         position: 'absolute',
         // When not visible, position all the way to the left, to not
         // add unnecessary horizontal scroll.
-        left: isVisible ? pointPixelPosX + GAP_PX : 0,
+        left: isVisible ? pointPixelPosX + GAP_PX - COMMENT_ICON_HEIGHT_PX : 0,
         // When the commented bar is visible, show the comment icon
         // on top of it.
         top: isVisible
-          ? `calc(${pointPixelPosY - COMMENT_ICON_HEIGHT_PX - GAP_PX}px`
+          ? `calc(${
+              pointPixelPosY -
+              COMMENT_ICON_HEIGHT_PX -
+              GAP_PX -
+              COMMENT_ICON_TOP_OFFSET_PX
+            }px`
           : 0,
         transition: 'top 0.5s, left 0.5s',
         visibility: isVisible ? 'visible' : 'hidden',
@@ -415,8 +424,8 @@ function ChartThread({ threadId, metadata, chart }: ChartThreadProps) {
         metadata={metadata}
         style={{
           position: 'absolute',
-          left: 'calc(100% + 12px)',
-          top: -(2 * GAP_PX),
+          left: `calc(100% + ${COMMENT_ICON_HEIGHT_PX}px)`,
+          top: -COMMENT_ICON_HEIGHT_PX,
         }}
       />
     </div>
