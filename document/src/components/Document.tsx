@@ -33,6 +33,23 @@ export function Document() {
   const threadsRefs = useRef<(HTMLDivElement | undefined)[] | null>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // We want the sheet to grow as tall as needed, so
+  // that threads can never go outside of it.
+  const infiniteScrollContainerRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState(0);
+  const handleUpdateContainerHeight = useCallback(() => {
+    const bottomMostThread =
+      threadsRefs.current?.[threadsRefs.current?.length - 1];
+    setContainerHeight(
+      window.scrollY + (bottomMostThread?.getBoundingClientRect()?.bottom ?? 0),
+    );
+  }, []);
+  useEffect(() => {
+    window.addEventListener('scroll', handleUpdateContainerHeight);
+    return () =>
+      window.removeEventListener('scroll', handleUpdateContainerHeight);
+  }, [handleUpdateContainerHeight]);
+
   const userData = user.useViewerData();
   const orgId = userData?.organizationID;
   const userId = userData?.id;
@@ -350,7 +367,15 @@ export function Document() {
                     observer.observe(el);
                   }
                 }}
-                onClick={() => setOpenThread(threadId)}
+                onClick={() => {
+                  setOpenThread(threadId);
+                  const isBottomThreadTooFarDown =
+                    threadsPositions[threadsPositions.length - 1].top >
+                    window.innerHeight;
+                  if (isBottomThreadTooFarDown) {
+                    window.scrollTo({ top: 0 });
+                  }
+                }}
                 style={{
                   position: 'absolute',
                   left:
@@ -396,7 +421,11 @@ export function Document() {
           );
         })}
       </div>
-      <div className="container">
+      <div
+        className="container"
+        ref={infiniteScrollContainerRef}
+        style={{ height: containerHeight }}
+      >
         <div className="header">
           <FakeMenu />
           <PagePresence />

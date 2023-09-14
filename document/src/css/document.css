@@ -41,9 +41,8 @@ body,
   background: #f9fbfd;
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1),
     0px 2px 20px 0px rgba(0, 0, 0, 0.16);
-  height: 100%;
-  min-height: 724px;
-  max-height: 90vh;
+  min-height: 100%;
+  overflow: hidden;
 }
 
 .header {
@@ -68,7 +67,7 @@ hr {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: calc(100% - var(--padding) - 4px);
+  min-height: 100%;
   height: fit-content;
   margin-left: 5%;
   margin-right: 350px;
