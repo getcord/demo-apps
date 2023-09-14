@@ -14,6 +14,7 @@ import { CommentButton } from './CommentButton';
 import { FakeMenu } from './FakeMenuIcon';
 import { FloatingPresence } from './FloatingPresence';
 import { TextHighlight } from './TextHighlight';
+import { AnimatedText } from './AnimatedText';
 
 export const LOCATION = { page: 'document' };
 const THREADS_GAP = 16;
@@ -405,8 +406,11 @@ export function Document() {
           <FloatingPresence presentUsers={presentUsers} />
           <h1 id="title">Nope, this isn&apos;t Google Docs.</h1>
           <p id="body">
-            This was built with Cord, and you can add a commenting experience
-            like this to your product, too.
+            <AnimatedText
+              typingUser="Tom"
+              text="This was built with Cord, and you can add a commenting experience
+            like this to your product, too."
+            />
           </p>
         </div>
       </div>

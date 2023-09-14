@@ -96,6 +96,21 @@ hr {
   z-index: 2;
 }
 
+.caret {
+  color: deeppink;
+  margin-left: -3px;
+}
+.caret::after {
+  content: attr(data-typing-user);
+  position: absolute;
+  background-color: deeppink;
+  color: white;
+  font-size: 12px;
+  transform: translateY(-80%);
+  padding: 2px;
+  border-radius: 4px;
+}
+
 cord-thread.cord-component:hover {
   z-index: 5;
 }
