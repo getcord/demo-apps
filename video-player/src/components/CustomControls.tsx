@@ -77,6 +77,7 @@ export function CustomControls({
     <div className="custom-controls-container">
       <div className="custom-controls">
         <svg
+          className="play-pause-btn"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
           viewBox="0 0 24 24"
