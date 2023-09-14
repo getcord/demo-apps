@@ -242,6 +242,10 @@ video {
   color: var(--white);
 }
 
+.timestamp {
+  font-weight: bold;
+}
+
 /* Cord components  */
 #video-player-demo-container {
   --cord-color-base: var(--grey-dark);

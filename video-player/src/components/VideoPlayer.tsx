@@ -19,6 +19,7 @@ import type { Location, MessageInfo, Point2D } from '@cord-sdk/types';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsProvider, ThreadsContext } from '../ThreadsContext';
 import { CustomControls } from './CustomControls';
+import { useAddTimestamp } from './useAddTimestamp';
 
 const LOCATION = { page: 'video' };
 
@@ -215,6 +216,8 @@ function CommentableVideo({
   const [tooltipCursorText, setTooltipCursorText] = useState<
     'Click to comment' | 'Click to resume'
   >(isPlaying ? 'Click to comment' : 'Click to resume');
+
+  useAddTimestamp();
 
   const handleCloseThread = useCallback(() => {
     if (!openThread) {
