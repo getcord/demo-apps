@@ -101,7 +101,11 @@ export function CustomControls({
             />
           )}
         </svg>
-        {secondsToFormattedTimestamp(currentTime)}
+        <span>{secondsToFormattedTimestamp(currentTime)}</span>
+        <span className="duration">
+          {!Number.isNaN(duration) &&
+            ' / ' + secondsToFormattedTimestamp(duration)}
+        </span>
       </div>
       <div
         className={cx('timeline-container', {
