@@ -170,7 +170,6 @@ function useChartOptions(
       x: hoverPoint.x,
       y: hoverPoint.y!,
     } as const;
-    console.log({ hoverPoint });
     // NOTE: Allow only one thread per point by using the point x,y in threadId
     // NOTE: Use orgId as part of thread Id to have unique ids across orgs
     const threadId = `${orgId}_${metadata.chartId}_${metadata.seriesId}_${metadata.x}_${metadata.y}`;
@@ -314,7 +313,7 @@ function useChartOptions(
         formatter: function (): string {
           const { x, y, color, series } = this as any;
           // Extra space at end is needed to ensure Highcharts
-          // tooltip container sizes enough to correctly  capture all content
+          // tooltip is wide enough to fit content
           const commentCTA = 'Click to comment' + ' ';
           return `
                 <div style="display: flex; flex-direction: column; gap: 8px">
