@@ -312,9 +312,7 @@ function useChartOptions(
         },
         formatter: function (): string {
           const { x, y, color, series } = this as any;
-          // Extra space at end is needed to ensure Highcharts
-          // tooltip is wide enough to fit content
-          const commentCTA = 'Click to comment' + ' ';
+          const commentCTA = 'Click to comment';
           return `
                 <div style="display: flex; flex-direction: column; gap: 8px">
                   <div><b>${x}</b></div>
@@ -323,9 +321,10 @@ function useChartOptions(
                     <span style="color: ${color};">●</span>
                     ${series.name}: <b>${y}</b>
                   </div>
-
                   <div style="display: flex; align-items: center; gap: 4px">
-                    <img src=${commentIcon} />
+                    <div style="width: 12px; height: 12px;">
+                      <img src=${commentIcon}  />
+                    </div>
                     <span>${commentCTA}</span>
                   </div>
                 </div>
