@@ -6,7 +6,7 @@
   --orange: #fa7351;
   --grey-x-light: #97979f;
   --grey-light: #6a6b6c;
-  --grey-dark: #2e2e2e;
+  --grey-dark: #3d3a33;
   --grey-x-dark: #1d1f24;
   --black: #121314;
   --white: #edeff1;
@@ -81,7 +81,7 @@ body {
 
 #dashboard .panel {
   background: var(--grey-dark);
-  padding: 40px 139px;
+  padding: 40px 64px;
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
 }

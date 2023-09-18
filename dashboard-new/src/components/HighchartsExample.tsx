@@ -118,6 +118,7 @@ export function HighchartsExample({ chartId, highchartsDataSeries }: Props) {
 
   return (
     <>
+      <h2>Market cap of collaborative companies</h2>
       <div className="date-range-selector">
         {dateRanges.length > 1 &&
           dateRanges.map(({ start, end }) => {
@@ -216,7 +217,7 @@ function useChartOptions(
           fontFamily:
             'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
         },
-        backgroundColor: '#2E2E2E',
+        backgroundColor: '#3D3A33',
         events: {
           redraw: onRedraw,
           click: maybeAddComment,
