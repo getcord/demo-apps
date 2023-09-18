@@ -3,10 +3,12 @@ import { useState, useCallback, useEffect } from 'react';
 export function AnimatedText({
   text,
   typingUser,
+  animate = true,
   onComplete,
 }: {
   text: string;
   typingUser: string;
+  animate?: boolean;
   onComplete?: () => void;
 }) {
   const [currentText, setCurrentText] = useState('');
@@ -18,6 +20,10 @@ export function AnimatedText({
   }, []);
 
   useEffect(() => {
+    if (!animate) {
+      return;
+    }
+
     let timeout: NodeJS.Timeout | null = null;
     const stillTyping = charIndex < text.length;
     if (stillTyping) {
@@ -37,7 +43,7 @@ export function AnimatedText({
         clearTimeout(timeout);
       }
     };
-  }, [charIndex, getDelay, onComplete, text]);
+  }, [animate, charIndex, getDelay, onComplete, text]);
 
   return (
     <>

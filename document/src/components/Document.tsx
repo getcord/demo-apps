@@ -437,6 +437,7 @@ export function Document() {
           <p id="body">
             <AnimatedText
               typingUser="Tom"
+              animate={!document.hidden}
               text={`It isn't.
               
 We built this commenting experience with Cord's SDK, and you can, too 👍
