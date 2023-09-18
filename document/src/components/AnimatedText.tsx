@@ -3,9 +3,11 @@ import { useState, useCallback, useEffect } from 'react';
 export function AnimatedText({
   text,
   typingUser,
+  onComplete,
 }: {
   text: string;
   typingUser: string;
+  onComplete?: () => void;
 }) {
   const [currentText, setCurrentText] = useState('');
   const [charIndex, setCharIndex] = useState(0);
@@ -24,6 +26,7 @@ export function AnimatedText({
         setCharIndex((prevIndex) => prevIndex + 1);
       }, getDelay());
     } else {
+      onComplete?.();
       timeout = setTimeout(() => {
         setShowCaret(false);
       }, 2000);
@@ -34,7 +37,7 @@ export function AnimatedText({
         clearTimeout(timeout);
       }
     };
-  }, [charIndex, getDelay, text]);
+  }, [charIndex, getDelay, onComplete, text]);
 
   return (
     <>

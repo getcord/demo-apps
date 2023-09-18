@@ -437,8 +437,12 @@ export function Document() {
           <p id="body">
             <AnimatedText
               typingUser="Tom"
-              text="This was built with Cord, and you can add a commenting experience
-            like this to your product, too."
+              text={`It isn't.
+              
+We built this commenting experience with Cord's SDK, and you can, too 👍
+
+Check out some other examples of what you can build with Cord, here.`}
+              onComplete={() => linkify()}
             />
           </p>
         </div>
@@ -491,4 +495,27 @@ function getTopPxFromMetadata(metadata: ThreadMetadata) {
   return (
     (getRange(metadata)?.getBoundingClientRect().top ?? 0) + window.scrollY
   );
+}
+
+const LINK_TO_DOCS_TEXT_METADATA: ThreadMetadata = {
+  endNodeId: 'body',
+  startNodeId: 'body',
+  endOffset: 166,
+  startOffset: 162,
+};
+/**
+ * Given a range, wraps it with <a href={url}>
+ */
+function linkify(
+  metadata: ThreadMetadata = LINK_TO_DOCS_TEXT_METADATA,
+  url = 'https://docs.cord.com',
+) {
+  const range = getRange(metadata);
+  if (!range) {
+    return;
+  }
+
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  range.surroundContents(link);
 }
