@@ -400,7 +400,7 @@ function ChartThread({ threadId, metadata, chart }: ChartThreadProps) {
           : 0,
         transition: 'top 0.5s, left 0.5s',
         visibility: isVisible ? 'visible' : 'hidden',
-        zIndex: isOpen ? 1 : 0,
+        zIndex: isOpen ? 5 : 0, // The highcharts tooltip has a z-index of 3
       }}
     >
       <img
