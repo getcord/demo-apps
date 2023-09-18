@@ -392,8 +392,12 @@ cord-thread .cord-timestamp {
   display: none;
 }
 
-cord-pin.invert-thread-position cord-thread {
+cord-pin.thread-on-the-left cord-thread {
   left: calc(-250px - 8px);
+}
+cord-pin.thread-on-the-top cord-thread {
+  top: calc(100%);
+  transform: translateY(-100%);
 }
 
 cord-pin .thread-preview-bubble {

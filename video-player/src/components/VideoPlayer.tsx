@@ -168,7 +168,8 @@ function VideoPin({
       className={cx(
         pinClassname,
         // Position thread based on which half of the video the pin sits in
-        { ['invert-thread-position']: metadata.xPercent > 50 },
+        { ['thread-on-the-left']: metadata.xPercent > 50 },
+        { ['thread-on-the-top']: metadata.yPercent > 50 },
       )}
       onClick={onPinClick}
       onMouseEnter={() => setThreadShowPreviewBubble(true)}
