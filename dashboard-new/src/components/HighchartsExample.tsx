@@ -234,10 +234,11 @@ function useChartOptions(
 
       yAxis: {
         title: {
-          text: 'Valuation in USD billions ',
+          text: 'Valuation in USD',
         },
         gridLineColor: 'transparent',
         labels: {
+          format: `{text}K`,
           style: {
             color: '#edeff1',
           },

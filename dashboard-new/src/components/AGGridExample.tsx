@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import type { ICellRendererParams, GridApi } from 'ag-grid-community';
+import type { ICellRendererParams, GridApi, ColDef } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { PresenceFacepile, PresenceObserver, user } from '@cord-sdk/react';
@@ -18,7 +18,7 @@ import {
   shift,
   useFloating,
 } from '@floating-ui/react';
-import books from '../books.json';
+import chartData from '../chartData.json';
 import type { GridThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
 import { LOCATION } from './Dashboard';
@@ -159,6 +159,37 @@ export function AGGridExample({ gridId }: { gridId: string }) {
     [gridId, refs.setReference],
   );
 
+  const rowData = useMemo(() => {
+    const data: {
+      year: number;
+      'figma-valuation': string | null;
+      'notion-valuation': string | null;
+    }[] = [];
+
+    const figmaData = chartData[0].data;
+    const notionData = chartData[1].data;
+    let currentYear = 2012;
+
+    for (let i = 0; i < figmaData.length; i++) {
+      const figmaVal = figmaData[i];
+      const notionVal = notionData[i];
+
+      const gridDataRow = {
+        year: currentYear,
+        'figma-valuation': figmaVal
+          ? currencyFormatter(figmaVal * 10000)
+          : null,
+        'notion-valuation': notionVal
+          ? currencyFormatter(notionVal * 10000)
+          : null,
+      };
+
+      data.push(gridDataRow);
+      currentYear++;
+    }
+    return data;
+  }, []);
+
   return (
     <div
       id="grid-container"
@@ -185,7 +216,7 @@ export function AGGridExample({ gridId }: { gridId: string }) {
       <AgGridReact
         ref={gridRef}
         getRowId={(params) => getRowId(params.data)}
-        rowData={books}
+        rowData={rowData}
         defaultColDef={{
           cellRenderer,
         }}
@@ -287,40 +318,21 @@ function CellWithThreadAndPresence(
   );
 }
 
-const COLUMN_DEFS = [
+const COLUMN_DEFS: ColDef[] = [
   {
-    field: 'isbn',
-    headerName: 'ISBN',
-    filter: true,
-    sortable: false,
-  },
-  {
-    field: 'title',
-    headerName: 'Title',
+    field: 'year',
     filter: true,
     sortable: true,
   },
   {
-    field: 'authors',
-    headerName: 'Authors',
+    field: 'figma-valuation',
+    headerName: 'Figma',
     filter: true,
     sortable: true,
   },
   {
-    field: 'average_rating',
-    headerName: 'Rating',
-    filter: true,
-    sortable: true,
-  },
-  {
-    field: 'num_pages',
-    headerName: 'Pages',
-    filter: true,
-    sortable: true,
-  },
-  {
-    field: 'publication_date',
-    headerName: 'Publication Date',
+    field: 'notion-valuation',
+    headerName: 'Notion',
     filter: true,
     sortable: true,
   },
@@ -366,8 +378,8 @@ function isRowInScrollView(api: GridApi<any>, rowId: string): boolean {
 }
 
 // Given data of a table row, returns the row's unique ID
-function getRowId(data: { bookID: number }) {
-  return data.bookID.toString();
+function getRowId(data: { year: number }) {
+  return data.year.toString();
 }
 
 // Constructs a thread ID
@@ -383,4 +395,11 @@ function makeThreadId({
   colId: string;
 }) {
   return `${orgId}_${gridId}_${rowId}_${colId}`;
+}
+
+// https://blog.ag-grid.com/formatting-numbers-strings-currency-in-ag-grid/
+function currencyFormatter(currency: number) {
+  const sansDec = currency.toFixed(0);
+  const formatted = sansDec.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return '$' + `${formatted}`;
 }
