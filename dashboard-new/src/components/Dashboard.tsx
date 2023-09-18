@@ -13,8 +13,10 @@ export const CHART_ID = 'some-unique-and-stable-id-of-this-chart';
 export const GRID_ID = 'some-unique-and-stable-id-of-this-grid';
 function Dashboard({
   navigateRef,
+  highchartsDataSeries,
 }: {
   navigateRef: MutableRefObject<NavigateFn | null>;
+  highchartsDataSeries?: { start: number; end: number }[];
 }) {
   const { openThread, setOpenThread, setRequestToOpenThread } =
     useContext(ThreadsContext)!;
@@ -88,7 +90,10 @@ function Dashboard({
 
         <div className="grid highcharts">
           <div className="panel">
-            <HighchartsExample chartId={CHART_ID} />
+            <HighchartsExample
+              chartId={CHART_ID}
+              highchartsDataSeries={highchartsDataSeries}
+            />
           </div>
 
           <AGGridExample gridId={GRID_ID} />

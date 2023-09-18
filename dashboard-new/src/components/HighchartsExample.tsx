@@ -20,9 +20,8 @@ import { ThreadWrapper } from './ThreadWrapper';
 import commentIcon from './CommentIcon.svg';
 
 const DATE_RANGE_SELECTOR_OPTIONS = [
-  { start: 1999, end: 2006 },
-  { start: 2007, end: 2014 },
-  { start: 2015, end: 2022 },
+  { start: 2012, end: 2017 },
+  { start: 2018, end: 2022 },
 ];
 
 const COMMENT_ICON_HEIGHT_PX = 12;
@@ -31,8 +30,9 @@ const GAP_PX = 8;
 
 type Props = {
   chartId: string;
+  highchartsDataSeries?: { start: number; end: number }[];
 };
-export function HighchartsExample({ chartId }: Props) {
+export function HighchartsExample({ chartId, highchartsDataSeries }: Props) {
   const chartRef = useRef<HighchartsReact.RefObject>(null);
   const {
     setOpenThread,
@@ -40,9 +40,12 @@ export function HighchartsExample({ chartId }: Props) {
     requestToOpenThread,
     setRequestToOpenThread,
   } = useContext(ThreadsContext)!;
-  const [selectedDateRange, setSelectedDateRange] = useState(
-    DATE_RANGE_SELECTOR_OPTIONS[0],
-  );
+
+  // If we pass in a specific range we use it otherwise default to the DATE_RANGE_SELECTOR_OPTIONS
+  const [dateRanges, _setDateRanges] = useState<
+    { start: number; end: number }[]
+  >(highchartsDataSeries ?? DATE_RANGE_SELECTOR_OPTIONS);
+  const [selectedDateRange, setSelectedDateRange] = useState(dateRanges[0]);
 
   // Effect to update chart's axis range when selectedDateRange changes
   useEffect(() => {
@@ -75,7 +78,7 @@ export function HighchartsExample({ chartId }: Props) {
     series.setVisible(true);
 
     // Adjust the range of the chart axes
-    const rangeForThread = DATE_RANGE_SELECTOR_OPTIONS.find(
+    const rangeForThread = dateRanges.find(
       (range) => range.start <= metadata.x && metadata.x <= range.end,
     );
     if (!rangeForThread) {
@@ -105,6 +108,7 @@ export function HighchartsExample({ chartId }: Props) {
     requestToOpenThread,
     setOpenThread,
     setRequestToOpenThread,
+    dateRanges,
   ]);
 
   // A dummy reducer with the sole purpose to re-render this component.
@@ -115,22 +119,23 @@ export function HighchartsExample({ chartId }: Props) {
   return (
     <>
       <div className="date-range-selector">
-        {DATE_RANGE_SELECTOR_OPTIONS.map(({ start, end }) => {
-          return (
-            <button
-              key={`${start}-${end}`}
-              className={cx('date-range-selector-option', {
-                'date-range-selector-option-active':
-                  selectedDateRange.start === start &&
-                  selectedDateRange.end === end,
-              })}
-              onClick={() => setSelectedDateRange({ start, end })}
-              type="button"
-            >
-              {start} - {end}
-            </button>
-          );
-        })}
+        {dateRanges.length > 1 &&
+          dateRanges.map(({ start, end }) => {
+            return (
+              <button
+                key={`${start}-${end}`}
+                className={cx('date-range-selector-option', {
+                  'date-range-selector-option-active':
+                    selectedDateRange.start === start &&
+                    selectedDateRange.end === end,
+                })}
+                onClick={() => setSelectedDateRange({ start, end })}
+                type="button"
+              >
+                {start} - {end}
+              </button>
+            );
+          })}
       </div>
       <div ref={chartParentRef} style={{ position: 'relative' }}>
         <HighchartsReact
@@ -188,7 +193,7 @@ function useChartOptions(
           label: {
             connectorAllowed: false,
           },
-          pointStart: 1999,
+          pointStart: 2012,
           marker: {
             states: {
               hover: {
@@ -238,25 +243,12 @@ function useChartOptions(
       },
 
       xAxis: {
-        min: 1999,
-        max: 2009,
+        min: 2012,
+        max: 2022,
         accessibility: {
-          rangeDescription: 'Range: 1999 to 2022',
+          rangeDescription: 'Range: 2012 to 2022',
         },
         categories: [
-          '1999',
-          '2000',
-          '2001',
-          '2002',
-          '2003',
-          '2004',
-          '2005',
-          '2006',
-          '2007',
-          '2008',
-          '2009',
-          '2010',
-          '2011',
           '2012',
           '2013',
           '2014',
