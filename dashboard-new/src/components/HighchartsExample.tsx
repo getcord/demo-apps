@@ -216,6 +216,7 @@ function useChartOptions(
         style: {
           fontFamily:
             'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
+          cursor: 'pointer',
         },
         backgroundColor: '#3D3A33',
         events: {
