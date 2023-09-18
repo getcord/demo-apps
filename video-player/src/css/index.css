@@ -114,6 +114,10 @@ body {
   margin-right: 8px;
 }
 
+.custom-controls .mute-btn {
+  margin-left: auto;
+}
+
 .custom-controls .duration {
   margin-left: 4px;
 }
@@ -325,6 +329,7 @@ cord-pin,
 .cord-pin-container .cord-avatar-container,
 .timeline-container,
 .play-pause-btn,
+.mute-btn,
 .cord-threaded-comments-thread {
   cursor: pointer;
 }

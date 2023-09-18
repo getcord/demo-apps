@@ -212,6 +212,7 @@ function CommentableVideo({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isVideoMuted, setIsVideoMuted] = useState(false);
   const [cursorTooltipPosition, setCursorTooltipPosition] =
     useState<Point2D | null>(null);
   const [tooltipCursorText, setTooltipCursorText] = useState<
@@ -371,6 +372,7 @@ function CommentableVideo({
                 onTimeUpdate={onVideoTimeUpdate}
                 onCanPlay={() => onVideoTimeUpdate()}
                 src={video}
+                muted={isVideoMuted}
                 onMouseMove={handleMouseMoveOnCommentableElement}
                 onMouseLeave={handleLeaveCommentableElement}
                 crossOrigin="anonymous"
@@ -390,8 +392,10 @@ function CommentableVideo({
                 duration={duration}
                 currentTime={currentTime}
                 isPlaying={isPlaying}
+                muted={isVideoMuted}
                 onPlay={() => videoRef.current?.play()}
                 onPause={() => videoRef.current?.pause()}
+                onToggleMute={() => setIsVideoMuted((prev) => !prev)}
                 onSeek={updateCurrentTime}
               />
               {Array.from(threads).map(([key, { metadata }]) => {
