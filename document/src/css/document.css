@@ -161,7 +161,7 @@ cord-thread .cord-thread-container {
   border-radius: 0;
   gap: 0;
   grid-template-rows: 18px 16px auto auto;
-  grid-template-columns: 44px auto auto auto 1fr auto;
+  grid-template-columns: 48px auto auto auto 1fr auto;
   grid-template-areas:
     'avatar authorName  sentViaIcon . optionsMenu'
     'avatar timestamp  timestamp . optionsMenu'
