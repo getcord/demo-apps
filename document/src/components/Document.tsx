@@ -431,6 +431,20 @@ export function Document() {
           <PagePresence />
         </div>
         <hr />
+        {/* Used to catch clicks outside the thread, and close it. */}
+        <div
+          className="thread-underlay"
+          style={{
+            display: openThread ? 'block' : 'none',
+          }}
+          onClick={() => {
+            if (openThread && threads.get(openThread)?.totalMessages === 0) {
+              handleRemoveThread(openThread);
+            } else {
+              setOpenThread(null);
+            }
+          }}
+        />
         <div id="sheet" ref={containerRef}>
           <FloatingPresence presentUsers={presentUsers} />
           <h1 id="title">Nope, this isn&apos;t Google Docs.</h1>
@@ -448,20 +462,6 @@ Check out some other examples of what you can build with Cord, here.`}
           </p>
         </div>
       </div>
-      {/* Used to catch clicks outside the thread, and close it. */}
-      <div
-        className="thread-underlay"
-        style={{
-          display: openThread ? 'block' : 'none',
-        }}
-        onClick={() => {
-          if (openThread && threads.get(openThread)?.totalMessages === 0) {
-            handleRemoveThread(openThread);
-          } else {
-            setOpenThread(null);
-          }
-        }}
-      />
     </>
   );
 }

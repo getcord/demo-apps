@@ -136,6 +136,7 @@ cord-thread:not(.open-thread) .cord-composer {
   width: 100%;
   height: 100%;
   cursor: auto;
+  isolation: isolate;
 }
 
 cord-thread.cord-component {
