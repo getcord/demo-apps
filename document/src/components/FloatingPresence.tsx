@@ -2,7 +2,9 @@ import type { UserLocationData } from '@cord-sdk/types';
 import { Avatar } from '@cord-sdk/react';
 
 const AVATARS_GAP = 12;
-
+/**
+ * Adds an avatar next to the element where the user is present.
+ */
 export function FloatingPresence({
   presentUsers,
 }: {

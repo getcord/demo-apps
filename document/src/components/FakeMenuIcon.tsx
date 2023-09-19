@@ -1,3 +1,6 @@
+/**
+ * Looks like GDocs, but it isn't!
+ */
 export function FakeMenu() {
   return (
     <svg width="262" height="43" fill="none" xmlns="http://www.w3.org/2000/svg">

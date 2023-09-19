@@ -1,5 +1,9 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
+/**
+ * Given a string, it will animate it like it's being typed on a GDoc.
+ * It only animates it when the document is visible.
+ */
 export function AnimatedText({
   text,
   typingUser,
@@ -15,10 +19,6 @@ export function AnimatedText({
   const [charIndex, setCharIndex] = useState(0);
   const [showCaret, setShowCaret] = useState(true);
 
-  const getDelay = useCallback(() => {
-    return Math.random() * 50;
-  }, []);
-
   useEffect(() => {
     if (!animate) {
       return;
@@ -30,7 +30,7 @@ export function AnimatedText({
       timeout = setTimeout(() => {
         setCurrentText((prevText) => prevText + text[charIndex]);
         setCharIndex((prevIndex) => prevIndex + 1);
-      }, getDelay());
+      }, getTypingDelay());
     } else {
       onComplete?.();
       timeout = setTimeout(() => {
@@ -43,7 +43,7 @@ export function AnimatedText({
         clearTimeout(timeout);
       }
     };
-  }, [animate, charIndex, getDelay, onComplete, text]);
+  }, [animate, charIndex, onComplete, text]);
 
   return (
     <>
@@ -55,4 +55,9 @@ export function AnimatedText({
       )}
     </>
   );
+}
+
+/** How fast/slow do we want the typing effect */
+function getTypingDelay(delayMs = 50) {
+  return Math.random() * delayMs;
 }

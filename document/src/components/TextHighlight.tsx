@@ -1,5 +1,9 @@
 import type { CSSProperties } from 'react';
 
+/**
+ * The highlight has two parts: aA yellow rectangle below the text, to not cover it.
+ * A clickable transparent rectangle over the text, enabling interactions.
+ */
 export function TextHighlight({
   rect,
   isOpenThread,

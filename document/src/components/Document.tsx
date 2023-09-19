@@ -20,11 +20,15 @@ export const LOCATION = { page: 'document' };
 const THREADS_GAP = 16;
 export type Coordinates = { top: number; left: number };
 
+/**
+ * A GDocs clone, powered by Cord.
+ */
 export function Document() {
   // The comment button is shown after user select some text.
   const [commentButtonCoords, setCommentButtonCoords] = useState<
     Coordinates | undefined
   >();
+  // Threads are positioned to the right of the text, just like in GDocs.
   const [threadsPositions, setThreadsPositions] = useState<Coordinates[]>([]);
   // Threads which have been rendered on screen. This is useful because
   // we initially render threads as `hidden`, because we need to know
@@ -52,7 +56,6 @@ export function Document() {
 
   const userData = user.useViewerData();
   const orgId = userData?.organizationID;
-  const userId = userData?.id;
   const { threads, openThread, addThread, removeThread, setOpenThread } =
     useContext(ThreadsContext)!;
 
@@ -66,7 +69,7 @@ export function Document() {
   }, [threads]);
 
   // If users comment on the same line, multiple threads would have the same
-  // y (or top) coordinate. However, don't want threads to overlap, and so
+  // y (or top) coordinate. However, we don't want threads to overlap, and so
   // we have to manually calculate the positions.
   // Each thread only cares about the thread above itself. And so, if
   // the above thread (top coordinate + height) is over the current thread,
@@ -160,6 +163,7 @@ export function Document() {
     return () => observer.disconnect();
   }, [getThreadsPositions, observer, sortedThreads, threadsReady]);
 
+  // Resizing the window should re-adjust the threads' positions
   useEffect(() => {
     window.addEventListener('resize', handleUpdateThreadPositions);
 
@@ -175,7 +179,7 @@ export function Document() {
     if (
       !selection ||
       selection.isCollapsed ||
-      // Only allow selection in the document.
+      // Only allow selection in the sheet.
       !selection.anchorNode?.parentElement?.closest('#sheet') ||
       !selection.focusNode?.parentElement?.closest('#sheet')
     ) {
@@ -183,7 +187,8 @@ export function Document() {
       return;
     }
 
-    if (selection.toString().trim().length > 0) {
+    const hasSelectedText = selection.toString().trim().length > 0;
+    if (hasSelectedText) {
       const range = selection.getRangeAt(0);
       const { top, left } = range.getClientRects()[0];
       setCommentButtonCoords({
@@ -204,48 +209,35 @@ export function Document() {
     partial_match: true,
     exclude_durable: true,
   });
-
   // When users hover on an element, we mark them as present
   // on that element, and mark them as absent from everywhere else.
-  const handleMouseOver = useCallback(
-    (e: MouseEvent) => {
-      if (!window.CordSDK) {
-        return;
-      }
+  // We do so by checking the element.id.
+  const handleMouseOver = useCallback((e: MouseEvent) => {
+    if (!window.CordSDK) {
+      return;
+    }
 
-      const toElement = e.target;
-      if (
-        !toElement ||
-        !(toElement instanceof HTMLElement) ||
-        !toElement.id.length ||
-        toElement.id === 'sheet'
-      ) {
-        return;
-      }
+    const toElement = e.target;
+    if (
+      !toElement ||
+      !(toElement instanceof HTMLElement) ||
+      !toElement.id.length ||
+      toElement.id === 'sheet'
+    ) {
+      return;
+    }
 
-      void window.CordSDK.presence.setPresent({
+    void window.CordSDK.presence.setPresent(
+      {
         ...LOCATION,
         elementId: toElement.id,
-      });
-
-      const currUserPresence = presentUsers?.find((u) => u.id === userId);
-      if (currUserPresence?.ephemeral.locations.length) {
-        for (const location of currUserPresence.ephemeral.locations) {
-          if (location.elementId === toElement.id) {
-            continue;
-          }
-          void window.CordSDK.presence.setPresent(
-            {
-              ...LOCATION,
-              elementId: location.elementId,
-            },
-            { absent: true },
-          );
-        }
-      }
-    },
-    [presentUsers, userId],
-  );
+      },
+      // This makes a user present only in one place within LOCATION.
+      // E.g. when hovering the title, the user will be marked absent
+      // everywhere else.
+      { exclusive_within: LOCATION },
+    );
+  }, []);
 
   useEffect(() => {
     const { current: sheet } = containerRef;
@@ -287,6 +279,9 @@ export function Document() {
     }
 
     const metadata = {
+      // For simplicity, we've added an id to our elements. This
+      // makes it easy to retrieve the HTMLElement when we need to render
+      // the threads on screen.
       startNodeId: startElement.id,
       endNodeId: endElement.id,
       startOffset,
@@ -310,6 +305,7 @@ export function Document() {
     [removeThread, setOpenThread],
   );
 
+  // Improving the UX: Clicking Escape should close the currently open thread.
   const handleClickEsc = useCallback(
     (e: KeyboardEvent) => {
       if (!openThread || e.key !== 'Escape') {
@@ -369,6 +365,8 @@ export function Document() {
                 }}
                 onClick={() => {
                   setOpenThread(threadId);
+                  // Threads grow vertically. Very long threads might get
+                  // far away from the sheet's content, in which case, move them up!
                   const isBottomThreadTooFarDown =
                     threadsPositions[threadsPositions.length - 1].top >
                     window.innerHeight;
@@ -388,6 +386,10 @@ export function Document() {
                     getTopPxFromMetadata(metadata),
                   transition: 'all 0.25s ease 0.1s',
                   transitionProperty: 'top, left',
+                  // The first time the thread gets rendered it's `hidden`, but
+                  // it has the right height. Once we know its height, we mark it
+                  // as ready, and we can correctly compute the position of the  thread
+                  //  below it.
                   visibility: threadsReady.has(threadId) ? 'visible' : 'hidden',
                 }}
               >
@@ -445,6 +447,7 @@ export function Document() {
             }
           }}
         />
+        {/* The actual contents of the sheet */}
         <div id="sheet" ref={containerRef}>
           <FloatingPresence presentUsers={presentUsers} />
           <h1 id="title">Nope, this isn&apos;t Google Docs.</h1>
@@ -466,6 +469,11 @@ Check out some other examples of what you can build with Cord, here.`}
   );
 }
 
+/**
+ * Given ThreadMetadata, build a Range. This is very useful to
+ * render the highlight over the text, by leveraging native browser
+ * APIs.
+ */
 function getRange(metadata: ThreadMetadata) {
   const startElement = document.getElementById(metadata.startNodeId);
   const endElement = document.getElementById(metadata.endNodeId);
@@ -492,6 +500,10 @@ function getRange(metadata: ThreadMetadata) {
   return range;
 }
 
+/**
+ * Helper function that adds the window.scrollY, to correctly account for
+ * vertical scroll when comparing the y/top coordinate.
+ */
 function getTopPxFromMetadata(metadata: ThreadMetadata) {
   return (
     (getRange(metadata)?.getBoundingClientRect().top ?? 0) + window.scrollY
@@ -505,7 +517,9 @@ const LINK_TO_DOCS_TEXT_METADATA: ThreadMetadata = {
   startOffset: 162,
 };
 /**
- * Given a range, wraps it with <a href={url}>
+ * Given a range, wraps it with <a href={url}>, effectively making it a link.
+ * This is useful to update the existing content at any time. In this demo,
+ * we use it to update the content after the typing animation.
  */
 function linkify(
   metadata: ThreadMetadata = LINK_TO_DOCS_TEXT_METADATA,
