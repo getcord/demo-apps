@@ -295,6 +295,8 @@ video {
   min-height: 624px;
   max-height: 624px;
   align-self: stretch;
+  /* Put it above the underlay */
+  isolation: isolate;
 
   width: var(--threaded-comments-width);
 }
