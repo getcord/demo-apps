@@ -428,7 +428,7 @@ export function Document() {
       >
         <div className="header">
           <FakeMenu />
-          <PagePresence />
+          <PagePresence location={LOCATION} />
         </div>
         <hr />
         {/* Used to catch clicks outside the thread, and close it. */}
@@ -450,7 +450,7 @@ export function Document() {
           <h1 id="title">Nope, this isn&apos;t Google Docs.</h1>
           <p id="body">
             <AnimatedText
-              typingUser="Tom"
+              typingUser="Albert"
               animate={!document.hidden}
               text={`It isn't.
               
