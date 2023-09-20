@@ -26,6 +26,7 @@ html {
   --video-border-radius: 32px;
   --threaded-comments-width: 280px;
   --pin-scale-up: 1.1765;
+  --commentable-video-width: calc(100% - 400px);
 }
 
 body {
@@ -66,7 +67,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 60px;
+
+  width: calc(var(--commentable-video-width) + var(--threaded-comments-width));
+  margin: 0 auto;
 }
 
 #content {
@@ -173,7 +176,7 @@ body {
 
 #commentableVideo {
   display: flex;
-  width: calc(100% - 400px);
+  width: var(--commentable-video-width);
   background: var(--grey-dark);
   border-radius: var(--video-border-radius);
   align-self: stretch;
