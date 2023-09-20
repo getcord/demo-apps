@@ -118,7 +118,10 @@ export function HighchartsExample({ chartId, highchartsDataSeries }: Props) {
 
   return (
     <>
-      <h2>Market cap of collaborative companies</h2>
+      <div className="chart-header">
+        <h2 className="chart-title">Market cap of collaborative companies*</h2>
+        <p className="footnote">*Valuation data extremely inaccurate</p>
+      </div>
       <div className="date-range-selector">
         {dateRanges.length > 1 &&
           dateRanges.map(({ start, end }) => {
@@ -234,11 +237,10 @@ function useChartOptions(
 
       yAxis: {
         title: {
-          text: 'Valuation in USD',
+          text: 'Valuation in USD billions',
         },
         gridLineColor: 'transparent',
         labels: {
-          format: `{text}K`,
           style: {
             color: '#edeff1',
           },
