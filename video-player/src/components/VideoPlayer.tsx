@@ -216,12 +216,9 @@ function CommentableVideo({
                 muted={isVideoMuted}
                 onMouseMove={handleMouseMoveOnCommentableElement}
                 onMouseLeave={handleLeaveCommentableElement}
-                crossOrigin="anonymous"
                 onPause={onVideoPause}
                 onPlay={onVideoPlay}
-              >
-                <source src={video} type="video/mp4" />
-              </video>
+              ></video>
               <CustomControls
                 duration={duration}
                 currentTime={currentTime}
