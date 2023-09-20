@@ -8,7 +8,7 @@ import { HighchartsExample } from './HighchartsExample';
 import { AGGridExample } from './AGGridExample';
 import { ThreadedCommentsButton } from './ThreadedCommentsButton';
 
-export const LOCATION = { page: 'dashboard' };
+export const LOCATION = { page: 'dashboard-new' };
 export const CHART_ID = 'some-unique-and-stable-id-of-this-chart';
 export const GRID_ID = 'some-unique-and-stable-id-of-this-grid';
 function Dashboard({
@@ -84,6 +84,8 @@ function Dashboard({
             <PagePresence location={LOCATION} />
             <NotificationListLauncher
               onClick={() => setThreadListOpen(false)}
+              // Remove this if you want all notifications from all locations
+              filter={{ location: { page: 'dashboard-new' } }}
             />
           </div>
         </div>

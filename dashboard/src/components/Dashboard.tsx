@@ -106,6 +106,8 @@ function Dashboard({
             <NotificationListLauncher
               onClick={() => setThreadListOpen(false)}
               label="Notifications"
+              // Remove this if you want all notifications from all locations
+              filter={{ location: { page: 'dashboard' } }}
             />
             <PagePresence location={LOCATION} />
           </div>

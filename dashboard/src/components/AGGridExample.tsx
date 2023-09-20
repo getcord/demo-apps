@@ -249,7 +249,9 @@ function CellWithThreadAndPresence(
   }
   const threadId = orgId && makeThreadId({ orgId, gridId, colId, rowId });
   const threadMetadata =
-    threadId !== undefined ? threads.get(threadId) : undefined;
+    threadId !== undefined && threadId !== null
+      ? threads.get(threadId)
+      : undefined;
 
   const location = useMemo(
     () => ({ gridId, rowId, colId }),
