@@ -541,10 +541,10 @@ function getTopPxFromMetadata(metadata: ThreadMetadata) {
 }
 
 const LINK_TO_DOCS_TEXT_METADATA: ThreadMetadata = {
-  endNodeId: 'body',
-  startNodeId: 'body',
-  endOffset: 166,
-  startOffset: 162,
+  endNodeId: 'p3',
+  startNodeId: 'p3',
+  endOffset: 67,
+  startOffset: 63,
 };
 /**
  * Given a range, wraps it with <a href={url}>, effectively making it a link.

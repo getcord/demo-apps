@@ -18,38 +18,29 @@ export function AnimatedText({
   // To achieve the typing animation, we start from an empty string,
   // and we progressively add some characters.
   const [currentText, setCurrentText] = useState('');
-  const [charIndex, setCharIndex] = useState(0);
   // To add to the realism, we add a fake caret/text cursor, which
   // resembles the one in GDocs.
   const [showFakeTextCursor, setShowFakeTextCursor] = useState(false);
 
   useEffect(() => {
     if (!animate) {
+      setShowFakeTextCursor(false);
       return;
     }
 
-    setShowFakeTextCursor(true);
-    let timeout: NodeJS.Timeout | null = null;
-    const stillTyping = charIndex < text.length;
+    const stillTyping = currentText.length < text.length;
     if (stillTyping) {
-      timeout = setTimeout(() => {
-        setCurrentText((prevText) => prevText + text[charIndex]);
-        setCharIndex((prevIndex) => prevIndex + 1);
+      setShowFakeTextCursor(true);
+      setTimeout(() => {
+        setCurrentText((prevText) => text.slice(0, prevText.length + 1));
       }, getTypingDelay());
     } else {
       onComplete?.();
-      timeout = setTimeout(() => {
+      setTimeout(() => {
         setShowFakeTextCursor(false);
       }, 2000);
     }
-
-    return () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-      setShowFakeTextCursor(false);
-    };
-  }, [animate, charIndex, onComplete, text]);
+  }, [animate, currentText.length, onComplete, text]);
 
   return (
     <>
