@@ -1,5 +1,5 @@
 import { Thread, user, presence, PagePresence } from '@cord-sdk/react';
-import {
+import React, {
   useMemo,
   useRef,
   useCallback,
@@ -36,6 +36,14 @@ export function Document() {
   const [threadsReady, setThreadsReady] = useState<Set<string>>(new Set());
   const threadsRefs = useRef<(HTMLDivElement | undefined)[] | null>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // NOTE: This is used only for the typing effect in cord.com demos.
+  // Feel free to ignore/get rid of this part.
+  const [animatingElementIndex, setAnimatingElementIndex] = useState(0);
+  const handleStartAnimatingNextElement = useCallback(
+    () => setAnimatingElementIndex((prev) => prev + 1),
+    [],
+  );
 
   // We want the sheet to grow as tall as needed, so
   // that threads can never go outside of it.
@@ -447,19 +455,41 @@ export function Document() {
             }
           }}
         />
-        {/* The actual contents of the sheet */}
+        {/* The actual contents of the sheet. If you're planning on building your own,
+        you can safely remove AnimatedText. The key requirement for every element is to have an ID.
+        E.g. <h1 id="title">My Shiny App</h1><p id="content">My Shiny content</p> will work. */}
         <div id="sheet" ref={containerRef}>
           <FloatingPresence presentUsers={presentUsers} />
-          <h1 id="title">Nope, this isn&apos;t Google Docs.</h1>
-          <p id="body">
+          <h1 id="title">
             <AnimatedText
               typingUser="Albert"
-              animate={!document.hidden}
-              text={`It isn't.
-              
-We built this commenting experience with Cord's SDK, and you can, too 👍
-
-Check out some other examples of what you can build with Cord, here.`}
+              animate={!document.hidden && animatingElementIndex === 0}
+              text="Nope, this isn't Google Docs."
+              onComplete={handleStartAnimatingNextElement}
+            />
+          </h1>
+          <p id="p1">
+            <AnimatedText
+              typingUser="Albert"
+              animate={!document.hidden && animatingElementIndex === 1}
+              text="It isn't."
+              onComplete={handleStartAnimatingNextElement}
+            />
+          </p>
+          <p id="p2">
+            <AnimatedText
+              typingUser="Albert"
+              animate={!document.hidden && animatingElementIndex === 2}
+              text="We built this commenting experience with Cord's SDK, and you
+              can, too 👍"
+              onComplete={handleStartAnimatingNextElement}
+            />
+          </p>
+          <p id="p3">
+            <AnimatedText
+              typingUser="Albert"
+              animate={!document.hidden && animatingElementIndex === 3}
+              text="Check out some other examples of what you can build with Cord, here."
               onComplete={() => linkify()}
             />
           </p>

@@ -15,15 +15,20 @@ export function AnimatedText({
   animate?: boolean;
   onComplete?: () => void;
 }) {
+  // To achieve the typing animation, we start from an empty string,
+  // and we progressively add some characters.
   const [currentText, setCurrentText] = useState('');
   const [charIndex, setCharIndex] = useState(0);
-  const [showCaret, setShowCaret] = useState(true);
+  // To add to the realism, we add a fake caret/text cursor, which
+  // resembles the one in GDocs.
+  const [showFakeTextCursor, setShowFakeTextCursor] = useState(false);
 
   useEffect(() => {
     if (!animate) {
       return;
     }
 
+    setShowFakeTextCursor(true);
     let timeout: NodeJS.Timeout | null = null;
     const stillTyping = charIndex < text.length;
     if (stillTyping) {
@@ -34,7 +39,7 @@ export function AnimatedText({
     } else {
       onComplete?.();
       timeout = setTimeout(() => {
-        setShowCaret(false);
+        setShowFakeTextCursor(false);
       }, 2000);
     }
 
@@ -42,13 +47,14 @@ export function AnimatedText({
       if (timeout) {
         clearTimeout(timeout);
       }
+      setShowFakeTextCursor(false);
     };
   }, [animate, charIndex, onComplete, text]);
 
   return (
     <>
       {currentText}
-      {showCaret && (
+      {showFakeTextCursor && (
         <span data-typing-user={typingUser} className="caret">
           |
         </span>
