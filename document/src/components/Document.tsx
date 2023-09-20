@@ -489,8 +489,8 @@ export function Document() {
             <AnimatedText
               typingUser="Albert"
               animate={!document.hidden && animatingElementIndex === 3}
-              text="Check out some other examples of what you can build with Cord, here."
-              onComplete={() => linkify()}
+              text="Go on, give it a try! Don't worry, your comments won't be visible to anyone else visiting the site."
+              onComplete={handleStartAnimatingNextElement}
             />
           </p>
         </div>
@@ -538,29 +538,4 @@ function getTopPxFromMetadata(metadata: ThreadMetadata) {
   return (
     (getRange(metadata)?.getBoundingClientRect().top ?? 0) + window.scrollY
   );
-}
-
-const LINK_TO_DOCS_TEXT_METADATA: ThreadMetadata = {
-  endNodeId: 'p3',
-  startNodeId: 'p3',
-  endOffset: 67,
-  startOffset: 63,
-};
-/**
- * Given a range, wraps it with <a href={url}>, effectively making it a link.
- * This is useful to update the existing content at any time. In this demo,
- * we use it to update the content after the typing animation.
- */
-function linkify(
-  metadata: ThreadMetadata = LINK_TO_DOCS_TEXT_METADATA,
-  url = 'https://docs.cord.com',
-) {
-  const range = getRange(metadata);
-  if (!range) {
-    return;
-  }
-
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  range.surroundContents(link);
 }
