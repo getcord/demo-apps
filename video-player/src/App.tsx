@@ -22,10 +22,7 @@ export default function App() {
       {authToken && (
         <VideoPlayer
           video={
-            'https://cdn.cord.com/cord-website-video/cord-website-video-1080P.mp4'
-          }
-          videoSubs={
-            'https://cdn.cord.com/cord-website-video/cord-website-video.vtt'
+            'https://cdn.cord.com/cord-website-video/cord-website-video-with-subs-1080p.mp4'
           }
         />
       )}

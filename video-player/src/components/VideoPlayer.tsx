@@ -12,20 +12,10 @@ import { VideoPin } from './VideoPin';
 
 const LOCATION = { page: 'video' };
 
-export function VideoPlayer({
-  video,
-  videoSubs,
-}: {
-  video: string;
-  videoSubs: string;
-}) {
+export function VideoPlayer({ video }: { video: string }) {
   return (
     <ThreadsProvider location={LOCATION}>
-      <CommentableVideo
-        video={video}
-        videoSubs={videoSubs}
-        location={LOCATION}
-      />
+      <CommentableVideo video={video} location={LOCATION} />
     </ThreadsProvider>
   );
 }
@@ -35,11 +25,9 @@ export function VideoPlayer({
  */
 function CommentableVideo({
   video,
-  videoSubs,
   location,
 }: {
   video: string;
-  videoSubs: string;
   location: Location;
 }) {
   const { threads, addThread, removeThread, setOpenThread, openThread } =
@@ -233,13 +221,6 @@ function CommentableVideo({
                 onPlay={onVideoPlay}
               >
                 <source src={video} type="video/mp4" />
-                <track
-                  default
-                  kind="captions"
-                  label="English captions"
-                  srcLang="en"
-                  src={videoSubs}
-                />
               </video>
               <CustomControls
                 duration={duration}
