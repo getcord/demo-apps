@@ -177,7 +177,7 @@ body {
 #commentableVideo {
   display: flex;
   width: var(--commentable-video-width);
-  background: var(--grey-dark);
+  background: var(--black);
   border-radius: var(--video-border-radius);
   align-self: stretch;
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.16);
@@ -274,7 +274,7 @@ video {
 
 /* Cord components  */
 #video-player-demo-container {
-  --cord-color-base: var(--grey-dark);
+  --cord-color-base: var(--black);
   --cord-color-base-strong: rgba(var(--grey-light), 0.2);
   --cord-color-content-emphasis: var(--white);
   --cord-color-content-primary: var(--white);
@@ -311,7 +311,7 @@ video {
 .cord-threaded-comments-thread.cord-highlighted,
 .cord-threaded-comments-thread:hover,
 .cord-threaded-comments-thread:hover .cord-message {
-  background-color: var(--black);
+  background-color: var(--grey-dark);
   border-radius: 16px;
 }
 
