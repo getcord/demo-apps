@@ -36,6 +36,10 @@ body {
     sans-serif;
 }
 
+.cord-component a {
+  color: var(--purple);
+}
+
 /* Style scrollbar like MacOS. Only works in WebKit-based and Blink broswers 
 (e.g Chrome, Safari, Opera but not Firefox */
 .cord-threaded-comments-thread-list::-webkit-scrollbar {
