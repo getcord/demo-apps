@@ -76,7 +76,7 @@ body {
 }
 
 #dashboard h2 {
-  font-weight: 300;
+  font-weight: 400;
   font-size: 20px;
   line-height: 32px;
   margin: 0;
@@ -218,10 +218,6 @@ cord-thread.cord-component {
 
 .cord-message .cord-timestamp {
   display: none;
-}
-
-.chart-title {
-  margin: 0;
 }
 
 .footnote {

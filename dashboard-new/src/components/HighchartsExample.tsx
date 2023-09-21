@@ -24,7 +24,7 @@ const DATE_RANGE_SELECTOR_OPTIONS = [
   { start: 2018, end: 2022 },
 ];
 
-const COMMENT_ICON_HEIGHT_PX = 12;
+const COMMENT_ICON_HEIGHT_PX = 15;
 const COMMENT_ICON_TOP_OFFSET_PX = 3;
 const GAP_PX = 8;
 
@@ -161,8 +161,22 @@ function useChartOptions(
   onRedraw: (() => void) | undefined,
 ) {
   const orgId = user.useViewerData()?.organizationID;
-  const { addThread, setOpenThread } = useContext(ThreadsContext)!;
+  const { threads, addThread, setOpenThread, openThread } =
+    useContext(ThreadsContext)!;
 
+  // To enable us to highlight the background of the point in plotBands below
+  const activeThreadXPoint = useMemo(() => {
+    if (!openThread) {
+      return null;
+    }
+
+    const thread = threads.get(openThread);
+    if (!thread || thread.type === 'grid') {
+      return null;
+    }
+
+    return thread.x;
+  }, [openThread, threads]);
   const maybeAddComment = useCallback(() => {
     const hoverPoint = chartRef.current?.chart.hoverPoint;
     if (!hoverPoint) {
@@ -190,6 +204,7 @@ function useChartOptions(
     () => ({
       plotOptions: {
         series: {
+          lineWidth: 5,
           cursor: 'pointer',
           events: {
             click: maybeAddComment,
@@ -199,11 +214,8 @@ function useChartOptions(
           },
           pointStart: 2012,
           marker: {
-            states: {
-              hover: {
-                fillColor: '#e37400',
-              },
-            },
+            radius: 6,
+            symbol: 'circle',
           },
         },
         column: {
@@ -243,6 +255,7 @@ function useChartOptions(
         labels: {
           style: {
             color: '#edeff1',
+            fontSize: '12px',
           },
         },
       },
@@ -266,13 +279,22 @@ function useChartOptions(
           '2021',
           '2022',
         ],
-        crosshair: { color: '#442f71' },
+        crosshair: { color: '#2e2e2e' },
         tickInterval: 1,
         labels: {
           style: {
             color: '#edeff1',
+            fontSize: '12px',
           },
         },
+        // Highlights the background of the thread that is currently opened
+        plotBands: [
+          {
+            color: '#2e2e2e',
+            from: activeThreadXPoint ? activeThreadXPoint - 0.5 : null, // Start of the plot band
+            to: activeThreadXPoint ? activeThreadXPoint + 0.5 : null, // End of the plot band
+          },
+        ],
       },
 
       legend: {
@@ -281,10 +303,12 @@ function useChartOptions(
         verticalAlign: 'bottom',
         itemStyle: {
           color: '#edeff1',
+          fontSize: '14px',
         },
         itemHoverStyle: {
           color: '#97979f',
         },
+        symbolWidth: 24,
       },
 
       tooltip: {
@@ -302,13 +326,16 @@ function useChartOptions(
         borderRadius: 12,
         padding: 12,
         borderColor: 'transparent',
-        backgroundColor: '#00000c',
+        backgroundColor: '#000000',
         outside: true,
         style: {
           color: '#edeff1',
         },
-        formatter: function (): string {
+        formatter: function (): string | false {
           const { x, y, color, series } = this as any;
+          if (activeThreadXPoint === x) {
+            return false;
+          }
           const commentCTA = 'Click to comment';
           return `
                 <div style="display: flex; flex-direction: column; gap: 8px">
@@ -319,7 +346,7 @@ function useChartOptions(
                     ${series.name}: <b>${y}</b>
                   </div>
                   <div style="display: flex; align-items: center; gap: 4px">
-                    <div style="width: 12px; height: 12px;">
+                    <div style="width: 15px; height: 15px;">
                       <img src=${commentIcon}  />
                     </div>
                     <span>${commentCTA}</span>
@@ -330,7 +357,7 @@ function useChartOptions(
         useHTML: true,
       },
     }),
-    [maybeAddComment, onRedraw],
+    [activeThreadXPoint, maybeAddComment, onRedraw],
   );
 }
 
