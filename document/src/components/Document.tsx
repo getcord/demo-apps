@@ -464,7 +464,7 @@ export function Document() {
             <AnimatedText
               typingUser="Albert"
               animate={!document.hidden && animatingElementIndex === 0}
-              text="Nope, this isn't Google Docs."
+              text="Looks like Google Docs, right?"
               onComplete={handleStartAnimatingNextElement}
             />
           </h1>
@@ -472,7 +472,8 @@ export function Document() {
             <AnimatedText
               typingUser="Albert"
               animate={!document.hidden && animatingElementIndex === 1}
-              text="It isn't."
+              text="We built this commenting experience with Cord's SDK, and you
+              can, too 👍"
               onComplete={handleStartAnimatingNextElement}
             />
           </p>
@@ -480,15 +481,6 @@ export function Document() {
             <AnimatedText
               typingUser="Albert"
               animate={!document.hidden && animatingElementIndex === 2}
-              text="We built this commenting experience with Cord's SDK, and you
-              can, too 👍"
-              onComplete={handleStartAnimatingNextElement}
-            />
-          </p>
-          <p id="p3">
-            <AnimatedText
-              typingUser="Albert"
-              animate={!document.hidden && animatingElementIndex === 3}
               text="Go on, give it a try! Don't worry, your comments won't be visible to anyone else visiting the site."
             />
           </p>
