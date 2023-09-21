@@ -40,6 +40,7 @@ export function Document() {
   // NOTE: This is used only for the typing effect in cord.com demos.
   // Feel free to ignore/get rid of this part.
   const [animatingElementIndex, setAnimatingElementIndex] = useState(0);
+  const [finishedTextAnimation, setFinishedTextAnimation] = useState(false);
   const handleStartAnimatingNextElement = useCallback(
     () => setAnimatingElementIndex((prev) => prev + 1),
     [],
@@ -69,12 +70,16 @@ export function Document() {
 
   // Sorted from top to bottom as they should appear on screen.
   const sortedThreads = useMemo(() => {
+    // We want to recompute this when the finishedTextAnimation,
+    // because the content of the page changes based on that.
+    // You can remove the next line.
+    finishedTextAnimation;
     return Array.from(threads).sort(
       ([_aId, { metadata: metadataA }], [_bId, { metadata: metadataB }]) =>
         (getRange(metadataA)?.getBoundingClientRect().top ?? 0) -
         (getRange(metadataB)?.getBoundingClientRect().top ?? 0),
     );
-  }, [threads]);
+  }, [threads, finishedTextAnimation]);
 
   // If users comment on the same line, multiple threads would have the same
   // y (or top) coordinate. However, we don't want threads to overlap, and so
@@ -482,6 +487,7 @@ export function Document() {
               typingUser="Albert"
               animate={!document.hidden && animatingElementIndex === 2}
               text="Go on, give it a try! Don't worry, your comments won't be visible to anyone else visiting the site."
+              onComplete={() => setFinishedTextAnimation(true)}
             />
           </p>
         </div>
