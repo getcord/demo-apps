@@ -490,7 +490,6 @@ export function Document() {
               typingUser="Albert"
               animate={!document.hidden && animatingElementIndex === 3}
               text="Go on, give it a try! Don't worry, your comments won't be visible to anyone else visiting the site."
-              onComplete={handleStartAnimatingNextElement}
             />
           </p>
         </div>
