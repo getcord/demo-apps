@@ -441,6 +441,14 @@ video::-webkit-media-controls-timeline {
   opacity: 1 !important;
 }
 
+.cord-component .cord-reaction-list .cord-from-viewer {
+  background-color: var(--grey-light);
+}
+
+.cord-component .cord-reaction-list {
+  background-color: var(--grey-dark);
+}
+
 cord-notification-list-launcher
   [data-cord-button='open-notification-list']
   .cord-icon {
