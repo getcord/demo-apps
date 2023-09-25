@@ -7,25 +7,45 @@ const ONE_MINUTE_MS = 60 * 1000;
 const ONE_DAY_MS = ONE_MINUTE_MS * 60 * 24;
 const SEVEN_DAYS_MS = ONE_DAY_MS * 7;
 
+function canUseLocalStorage() {
+  try {
+    typeof window.localStorage;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION() {
   const [{ value: cordAuthToken, hasExpired }, setCordAuthToken] = useState<{
     value: string | null;
     hasExpired: boolean;
-  }>(() => getLocalStorageItemWithExpiry(CORD_TOKEN_LOCALSTORAGE_KEY));
+  }>(() =>
+    canUseLocalStorage()
+      ? getLocalStorageItemWithExpiry(CORD_TOKEN_LOCALSTORAGE_KEY)
+      : { value: null, hasExpired: true },
+  );
 
   useEffect(() => {
     if (!cordAuthToken || hasExpired) {
       void fetchCordSampleToken().then((token) => {
         if (token) {
-          localStorage.setItem(
-            CORD_TOKEN_LOCALSTORAGE_KEY,
-            withExpiry(
-              token,
-              // Sample token expires after 7 days
-              getTimeInXMillisecondsFromNow(SEVEN_DAYS_MS),
-            ),
-          );
           setCordAuthToken({ value: token, hasExpired: false });
+
+          if (canUseLocalStorage()) {
+            localStorage.setItem(
+              CORD_TOKEN_LOCALSTORAGE_KEY,
+              withExpiry(
+                token,
+                // Sample token expires after 7 days
+                getTimeInXMillisecondsFromNow(SEVEN_DAYS_MS),
+              ),
+            );
+          } else {
+            console.warn(
+              `Cannot save Cord token in the localStorage. If you refresh the page, you will lose all your messages.`,
+            );
+          }
         }
       });
     }
@@ -53,45 +73,6 @@ async function fetchCordSampleToken(): Promise<string | null> {
   } catch (e) {
     return null;
   }
-}
-
-export function useLocalStorage<T>(key: string, initialValue: T) {
-  // State to store our value
-  // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState(() => {
-    if (typeof window === 'undefined') {
-      return initialValue;
-    }
-    try {
-      // Get from local storage by key
-      const item = window.localStorage.getItem(key);
-      // Parse stored json or if none return initialValue
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      // If error also return initialValue
-      console.log(error);
-      return initialValue;
-    }
-  });
-  // Return a wrapped version of useState's setter function that ...
-  // ... persists the new value to localStorage.
-  const setValue = (value: T) => {
-    try {
-      // Allow value to be a function so we have same API as useState
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
-      // Save state
-      setStoredValue(valueToStore);
-      // Save to local storage
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
-      }
-    } catch (error) {
-      // A more advanced implementation would handle the error case
-      console.log(error);
-    }
-  };
-  return [storedValue, setValue];
 }
 
 function getLocalStorageItemWithExpiry(key: string) {

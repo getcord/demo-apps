@@ -7,25 +7,45 @@ const ONE_MINUTE_MS = 60 * 1000;
 const ONE_DAY_MS = ONE_MINUTE_MS * 60 * 24;
 const SEVEN_DAYS_MS = ONE_DAY_MS * 7;
 
+function canUseLocalStorage() {
+  try {
+    typeof window.localStorage;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION() {
   const [{ value: cordAuthToken, hasExpired }, setCordAuthToken] = useState<{
     value: string | null;
     hasExpired: boolean;
-  }>(() => getLocalStorageItemWithExpiry(CORD_TOKEN_LOCALSTORAGE_KEY));
+  }>(
+    canUseLocalStorage()
+      ? () => getLocalStorageItemWithExpiry(CORD_TOKEN_LOCALSTORAGE_KEY)
+      : { value: null, hasExpired: true },
+  );
 
   useEffect(() => {
     if (!cordAuthToken || hasExpired) {
       void fetchCordSampleToken().then((token) => {
         if (token) {
-          localStorage.setItem(
-            CORD_TOKEN_LOCALSTORAGE_KEY,
-            withExpiry(
-              token,
-              // Sample token expires after 7 days
-              getTimeInXMillisecondsFromNow(SEVEN_DAYS_MS),
-            ),
-          );
           setCordAuthToken({ value: token, hasExpired: false });
+
+          if (canUseLocalStorage()) {
+            localStorage.setItem(
+              CORD_TOKEN_LOCALSTORAGE_KEY,
+              withExpiry(
+                token,
+                // Sample token expires after 7 days
+                getTimeInXMillisecondsFromNow(SEVEN_DAYS_MS),
+              ),
+            );
+          } else {
+            console.warn(
+              `Cannot save Cord token in the localStorage. If you refresh the page, you will lose all your messages.`,
+            );
+          }
         }
       });
     }
