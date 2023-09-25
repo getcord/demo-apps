@@ -1,8 +1,8 @@
 # Cord SDK Demo Apps
 
-- [Canvas](https://docs.cord.com/get-started/demo-apps/canvas)
-- [Dashboard](https://docs.cord.com/get-started/demo-apps/dashboard)
-- [Document](https://docs.cord.com/get-started/demo-apps/document)
+- [Dashboard](https://docs.cord.com/get-started/demo-apps/dashboard-new)
+- [Document](https://docs.cord.com/get-started/demo-apps/document-new)
 - [Video player](https://docs.cord.com/get-started/demo-apps/video-player)
-
+- [Canvas](https://docs.cord.com/get-started/demo-apps/canvas)
+  
 The demo apps are built with Vite: just clone this repository and within any app folder run `npm install` and `npm run dev`.
