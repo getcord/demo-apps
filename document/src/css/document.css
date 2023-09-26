@@ -43,6 +43,8 @@ body,
     0px 2px 20px 0px rgba(0, 0, 0, 0.16);
   min-height: 100%;
   overflow: hidden;
+  /* 590px is an arbitrary number. Anything below that crops the container */
+  min-width: min(100%, 590px);
 }
 
 .header {
@@ -72,6 +74,7 @@ hr {
   margin-right: 350px;
   padding: var(--padding);
   max-width: 768px;
+  min-width: fit-content;
 }
 
 #sheet > * {
