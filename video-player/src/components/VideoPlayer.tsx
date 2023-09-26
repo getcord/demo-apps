@@ -174,6 +174,21 @@ function CommentableVideo({
     () => setCursorTooltipPosition(null),
     [],
   );
+  // `mousemove` events on the video are not triggered when scrolling.
+  // We listen for `wheel` events, check whether we're above the video, and
+  // show the cursor tooltip accordingly
+  const handleWheel = useCallback(({ clientX: x, clientY: y }: MouseEvent) => {
+    const hoveredElement = document.elementFromPoint(x, y);
+    if (hoveredElement instanceof HTMLVideoElement) {
+      setCursorTooltipPosition({ x, y });
+    } else {
+      setCursorTooltipPosition(null);
+    }
+  }, []);
+  useEffect(() => {
+    document.addEventListener('wheel', handleWheel, { passive: true });
+    return () => document.removeEventListener('wheel', handleWheel);
+  }, [handleWheel]);
 
   // Changes the time of the video. E.g. updateCurrentTime(0) makes
   // the video start from the beginning.
