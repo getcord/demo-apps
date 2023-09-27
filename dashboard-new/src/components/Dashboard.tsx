@@ -74,23 +74,22 @@ function Dashboard({
   return (
     <>
       <div id="dashboard">
-        <div className="header">
-          <h1>Your collaborative dashboard</h1>
-          <div id="collaboration">
-            <ThreadedCommentsButton
-              open={threadListOpen}
-              setOpen={setThreadListOpen}
-            />
-            <PagePresence location={LOCATION} />
-            <NotificationListLauncher
-              onClick={() => setThreadListOpen(false)}
-              // Remove this if you want all notifications from all locations
-              filter={{ location: { page: 'dashboard-new' } }}
-            />
-          </div>
-        </div>
-
         <div className="grid highcharts">
+          <div className="header">
+            <h1>Your collaborative dashboard</h1>
+            <div id="collaboration">
+              <ThreadedCommentsButton
+                open={threadListOpen}
+                setOpen={setThreadListOpen}
+              />
+              <PagePresence location={LOCATION} />
+              <NotificationListLauncher
+                onClick={() => setThreadListOpen(false)}
+                // Remove this if you want all notifications from all locations
+                filter={{ location: { page: 'dashboard-new' } }}
+              />
+            </div>
+          </div>
           <div className="panel">
             <HighchartsExample
               chartId={CHART_ID}
