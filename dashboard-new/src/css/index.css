@@ -164,6 +164,11 @@ body {
   gap: var(--cord-floating-threads-gap, var(--cord-space-3xs, 4px));
 }
 
+.action-button.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .action-button:hover,
 .cord-button[data-cord-button='open-notification-list']:hover {
   color: var(--white);

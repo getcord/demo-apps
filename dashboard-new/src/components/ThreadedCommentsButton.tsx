@@ -1,5 +1,7 @@
 import { useCallback, useContext } from 'react';
 import { ThreadedComments } from '@cord-sdk/react';
+import cx from 'classnames';
+
 import { autoUpdate, flip, shift, useFloating } from '@floating-ui/react';
 import { ThreadsContext } from '../ThreadsContext';
 import { LOCATION } from './Dashboard';
@@ -10,7 +12,8 @@ type Props = {
   setOpen: (f: (v: boolean) => boolean) => void;
 };
 export function ThreadedCommentsButton({ open, setOpen }: Props) {
-  const { openThread, setRequestToOpenThread } = useContext(ThreadsContext)!;
+  const { openThread, setRequestToOpenThread, threads } =
+    useContext(ThreadsContext)!;
 
   const { refs, floatingStyles } = useFloating({
     whileElementsMounted: autoUpdate,
@@ -38,7 +41,7 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
   return (
     <>
       <button
-        className="action-button"
+        className={cx('action-button', { ['disabled']: threads.size === 0 })}
         style={open ? { backgroundColor: '#6a6b6c' } : undefined}
         ref={refs.setReference}
         onClick={toggleThreadedComments}
