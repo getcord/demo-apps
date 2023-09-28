@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import cx from 'classnames';
 import {
   ThreadedComments,
   PagePresence,
@@ -202,6 +203,14 @@ function CommentableVideo({
     [videoRef],
   );
 
+  const isVideoReadyRef = useRef(false);
+  const handleReadyToPlay = useCallback(() => {
+    // Set up our internal state.
+    onVideoTimeUpdate();
+
+    isVideoReadyRef.current = true;
+  }, [onVideoTimeUpdate]);
+
   return (
     <>
       <div id="video-player-demo-container">
@@ -219,14 +228,17 @@ function CommentableVideo({
             onClick={handleCloseThread}
           />
           <div id="commentableVideo">
-            <div id="videoWrapper">
+            <div
+              id="videoWrapper"
+              className={cx({ ['ready']: isVideoReadyRef.current })}
+            >
               <video
                 ref={videoRef}
                 disablePictureInPicture
                 controlsList="nofullscreen"
                 onClick={onVideoClick}
                 onTimeUpdate={onVideoTimeUpdate}
-                onCanPlay={() => onVideoTimeUpdate()}
+                onCanPlay={handleReadyToPlay}
                 src={video}
                 muted={isVideoMuted}
                 onMouseMove={handleMouseMoveOnCommentableElement}

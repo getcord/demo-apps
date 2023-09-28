@@ -191,6 +191,12 @@ body {
 #videoWrapper {
   position: relative;
   align-self: center;
+  opacity: 0;
+}
+
+#videoWrapper.ready {
+  opacity: 1;
+  transition: opacity 200ms;
 }
 
 video {
