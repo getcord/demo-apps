@@ -27,6 +27,7 @@ html {
   --threaded-comments-width: 280px;
   --pin-scale-up: 1.1765;
   --commentable-video-width: calc(100% - 400px);
+  --thread-border-radius: 8px;
 }
 
 body {
@@ -352,7 +353,7 @@ cord-pin,
 }
 
 #commentableVideo .cord-composer {
-  border-radius: 8px;
+  border-radius: var(--thread-border-radius);
 }
 
 .cord-component .cord-composer:focus-within {
@@ -390,6 +391,7 @@ cord-pin,
   border: none;
   box-shadow: 0px 2px 16px 0px var(--black);
   width: 250px;
+  border-radius: var(--thread-border-radius);
 }
 
 cord-pin .cord-pin-container {
