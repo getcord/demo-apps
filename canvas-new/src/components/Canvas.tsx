@@ -4,6 +4,7 @@ import cx from 'classnames';
 import { useCallback, useContext, useEffect, useRef } from 'react';
 import { Pin, Thread } from '@cord-sdk/react';
 import type { ThreadMetadata } from '../canvasUtils';
+
 import {
   createNewPin,
   getStageData,
@@ -11,6 +12,7 @@ import {
 } from '../canvasUtils';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
 import { CanvasCommentsList } from './CanvasCommentsList';
+import { CommentIcon } from './CommentIcon';
 
 export default function Canvas() {
   const {
@@ -278,7 +280,7 @@ export default function Canvas() {
             removeThreadIfEmpty(openThread);
           }}
         >
-          <img src={'/images/Pin.png'} alt="Chat bubble" />
+          <CommentIcon />
           <span>{inThreadCreationMode ? 'Cancel' : 'Add Comment'}</span>
         </button>
       </div>

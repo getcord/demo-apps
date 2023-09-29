@@ -3,7 +3,7 @@ import { CordProvider } from '@cord-sdk/react';
 import { InformationHeader } from '../../_common/InformationHeader';
 import { CanvasAndCommentsProvider } from './CanvasAndCommentsContext';
 import { EXAMPLE_CORD_LOCATION } from './canvasUtils';
-import Canvas from './components/Canvas';
+import { CanvasWindow } from './components/CanvasWindow';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
 
 export default function App() {
@@ -20,7 +20,7 @@ export default function App() {
       />
       {clientAuthToken && (
         <CanvasAndCommentsProvider location={EXAMPLE_CORD_LOCATION}>
-          <Canvas />
+          <CanvasWindow />
         </CanvasAndCommentsProvider>
       )}
     </CordProvider>
