@@ -301,6 +301,7 @@ video {
 }
 
 #video-player-demo-container .cord-threaded-comments {
+  background-color: var(--cord-color-base);
   border: 0;
   border-radius: 32px;
   padding: 16px;
