@@ -237,7 +237,7 @@ export default function Canvas() {
         id="stage"
         ref={canvasStageRef}
         className={cx('canvasContainer', {
-          commentingModeCursor: inThreadCreationMode,
+          ['commentingModeCursor']: inThreadCreationMode,
         })}
         name="stage"
         onClick={onStageClick}

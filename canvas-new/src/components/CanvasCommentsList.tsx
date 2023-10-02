@@ -82,7 +82,7 @@ export function CanvasCommentsList() {
             return (
               <div
                 className={cx('messageContainer', {
-                  openThread: openThread?.threadID === id,
+                  ['openThread']: openThread?.threadID === id,
                 })}
                 key={id}
                 onClick={() => navigateToPin(id)}
