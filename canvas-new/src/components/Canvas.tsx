@@ -1,4 +1,4 @@
-import { Stage, Layer, Rect, Circle, RegularPolygon } from 'react-konva';
+import { Stage, Layer, Rect, Circle, Text, Star } from 'react-konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import cx from 'classnames';
 import { useCallback, useContext, useEffect, useRef } from 'react';
@@ -8,6 +8,17 @@ import { createNewPin, getStageData } from '../canvasUtils';
 import { CommentIcon } from './CommentIcon';
 import { CanvasComment } from './CanvasComment';
 import { CanvasCommentsList } from './CanvasCommentsList';
+import { CustomArrow, CustomSparkle, CustomSquiggle } from './CustomShapes';
+
+const LIST_OF_CANVAS_SHAPES = [
+  'square',
+  'circle',
+  'star',
+  'prompt-text',
+  'custom-arrow',
+  'custom-squiggle',
+  'custom-sparkle',
+];
 
 export default function Canvas() {
   const {
@@ -87,10 +98,8 @@ export default function Canvas() {
       const elementName = e.target.attrs.name;
 
       if (
-        elementName !== 'circle' &&
-        elementName !== 'square' &&
-        elementName !== 'diamond' &&
-        elementName !== 'stage'
+        elementName !== 'stage' &&
+        !LIST_OF_CANVAS_SHAPES.includes(elementName)
       ) {
         return;
       }
@@ -236,31 +245,65 @@ export default function Canvas() {
       >
         <Layer>
           <Circle
-            radius={60}
+            radius={250}
             fill="#0ACF83"
-            x={380}
-            y={410}
+            x={890}
+            y={85}
             name="circle"
             draggable={!inThreadCreationMode}
             onDragMove={onElementDrag}
           />
           <Rect
-            fill={'#1ABCFE'}
-            width={120}
-            height={120}
-            x={180}
-            y={200}
+            fill={'#FA7351'}
+            width={400}
+            height={400}
+            x={-200}
+            y={24}
             name="square"
             draggable={!inThreadCreationMode}
             onDragMove={onElementDrag}
           />
-          <RegularPolygon
-            sides={4}
-            fill={'#FF7262'}
-            radius={85}
-            x={480}
-            y={100}
-            name="diamond"
+          <CustomArrow
+            x={330}
+            y={85}
+            name="custom-arrow"
+            draggable={!inThreadCreationMode}
+            onDragMove={onElementDrag}
+          />
+          <CustomSparkle
+            x={810}
+            y={-5}
+            name="custom-sparkle"
+            draggable={!inThreadCreationMode}
+            onDragMove={onElementDrag}
+          />
+          <CustomSquiggle
+            x={500}
+            y={350}
+            name="custom-squiggle"
+            draggable={!inThreadCreationMode}
+            onDragMove={onElementDrag}
+          />
+          <Text
+            text="Try adding a comment here!"
+            name="prompt-text"
+            draggable={!inThreadCreationMode}
+            onDragMove={onElementDrag}
+            fontSize={20}
+            x={580}
+            y={430}
+          />
+          <Star
+            numPoints={5}
+            lineJoin="round"
+            fill={'#FFC700'}
+            outerRadius={34}
+            innerRadius={15}
+            stroke={'#FFFFFF'}
+            strokeWidth={5}
+            x={800}
+            y={380}
+            name="star"
             draggable={!inThreadCreationMode}
             onDragMove={onElementDrag}
           />
