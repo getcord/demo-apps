@@ -3,7 +3,7 @@ import type { Stage } from 'konva/lib/Stage';
 import type { ThreadSummary } from '@cord-sdk/types';
 
 export const EXAMPLE_CORD_LOCATION = {
-  page: 'canvas',
+  page: 'canvas-new',
 };
 
 export type ThreadMetadata = {
