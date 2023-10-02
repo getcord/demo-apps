@@ -163,12 +163,12 @@ export function CanvasAndCommentsProvider({
       commentsListContainerRef,
     }),
     [
+      threads,
       addThread,
+      removeThreadIfEmpty,
+      openThread,
       inThreadCreationMode,
       isPanningCanvas,
-      openThread,
-      removeThreadIfEmpty,
-      threads,
       recomputePinPositions,
     ],
   );

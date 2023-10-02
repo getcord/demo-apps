@@ -97,7 +97,7 @@ body {
   align-items: center;
   gap: 16px;
   /* The buttons will appear above the canvas and pins */
-  z-index: 2;
+  z-index: 3;
 }
 
 .canvasButtonGroup button {
@@ -125,18 +125,6 @@ body {
 
 .commentingModeCursor {
   cursor: url('/images/Pin.svg') 0 32, pointer;
-}
-
-/* Cord Component - TODO move to own file */
-cord-pin.cord-component {
-  position: absolute;
-  /* Adjust translate if pin size changes */
-  transform: translate(0px, -34px);
-}
-
-cord-thread.cord-component {
-  position: absolute;
-  left: 40px;
 }
 
 /* Comments List */
@@ -204,7 +192,7 @@ cord-thread.cord-component {
 
 .commentsListContainer hr {
   border: none;
-  border-bottom: 1px solid #dadce0;
+  border-bottom: 1px solid var(--color-grey-x-light);
   margin: 0 4px;
 }
 
@@ -216,6 +204,107 @@ cord-thread.cord-component {
   background-color: rgba(84, 141, 84, 0.06);
 }
 
+/* Custom Individual Pins */
+
+.canvasComment .active {
+  /* overlays over all other pins */
+  z-index: 1;
+}
+
+.canvasComment cord-thread.cord-component {
+  left: calc(8px + var(--pin-size));
+  position: absolute;
+  /* line up the thread with the pin */
+  top: calc(-1 * var(--pin-size));
+}
+
+.canvasPin {
+  background: var(--color-white);
+  border-radius: 17px 17px 17px 2px;
+  border: 1px solid var(--color-grey-x-light);
+  bottom: 0;
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.16);
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  height: var(--pin-size);
+  overflow: hidden;
+  padding: 3px;
+  position: absolute;
+  transition: width 0.2s, height 0.2s, padding 0.2s;
+  width: var(--pin-size);
+}
+
+.canvasPin:hover {
+  /* overlays over any active pin or thread */
+  z-index: 2;
+}
+
+.canvasPin .cord-message {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    'authorName timestamp'
+    'messageContent messageContent';
+  row-gap: 8px;
+  column-gap: 8px;
+  border-radius: 0;
+  background-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.canvasPin
+  .cord-message
+  :is(.cord-author-name, .cord-timestamp, .cord-message-text) {
+  font-size: 12px;
+}
+
+.canvasPin .cord-message .cord-message-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.canvasPin
+  .cord-message
+  :is(
+    .cord-avatar-container,
+    .cord-message-options-buttons,
+    .cord-reactions-container
+  ) {
+  display: none;
+}
+
+.previewMessage:hover {
+  height: 120px;
+  width: 300px;
+  padding: 16px;
+}
+
+.canvasPin .cord-avatar-container {
+  height: 26px;
+  width: 26px;
+  transition: transform 0.2s;
+}
+
+.canvasPin .cord-tooltip {
+  display: none;
+}
+
+cord-thread.cord-component.hidden {
+  visibility: hidden;
+}
+
+.message {
+  display: block;
+  padding-bottom: 200px;
+  transition: transform 0.2s;
+}
+
+/* Generic cord component */
 .cord-component .cord-avatar-container {
   border-radius: 50%;
 }

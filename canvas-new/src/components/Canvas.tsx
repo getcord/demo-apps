@@ -2,17 +2,12 @@ import { Stage, Layer, Rect, Circle, RegularPolygon } from 'react-konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import cx from 'classnames';
 import { useCallback, useContext, useEffect, useRef } from 'react';
-import { Pin, Thread } from '@cord-sdk/react';
-import type { ThreadMetadata } from '../canvasUtils';
-
-import {
-  createNewPin,
-  getStageData,
-  EXAMPLE_CORD_LOCATION,
-} from '../canvasUtils';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
-import { CanvasCommentsList } from './CanvasCommentsList';
+import type { ThreadMetadata } from '../canvasUtils';
+import { createNewPin, getStageData } from '../canvasUtils';
 import { CommentIcon } from './CommentIcon';
+import { CanvasComment } from './CanvasComment';
+import { CanvasCommentsList } from './CanvasCommentsList';
 
 export default function Canvas() {
   const {
@@ -25,7 +20,6 @@ export default function Canvas() {
     setInThreadCreationMode,
     removeThreadIfEmpty,
     addThread,
-    isPanningCanvas,
     setIsPanningCanvas,
     recomputePinPositions,
   } = useContext(CanvasAndCommentsContext)!;
@@ -285,49 +279,7 @@ export default function Canvas() {
         </button>
       </div>
       {Array.from(threads).map(([id, pin]) => (
-        <Pin
-          key={id}
-          id={id}
-          location={EXAMPLE_CORD_LOCATION}
-          threadId={pin.threadID}
-          style={{
-            left: pin.x,
-            top: pin.y,
-            zIndex: openThread?.threadID === pin.threadID ? 1 : 0,
-            pointerEvents: isPanningCanvas ? 'none' : 'auto',
-          }}
-          onClick={() => {
-            if (openThread?.threadID === pin.threadID && !openThread.empty) {
-              setOpenThread(null);
-              return;
-            }
-            if (openThread?.threadID !== pin.threadID) {
-              setOpenThread({ threadID: pin.threadID, empty: false });
-              removeThreadIfEmpty(openThread);
-              return;
-            }
-          }}
-        >
-          <Thread
-            location={EXAMPLE_CORD_LOCATION}
-            threadId={pin.threadID}
-            metadata={pin.thread.metadata}
-            style={{
-              visibility:
-                openThread?.threadID === pin.threadID ? 'visible' : 'hidden',
-            }}
-            showHeader={false}
-            showPlaceholder={false}
-            onThreadInfoChange={(threadInfo) => {
-              if (
-                threadInfo.messageCount > 0 &&
-                openThread?.threadID === pin.threadID
-              ) {
-                setOpenThread({ threadID: pin.threadID, empty: false });
-              }
-            }}
-          />
-        </Pin>
+        <CanvasComment key={id} pin={pin} />
       ))}
       <CanvasCommentsList />
     </div>
