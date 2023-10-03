@@ -59,6 +59,20 @@ body {
   border: 5px solid #2e2e2e;
 }
 
+.cord-threaded-comments .cord-threaded-comments-tab-container {
+  background-color: var(--grey-dark);
+  color: var(--white);
+  border-radius: 16px;
+}
+
+.cord-threaded-comments .cord-threaded-comments-tab {
+  border-radius: 8px;
+}
+
+.cord-threaded-comments .cord-threaded-comments-tab:not(.cord-active):hover {
+  color: var(--black);
+}
+
 /* Hide buttons at the top and bottom of the scrollbar */
 .scrollbar::-webkit-scrollbar-button {
   display: none;
@@ -306,7 +320,6 @@ video {
   border: 0;
   border-radius: 32px;
   padding: 16px;
-  padding-right: 8px;
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.16);
   min-height: 624px;
   max-height: 624px;
@@ -315,10 +328,6 @@ video {
   isolation: isolate;
 
   width: var(--threaded-comments-width);
-}
-
-.cord-threaded-comments-thread {
-  margin-right: 6px;
 }
 
 .cord-threaded-comments-thread.cord-highlighted,

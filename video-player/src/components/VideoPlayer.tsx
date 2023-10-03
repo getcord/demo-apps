@@ -4,6 +4,7 @@ import {
   ThreadedComments,
   PagePresence,
   NotificationListLauncher,
+  thread,
 } from '@cord-sdk/react';
 import type { Location, MessageInfo, Point2D } from '@cord-sdk/types';
 import { ThreadsProvider, ThreadsContext } from '../ThreadsContext';
@@ -45,6 +46,10 @@ function CommentableVideo({
   const [cursorTooltipText, setCursorTooltipText] = useState<
     'Click to comment' | 'Click to resume'
   >(isPlaying ? 'Click to comment' : 'Click to resume');
+  // We want to know if there are any resolved threads at LOCATION,
+  // so we can show ThreadedComments  "Resolved" tab only if there
+  // are any resolved threads.
+  const summary = thread.useLocationSummary(LOCATION);
 
   // When users add a new comment, we'll add the current timestamp
   // to their message.
@@ -276,6 +281,9 @@ function CommentableVideo({
             messageOrder="newest_on_top"
             onMessageClick={onMessageClick}
             highlightThreadId={openThread ?? undefined}
+            displayResolved={
+              (summary?.resolved ?? 0) > 0 ? 'tabbed' : 'unresolvedOnly'
+            }
           />
         </div>
       </div>
