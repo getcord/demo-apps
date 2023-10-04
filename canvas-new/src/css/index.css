@@ -80,6 +80,10 @@ body {
   right: 12px;
 }
 
+.canvasHeader .cord-avatar-container {
+  box-shadow: 2px 0 0 var(--canvas-header-background-color);
+}
+
 .canvasAndCordContainer {
   background: var(--color-white);
   height: 100%;
