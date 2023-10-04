@@ -232,98 +232,100 @@ export default function Canvas() {
   );
 
   return (
-    <div className="canvasAndCordContainer" ref={canvasContainerRef}>
-      <Stage
-        id="stage"
-        ref={canvasStageRef}
-        className={cx('canvasContainer', {
-          ['commentingModeCursor']: inThreadCreationMode,
-        })}
-        name="stage"
-        onClick={onStageClick}
-        onWheel={onStageWheel}
-      >
-        <Layer>
-          <Circle
-            radius={250}
-            fill="#0ACF83"
-            x={890}
-            y={85}
-            name="circle"
-            draggable={!inThreadCreationMode}
-            onDragMove={onElementDrag}
-          />
-          <Rect
-            fill={'#FA7351'}
-            width={400}
-            height={400}
-            x={-200}
-            y={24}
-            name="square"
-            draggable={!inThreadCreationMode}
-            onDragMove={onElementDrag}
-          />
-          <CustomArrow
-            x={330}
-            y={85}
-            name="custom-arrow"
-            draggable={!inThreadCreationMode}
-            onDragMove={onElementDrag}
-          />
-          <CustomSparkle
-            x={810}
-            y={-5}
-            name="custom-sparkle"
-            draggable={!inThreadCreationMode}
-            onDragMove={onElementDrag}
-          />
-          <CustomSquiggle
-            x={500}
-            y={350}
-            name="custom-squiggle"
-            draggable={!inThreadCreationMode}
-            onDragMove={onElementDrag}
-          />
-          <Text
-            text="Try adding a comment here!"
-            name="prompt-text"
-            draggable={!inThreadCreationMode}
-            onDragMove={onElementDrag}
-            fontSize={20}
-            x={580}
-            y={430}
-          />
-          <Star
-            numPoints={5}
-            lineJoin="round"
-            fill={'#FFC700'}
-            outerRadius={34}
-            innerRadius={15}
-            stroke={'#FFFFFF'}
-            strokeWidth={5}
-            x={800}
-            y={380}
-            name="star"
-            draggable={!inThreadCreationMode}
-            onDragMove={onElementDrag}
-          />
-        </Layer>
-      </Stage>
-      <div className="canvasButtonGroup">
-        <button
-          type="button"
-          onClick={() => {
-            setInThreadCreationMode((prev) => !prev);
-            removeThreadIfEmpty(openThread);
-          }}
+    <div className="canvasAndCordContainer">
+      <div className="canvasContainer" ref={canvasContainerRef}>
+        <Stage
+          id="stage"
+          ref={canvasStageRef}
+          className={cx({
+            ['commentingModeCursor']: inThreadCreationMode,
+          })}
+          name="stage"
+          onClick={onStageClick}
+          onWheel={onStageWheel}
         >
-          <CommentIcon />
-          <span>{inThreadCreationMode ? 'Cancel' : 'Add Comment'}</span>
-        </button>
+          <Layer>
+            <Circle
+              radius={250}
+              fill="#0ACF83"
+              x={890}
+              y={85}
+              name="circle"
+              draggable={!inThreadCreationMode}
+              onDragMove={onElementDrag}
+            />
+            <Rect
+              fill={'#FA7351'}
+              width={400}
+              height={400}
+              x={-200}
+              y={24}
+              name="square"
+              draggable={!inThreadCreationMode}
+              onDragMove={onElementDrag}
+            />
+            <CustomArrow
+              x={330}
+              y={85}
+              name="custom-arrow"
+              draggable={!inThreadCreationMode}
+              onDragMove={onElementDrag}
+            />
+            <CustomSparkle
+              x={810}
+              y={-5}
+              name="custom-sparkle"
+              draggable={!inThreadCreationMode}
+              onDragMove={onElementDrag}
+            />
+            <CustomSquiggle
+              x={500}
+              y={350}
+              name="custom-squiggle"
+              draggable={!inThreadCreationMode}
+              onDragMove={onElementDrag}
+            />
+            <Text
+              text="Try adding a comment here!"
+              name="prompt-text"
+              draggable={!inThreadCreationMode}
+              onDragMove={onElementDrag}
+              fontSize={20}
+              x={580}
+              y={430}
+            />
+            <Star
+              numPoints={5}
+              lineJoin="round"
+              fill={'#FFC700'}
+              outerRadius={34}
+              innerRadius={15}
+              stroke={'#FFFFFF'}
+              strokeWidth={5}
+              x={800}
+              y={380}
+              name="star"
+              draggable={!inThreadCreationMode}
+              onDragMove={onElementDrag}
+            />
+          </Layer>
+        </Stage>
+        <div className="canvasButtonGroup">
+          <button
+            type="button"
+            onClick={() => {
+              setInThreadCreationMode((prev) => !prev);
+              removeThreadIfEmpty(openThread);
+            }}
+          >
+            <CommentIcon />
+            <span>{inThreadCreationMode ? 'Cancel' : 'Add Comment'}</span>
+          </button>
+        </div>
+        {Array.from(threads).map(([id, pin]) => (
+          <CanvasComment key={id} pin={pin} />
+        ))}
       </div>
-      {Array.from(threads).map(([id, pin]) => (
-        <CanvasComment key={id} pin={pin} />
-      ))}
       <CanvasCommentsList />
     </div>
   );

@@ -11,7 +11,6 @@ export function CanvasCommentsList() {
     canvasStageRef,
     setOpenThread,
     recomputePinPositions,
-    commentsListContainerRef,
   } = useContext(CanvasAndCommentsContext)!;
 
   const navigateToPin = useCallback(
@@ -23,7 +22,7 @@ export function CanvasCommentsList() {
         return;
       }
 
-      if (!canvasStageRef.current || !commentsListContainerRef.current) {
+      if (!canvasStageRef.current) {
         return;
       }
 
@@ -47,7 +46,7 @@ export function CanvasCommentsList() {
       }
 
       const stageCenter = {
-        x: (stageWidth - commentsListContainerRef.current.clientWidth) / 2, // Ignore the comments list as well
+        x: stageWidth / 2,
         y: stageHeight / 2,
       };
 
@@ -58,13 +57,7 @@ export function CanvasCommentsList() {
       recomputePinPositions();
       setOpenThread({ threadID: foundPin.threadID, empty: false });
     },
-    [
-      threads,
-      canvasStageRef,
-      commentsListContainerRef,
-      recomputePinPositions,
-      setOpenThread,
-    ],
+    [threads, canvasStageRef, recomputePinPositions, setOpenThread],
   );
 
   const threadsInfo = useMemo(() => {
@@ -72,7 +65,7 @@ export function CanvasCommentsList() {
   }, [threads]);
 
   return (
-    <div className="commentsListContainer" ref={commentsListContainerRef}>
+    <div className="commentsListContainer">
       {threadsInfo.length === 0 ? (
         <p className="empty">No comments</p>
       ) : (
