@@ -404,6 +404,10 @@ cord-pin,
   border-radius: var(--thread-border-radius);
 }
 
+#video-player-demo-container cord-thread .cord-message-text .timestamp {
+  display: none;
+}
+
 cord-pin .cord-pin-container {
   transition: transform 0.2s;
 }
