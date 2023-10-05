@@ -400,6 +400,7 @@ cord-pin,
   border: none;
   box-shadow: 0px 2px 16px 0px var(--black);
   width: 250px;
+  max-height: 300px;
   border-radius: var(--thread-border-radius);
 }
 
