@@ -279,6 +279,7 @@ function CommentableVideo({
             location={location}
             composerPosition="none"
             messageOrder="newest_on_top"
+            showPlaceholder={false}
             onMessageClick={onMessageClick}
             highlightThreadId={openThread ?? undefined}
             displayResolved={
