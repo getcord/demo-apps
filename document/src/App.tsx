@@ -4,17 +4,21 @@ import { InformationHeader } from '../../_common/InformationHeader';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
 import { Document } from './components/Document';
 import { ThreadsProvider } from './ThreadsContext';
+// The playground token is only used on cord.com and docs.cord.com, you can ignore it!
+import { playgroundToken } from './playgroundToken.json';
 
 export default function App() {
-  const authToken = useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION();
+  const sampleToken = useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION();
+  const clientAuthToken = playgroundToken ?? sampleToken;
+
   return (
     // All the Cord React components must be children of a single CordProvider component.
-    <CordProvider clientAuthToken={authToken}>
+    <CordProvider clientAuthToken={clientAuthToken}>
       <InformationHeader
         api={['presence']}
         components={['cord-avatar', 'cord-thread']}
       />
-      {authToken && (
+      {clientAuthToken && (
         <ThreadsProvider>
           <Document />
         </ThreadsProvider>

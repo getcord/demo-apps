@@ -6,10 +6,13 @@ import { InformationHeader } from '../../_common/InformationHeader';
 import Dashboard from './components/Dashboard';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
 import { ThreadsProvider } from './ThreadsContext';
+// The playground token is only used on cord.com and docs.cord.com, you can ignore it!
+import { playgroundToken } from './playgroundToken.json';
 
 export default function App() {
-  const authToken = useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION();
+  const sampleToken = useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION();
   const navigateRef = useRef<NavigateFn | null>(null);
+  const clientAuthToken = playgroundToken ?? sampleToken;
 
   return (
     // All the Cord React components must be children of a single CordProvider
@@ -22,7 +25,7 @@ export default function App() {
     // are documented here:
     // https://docs.cord.com/js-apis-and-hooks/initialization
     <CordProvider
-      clientAuthToken={authToken}
+      clientAuthToken={clientAuthToken}
       navigate={(...args) => navigateRef.current?.(...args) ?? false}
     >
       <InformationHeader
@@ -37,7 +40,7 @@ export default function App() {
         api={['thread', 'user']}
         darkTheme
       />
-      {authToken && (
+      {clientAuthToken && (
         <ThreadsProvider>
           <Dashboard navigateRef={navigateRef} />
         </ThreadsProvider>
