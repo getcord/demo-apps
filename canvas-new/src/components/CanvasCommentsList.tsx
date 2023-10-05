@@ -1,22 +1,25 @@
-import { useCallback, useContext, useMemo } from 'react';
-import { Message } from '@cord-sdk/react';
-import cx from 'classnames';
+import { useCallback, useContext } from 'react';
+import { ThreadedComments } from '@cord-sdk/react';
+import type { MessageInfo } from '@cord-sdk/types';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
-import { getPinPositionOnStage, isPinInView } from '../canvasUtils';
+import {
+  EXAMPLE_CORD_LOCATION,
+  getPinPositionOnStage,
+  isPinInView,
+} from '../canvasUtils';
 
 export function CanvasCommentsList() {
   const {
     threads,
-    openThread,
     canvasStageRef,
     setOpenThread,
     recomputePinPositions,
+    openThread,
   } = useContext(CanvasAndCommentsContext)!;
 
   const navigateToPin = useCallback(
-    (threadID: string) => {
-      const foundPin = threads.get(threadID);
-
+    (messageInfo: MessageInfo) => {
+      const foundPin = threads.get(messageInfo.threadId);
       if (!foundPin) {
         console.warn('Could not find pin on the page');
         return;
@@ -60,40 +63,14 @@ export function CanvasCommentsList() {
     [threads, canvasStageRef, recomputePinPositions, setOpenThread],
   );
 
-  const threadsInfo = useMemo(() => {
-    return Array.from(threads);
-  }, [threads]);
-
   return (
-    <div className="commentsListContainer">
-      {threadsInfo.length === 0 ? (
-        <p className="empty">No comments</p>
-      ) : (
-        threadsInfo.map(([id, cordThread]) => {
-          if (cordThread?.thread.firstMessage) {
-            const { total, firstMessage } = cordThread.thread;
-            return (
-              <div
-                className={cx('messageContainer', {
-                  ['openThread']: openThread?.threadID === id,
-                })}
-                key={id}
-                onClick={() => navigateToPin(id)}
-              >
-                <Message threadId={id} messageId={firstMessage?.id} />
-                {total > 1 && (
-                  <div className="commentReplies">
-                    {total - 1 === 1 ? '1 reply' : `${total - 1} replies`}
-                  </div>
-                )}
-                <hr />
-              </div>
-            );
-          } else {
-            return null;
-          }
-        })
-      )}
-    </div>
+    <ThreadedComments
+      location={EXAMPLE_CORD_LOCATION}
+      composerPosition="none"
+      onMessageClick={navigateToPin}
+      showReplies="alwaysCollapsed"
+      highlightThreadId={openThread?.threadID}
+      messageOrder="newest_on_top"
+    />
   );
 }

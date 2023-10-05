@@ -30,6 +30,7 @@ body {
 
   /* Colors */
   --color-dark: #1e1e1e;
+  --color-dark-x-light: #696a6c;
   --color-grey-light: #c1c1c1;
   --color-grey-x-light: #dadce0;
   --color-white: #ffffff;
@@ -140,22 +141,26 @@ body {
 
 /* Comments List */
 
-.commentsListContainer {
+.canvasAndCordContainer .cord-threaded-comments {
   border-left: 1px solid var(--color-grey-x-light);
   background: var(--color-white);
   flex-shrink: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  padding: 0;
   width: var(--comments-list-width);
   /* Shown above the canvas */
   z-index: 2;
 }
 
-.commentsListContainer .empty {
-  text-align: center;
+/* The list of threads */
+.cord-threaded-comments .cord-threaded-comments-thread-list {
+  gap: 0;
+  padding: 0;
 }
 
-.commentsListContainer .cord-message {
+/* Layout of message in the comments list */
+.cord-threaded-comments .cord-message {
   grid-template-columns: repeat(2, auto) 2fr 16px;
   grid-template-rows: 24px repeat(3, auto);
   grid-template-areas:
@@ -167,49 +172,77 @@ body {
   border-radius: 0;
   background-color: transparent;
   padding-bottom: 8px;
+  cursor: pointer;
+  padding: 0;
 }
 
-/* The messages in the comments list */
+/* Layout of message in the comments list if first message is deleted */
+.cord-threaded-comments .cord-message.cord-deleted {
+  color: var(--color-dark-x-light);
+  grid-template-rows: 24px;
+  grid-template-columns: 20px auto 1fr;
+  grid-template-areas: 'icon message';
+}
 
-.commentsListContainer
+/* Removing the reactions button, and edit message */
+.cord-threaded-comments
   .cord-message
-  :is(.cord-reactions-container, [data-cord-button='select-emoji']) {
+  :is(
+    .cord-reactions-container,
+    [data-cord-button='select-emoji'],
+    [data-cord-menu-item='message-edit']
+  ) {
   display: none;
 }
 
-.commentsListContainer
+.cord-threaded-comments .cord-threaded-comments-thread {
+  border-radius: 0;
+  position: relative;
+  padding: 16px 12px;
+}
+
+/* Creating the divider between each thread */
+.cord-threaded-comments .cord-threaded-comments-thread::after {
+  content: '';
+  position: absolute;
+  display: block;
+  bottom: 0;
+  border-bottom: 1px solid var(--color-grey-x-light);
+  right: 0;
+  left: 0;
+  margin: 0px 12px;
+}
+
+.cord-threaded-comments .cord-threaded-comments-thread:hover,
+.cord-threaded-comments
+  .cord-message
+  .cord-message-options-buttons
+  [data-cord-button='thread-options']:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Disabling the default hover on the reply */
+.cord-threaded-comments-thread .cord-expand-replies:hover,
+/* Disabling background of thread options button */
+.cord-threaded-comments
   .cord-message
   .cord-message-options-buttons
   [data-cord-button='thread-options'] {
-  background: rgba(0, 0, 0, 0.06);
+  background: transparent;
 }
 
-.commentsListContainer .commentReplies {
-  padding: 8px 8px 16px 8px;
-  color: var(--medium-grey);
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 16px;
-}
-
-.commentsListContainer .messageContainer {
-  padding: 8px 12px 0 12px;
-  position: relative;
-}
-
-.commentsListContainer hr {
-  border: none;
-  border-bottom: 1px solid var(--color-grey-x-light);
-  margin: 0 4px;
-}
-
-.commentsListContainer .messageContainer:hover {
-  background: rgba(0, 0, 0, 0.06);
-}
-
-.commentsListContainer .messageContainer.openThread {
+/* Changes the color of the thread passed into the prop highlightThreadId in Threaded Comments */
+.cord-threaded-comments .cord-threaded-comments-thread.cord-highlighted {
   background-color: rgba(84, 141, 84, 0.06);
+}
+
+.cord-threaded-comments-thread .cord-expand-replies {
+  padding-left: 0;
+  color: var(--color-dark-x-light);
+}
+
+.cord-threaded-comments-thread .cord-expand-replies cord-facepile {
+  display: none;
 }
 
 /* Custom Individual Pins */
