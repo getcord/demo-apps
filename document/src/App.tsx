@@ -15,7 +15,7 @@ export default function App() {
     // All the Cord React components must be children of a single CordProvider component.
     <CordProvider clientAuthToken={clientAuthToken}>
       <InformationHeader
-        api={['presence']}
+        api={['presence', 'thread', 'user']}
         components={['cord-avatar', 'cord-thread']}
       />
       {clientAuthToken && (
