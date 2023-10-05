@@ -24,7 +24,7 @@ html {
   height: 100%;
   --scrollbar-thumb: #504f4f;
   --video-border-radius: 32px;
-  --threaded-comments-width: 280px;
+  --threaded-comments-width: 320px;
   --pin-scale-up: 1.1765;
   --commentable-video-width: calc(100% - 400px);
   --thread-border-radius: 8px;
