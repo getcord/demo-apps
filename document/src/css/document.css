@@ -171,7 +171,7 @@ cord-thread .cord-thread-container {
     'avatar timestamp  timestamp . optionsMenu'
     'messageContent messageContent messageContent messageContent messageContent'
     'reactions reactions reactions reactions reactions';
-  margin: 0 12px 16px;
+  margin: 0 0 16px;
   padding-left: 5px;
   margin-top: 0;
   padding: 0;
@@ -254,7 +254,7 @@ cord-thread .cord-thread-container {
 .cord-component .cord-message .cord-message-content {
   border-radius: 6px;
   margin-top: 4px;
-  padding: 6px 32px 3px 0;
+  padding: 6px 32px 3px 8px;
 }
 
 .cord-component
