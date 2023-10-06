@@ -262,7 +262,7 @@ cord-thread .cord-thread-container {
   background: transparent;
 }
 
-.cord-component .cord-message:hover .cord-message-content {
+.cord-component .cord-message-content:hover {
   background: rgb(240, 240, 240);
 }
 
