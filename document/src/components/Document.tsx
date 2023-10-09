@@ -67,6 +67,7 @@ export function Document() {
   const orgId = userData?.organizationID;
   const { threads, openThread, addThread, removeThread, setOpenThread } =
     useContext(ThreadsContext)!;
+  const [isEditing, setIsEditing] = useState(false);
 
   // Sorted from top to bottom as they should appear on screen.
   const sortedThreads = useMemo(() => {
@@ -413,7 +414,10 @@ export function Document() {
                   className={isOpenThread ? 'open-thread' : undefined}
                   showPlaceholder={false}
                   composerExpanded={isOpenThread}
-                  autofocus={isOpenThread}
+                  // When editing a message and focusing an open thread,
+                  // we don't want the main composer of the thread to
+                  // steal the focus from the editing composer.
+                  autofocus={isOpenThread && !isEditing}
                   onRender={() =>
                     setThreadsReady((prev) => new Set([...prev, threadId]))
                   }
@@ -430,6 +434,11 @@ export function Document() {
                       handleRemoveThread(threadId);
                     }
                   }}
+                  onMessageEditStart={() => {
+                    setOpenThread(threadId);
+                    setIsEditing(true);
+                  }}
+                  onMessageEditEnd={() => setIsEditing(false)}
                 />
               </div>
             </Fragment>

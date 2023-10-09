@@ -128,8 +128,17 @@ cord-thread.cord-component.open-thread {
   gap: 12px;
 }
 
+/* Hides the composer when a thread is not open (in focus) */
 cord-thread:not(.open-thread) .cord-composer {
   display: none;
+}
+
+/* We normally hide the main composer when a thread is not open
+ (in focus), but we don't want to hide the composer when we are
+ in the middle of editing a message - even if the thread is not
+ open. */
+.cord-message.cord-editing .cord-composer {
+  display: flex;
 }
 
 .thread-underlay {
