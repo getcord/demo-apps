@@ -219,19 +219,19 @@ function CommentableVideo({
   return (
     <>
       <div id="video-player-demo-container">
+        {/* Used to catch clicks outside the thread, and close it. */}
+        <div
+          className="thread-underlay"
+          style={{
+            display: openThread !== null ? 'block' : 'none',
+          }}
+          onClick={handleCloseThread}
+        />
         <div id="top-bar">
           <PagePresence location={location} />
           <NotificationListLauncher label="Notifications" />
         </div>
         <div id="content">
-          {/* Used to catch clicks outside the thread, and close it. */}
-          <div
-            className="thread-underlay"
-            style={{
-              display: openThread !== null ? 'block' : 'none',
-            }}
-            onClick={handleCloseThread}
-          />
           <div id="commentableVideo">
             <div
               id="videoWrapper"
