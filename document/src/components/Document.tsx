@@ -397,7 +397,7 @@ export function Document() {
                   top:
                     threadsPositions[threadIdx]?.top ??
                     getTopPxFromMetadata(metadata),
-                  transition: 'all 0.25s ease 0.1s',
+                  transition: 'all 0.5s ease 0.1s',
                   transitionProperty: 'top, left',
                   // The first time the thread gets rendered it's `hidden`, but
                   // it has the right height. Once we know its height, we mark it
