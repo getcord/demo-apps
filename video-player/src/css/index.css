@@ -73,6 +73,10 @@ body {
   color: var(--black);
 }
 
+.cord-button[data-cord-button="connect-slack"] {
+  display: none;
+}
+
 /* Hide buttons at the top and bottom of the scrollbar */
 .scrollbar::-webkit-scrollbar-button {
   display: none;
