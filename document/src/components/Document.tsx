@@ -84,9 +84,19 @@ export function Document() {
     // You can remove the next line.
     finishedTextAnimation;
     return Array.from(threads).sort(
-      ([_aId, { metadata: metadataA }], [_bId, { metadata: metadataB }]) =>
-        (getRange(metadataA)?.getBoundingClientRect().top ?? 0) -
-        (getRange(metadataB)?.getBoundingClientRect().top ?? 0),
+      ([_aId, { metadata: metadataA }], [_bId, { metadata: metadataB }]) => {
+        const firstRectA = getRange(metadataA)?.getClientRects()[0];
+        const firstRectB = getRange(metadataB)?.getClientRects()[0];
+
+        if (!firstRectA || !firstRectB) {
+          return 0;
+        }
+        const sortFromTop = firstRectA.top - firstRectB.top;
+        const sortFromLeft = firstRectA.left - firstRectB.left;
+        // If two highlights are on the same line, we break the tie by checking
+        // which one starts the leftmost.
+        return sortFromTop === 0 ? sortFromLeft : sortFromTop;
+      },
     );
   }, [threads, finishedTextAnimation]);
 
