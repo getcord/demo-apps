@@ -14,6 +14,7 @@ export type ThreadMetadata = {
   startOffset: number;
   endNodeId: string;
   endOffset: number;
+  floatingThreadVisible: boolean;
 };
 
 // Context for storing all thread related information
@@ -32,6 +33,9 @@ type ThreadsContextType = {
   ) => void;
   // Removes a thread from the threads map
   removeThread: (threadId: string) => void;
+  // Abstracts whether we can see the thread floating on the right
+  // hand side of the document.
+  setFloatingThreadsVisibility: (threadId: string, visible: boolean) => void;
 
   // The id of the thread open on this page (or null if none is open)
   openThread: string | null;
@@ -70,6 +74,26 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
     [],
   );
 
+  const setFloatingThreadsVisibility = useCallback(
+    (threadId: string, floatingThreadVisible: boolean) =>
+      setThreads((oldThreads) => {
+        if (!oldThreads.has(threadId)) {
+          return oldThreads;
+        }
+        const oldThread = oldThreads.get(threadId)!;
+        const newThreads = new Map(oldThreads);
+        newThreads.set(threadId, {
+          ...oldThread,
+          // We set the thread visibility on the metadata
+          ...{
+            metadata: { ...oldThread.metadata, floatingThreadVisible },
+          },
+        });
+        return newThreads;
+      }),
+    [],
+  );
+
   // Fetch existing threads associated with location
   const {
     threads: threadSummaries,
@@ -86,7 +110,7 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
       void fetchMore(1000);
     }
     threadSummaries
-      .filter((t) => t.total > 0 && !t.resolved)
+      .filter((t) => t.total > 0)
       .forEach((t) => addThread(t.id, t.metadata as ThreadMetadata, t.total));
   }, [addThread, fetchMore, hasMore, loading, threadSummaries, threads]);
 
@@ -97,10 +121,17 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
       threads,
       addThread,
       removeThread,
+      setFloatingThreadsVisibility,
       openThread,
       setOpenThread,
     }),
-    [threads, addThread, removeThread, openThread],
+    [
+      threads,
+      addThread,
+      removeThread,
+      setFloatingThreadsVisibility,
+      openThread,
+    ],
   );
   return (
     <ThreadsContext.Provider value={context}>

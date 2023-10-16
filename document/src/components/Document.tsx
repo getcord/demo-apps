@@ -67,8 +67,14 @@ export function Document() {
 
   const userData = user.useViewerData();
   const orgId = userData?.organizationID;
-  const { threads, openThread, addThread, removeThread, setOpenThread } =
-    useContext(ThreadsContext)!;
+  const {
+    threads,
+    openThread,
+    addThread,
+    removeThread,
+    setOpenThread,
+    setFloatingThreadsVisibility,
+  } = useContext(ThreadsContext)!;
   const [isEditing, setIsEditing] = useState(false);
 
   // Sorted from top to bottom as they should appear on screen.
@@ -302,13 +308,22 @@ export function Document() {
       endNodeId: endElement.id,
       startOffset,
       endOffset,
+      floatingThreadVisible: true,
     } as const;
     const threadId = crypto.randomUUID();
     addThread(threadId, metadata, 0);
     setOpenThread(threadId);
   }, [addThread, orgId, setOpenThread]);
 
-  const handleRemoveThread = useCallback(
+  const handleHideFloatingThread = useCallback(
+    (threadId: string) => {
+      setFloatingThreadsVisibility(threadId, false);
+      setOpenThread(null);
+    },
+    [setOpenThread, setFloatingThreadsVisibility],
+  );
+
+  const handleRemoveFloatingThread = useCallback(
     (threadId: string) => {
       setThreadsReady((prev) => {
         const newThreads = new Set([...prev]);
@@ -329,12 +344,12 @@ export function Document() {
       }
 
       if (openThread && threads.get(openThread)?.totalMessages === 0) {
-        handleRemoveThread(openThread);
+        handleRemoveFloatingThread(openThread);
       } else {
         setOpenThread(null);
       }
     },
-    [handleRemoveThread, openThread, setOpenThread, threads],
+    [handleRemoveFloatingThread, openThread, setOpenThread, threads],
   );
   useEffect(() => {
     document.addEventListener('keydown', handleClickEsc);
@@ -350,102 +365,107 @@ export function Document() {
         <CommentButton coords={commentButtonCoords} onClick={addComment} />
       )}
       <div>
-        {sortedThreads.map(([threadId, { metadata }], threadIdx) => {
-          const range = getRange(metadata);
-          if (!range) {
-            return;
-          }
-          const selectionRects = [...range.getClientRects()];
-          const isOpenThread = openThread === threadId;
+        {sortedThreads
+          // only display threads we have marked as visible
+          .filter(([_id, { metadata }]) => metadata.floatingThreadVisible)
+          .map(([threadId, { metadata }], threadIdx) => {
+            const range = getRange(metadata);
+            if (!range) {
+              return;
+            }
+            const selectionRects = [...range.getClientRects()];
+            const isOpenThread = openThread === threadId;
 
-          return (
-            <Fragment key={threadId}>
-              {selectionRects.map((rect, idx) => (
-                <TextHighlight
-                  rect={rect}
-                  key={idx}
-                  isOpenThread={isOpenThread}
+            return (
+              <Fragment key={threadId}>
+                {selectionRects.map((rect, idx) => (
+                  <TextHighlight
+                    rect={rect}
+                    key={idx}
+                    isOpenThread={isOpenThread}
+                    onClick={() => {
+                      if (!isOpenThread) {
+                        setOpenThread(threadId);
+                      }
+                    }}
+                  />
+                ))}
+                <div
+                  ref={(el: HTMLDivElement) => {
+                    if (threadsRefs?.current && el) {
+                      threadsRefs.current[threadIdx] = el;
+                      observer.observe(el);
+                    }
+                  }}
                   onClick={() => {
-                    if (!isOpenThread) {
-                      setOpenThread(threadId);
-                    }
-                  }}
-                />
-              ))}
-              <div
-                ref={(el: HTMLDivElement) => {
-                  if (threadsRefs?.current && el) {
-                    threadsRefs.current[threadIdx] = el;
-                    observer.observe(el);
-                  }
-                }}
-                onClick={() => {
-                  setOpenThread(threadId);
-                  // Threads grow vertically. Very long threads might get
-                  // far away from the sheet's content, in which case, move them up!
-                  const isBottomThreadTooFarDown =
-                    threadsPositions[threadsPositions.length - 1].top >
-                    window.innerHeight;
-                  if (isBottomThreadTooFarDown) {
-                    window.scrollTo({ top: 0 });
-                  }
-                }}
-                style={{
-                  position: 'absolute',
-                  left:
-                    (threadsPositions[threadIdx]?.left ??
-                      // Make threads slide in from the right
-                      containerRef.current?.getBoundingClientRect().right ??
-                      0) + (isOpenThread ? -THREADS_GAP * 2 : THREADS_GAP),
-                  top:
-                    threadsPositions[threadIdx]?.top ??
-                    getTopPxFromMetadata(metadata),
-                  transition: 'all 0.5s ease 0.1s',
-                  transitionProperty: 'top, left',
-                  // The first time the thread gets rendered it's `hidden`, but
-                  // it has the right height. Once we know its height, we mark it
-                  // as ready, and we can correctly compute the position of the  thread
-                  //  below it.
-                  visibility: threadsReady.has(threadId) ? 'visible' : 'hidden',
-                }}
-              >
-                <Thread
-                  location={LOCATION}
-                  threadId={threadId}
-                  metadata={metadata}
-                  className={isOpenThread ? 'open-thread' : undefined}
-                  showPlaceholder={false}
-                  composerExpanded={isOpenThread}
-                  // When editing a message and focusing an open thread,
-                  // we don't want the main composer of the thread to
-                  // steal the focus from the editing composer.
-                  autofocus={isOpenThread && !isEditing}
-                  onRender={() =>
-                    setThreadsReady((prev) => new Set([...prev, threadId]))
-                  }
-                  onResolved={() => {
-                    handleRemoveThread(threadId);
-                  }}
-                  onClose={() => {
-                    setOpenThread(null);
-                  }}
-                  onThreadInfoChange={({ messageCount }) => {
-                    const userDeletedLastMessage =
-                      messageCount === 0 && threadsReady.has(threadId);
-                    if (userDeletedLastMessage) {
-                      handleRemoveThread(threadId);
-                    }
-                  }}
-                  onMessageEditStart={() => {
                     setOpenThread(threadId);
-                    setIsEditing(true);
+                    // Threads grow vertically. Very long threads might get
+                    // far away from the sheet's content, in which case, move them up!
+                    const isBottomThreadTooFarDown =
+                      threadsPositions[threadsPositions.length - 1].top >
+                      window.innerHeight;
+                    if (isBottomThreadTooFarDown) {
+                      window.scrollTo({ top: 0 });
+                    }
                   }}
-                  onMessageEditEnd={() => setIsEditing(false)}
-                />
-              </div>
-            </Fragment>
-          );
-        })}
+                  style={{
+                    position: 'absolute',
+                    left:
+                      (threadsPositions[threadIdx]?.left ??
+                        // Make threads slide in from the right
+                        containerRef.current?.getBoundingClientRect().right ??
+                        0) + (isOpenThread ? -THREADS_GAP * 2 : THREADS_GAP),
+                    top:
+                      threadsPositions[threadIdx]?.top ??
+                      getTopPxFromMetadata(metadata),
+                    transition: 'all 0.5s ease 0.1s',
+                    transitionProperty: 'top, left',
+                    // The first time the thread gets rendered it's `hidden`, but
+                    // it has the right height. Once we know its height, we mark it
+                    // as ready, and we can correctly compute the position of the  thread
+                    //  below it.
+                    visibility: threadsReady.has(threadId)
+                      ? 'visible'
+                      : 'hidden',
+                  }}
+                >
+                  <Thread
+                    location={LOCATION}
+                    threadId={threadId}
+                    metadata={metadata}
+                    className={isOpenThread ? 'open-thread' : undefined}
+                    showPlaceholder={false}
+                    composerExpanded={isOpenThread}
+                    // When editing a message and focusing an open thread,
+                    // we don't want the main composer of the thread to
+                    // steal the focus from the editing composer.
+                    autofocus={isOpenThread && !isEditing}
+                    onRender={() =>
+                      setThreadsReady((prev) => new Set([...prev, threadId]))
+                    }
+                    onResolved={() => {
+                      handleHideFloatingThread(threadId);
+                    }}
+                    onClose={() => {
+                      setOpenThread(null);
+                    }}
+                    onThreadInfoChange={({ messageCount }) => {
+                      const userDeletedLastMessage =
+                        messageCount === 0 && threadsReady.has(threadId);
+                      if (userDeletedLastMessage) {
+                        handleHideFloatingThread(threadId);
+                      }
+                    }}
+                    onMessageEditStart={() => {
+                      setOpenThread(threadId);
+                      setIsEditing(true);
+                    }}
+                    onMessageEditEnd={() => setIsEditing(false)}
+                  />
+                </div>
+              </Fragment>
+            );
+          })}
       </div>
       <div
         className="container"
@@ -467,7 +487,7 @@ export function Document() {
           })}
           onClick={() => {
             if (openThread && threads.get(openThread)?.totalMessages === 0) {
-              handleRemoveThread(openThread);
+              handleRemoveFloatingThread(openThread);
             } else {
               setOpenThread(null);
             }

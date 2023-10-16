@@ -30,8 +30,12 @@ export function ThreadedCommentsLauncher() {
   }, [setOpen]);
 
   const handleClickMessage = useCallback(
-    ({ threadId }: { threadId: string | null; messageId: string | null }) => {
-      threadsContext?.setOpenThread(threadId);
+    ({ threadId }: { threadId: string; messageId: string }) => {
+      if (
+        threadsContext?.threads.get(threadId)?.metadata.floatingThreadVisible
+      ) {
+        threadsContext.setOpenThread(threadId);
+      }
     },
     [threadsContext],
   );
@@ -67,6 +71,15 @@ export function ThreadedCommentsLauncher() {
           <ThreadedComments
             location={LOCATION}
             onMessageClick={handleClickMessage}
+            onThreadResolve={({ threadID }) => {
+              threadsContext?.setFloatingThreadsVisibility(threadID, false);
+              threadsContext?.setOpenThread(null);
+            }}
+            onThreadReopen={({ threadID }) => {
+              threadsContext?.setFloatingThreadsVisibility(threadID, true);
+              threadsContext?.setOpenThread(threadID);
+              toggleThreadedComments();
+            }}
             composerPosition="none"
             highlightThreadId={threadsContext?.openThread ?? undefined}
             displayResolved="interleaved"
