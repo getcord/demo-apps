@@ -53,6 +53,29 @@ body,
   justify-content: space-between;
 }
 
+.header-subgroup {
+  display: flex;
+  gap: 8px;
+}
+
+.comments-action-button {
+  border: none;
+  border-radius: 50%;
+  height: 34px;
+  width: 34px;
+  padding: 8px;
+  background-color: transparent;
+}
+
+.comments-action-button.open {
+  background-color: var(--grey-light);
+}
+
+.comments-action-button:hover {
+  cursor: pointer;
+  background-color: var(--grey-light);
+}
+
 hr {
   border: 0;
   border-top: 1px solid #c7c7c7;
@@ -186,6 +209,11 @@ cord-thread .cord-thread-container {
   padding: 0;
 }
 
+.cord-threaded-comments .cord-message:not(.cord-deleted, .cord-action) {
+  padding: 4px 4px 8px 8px;
+  margin: 0;
+}
+
 .cord-component .cord-message-block::first-child {
   padding-top: 12px;
 }
@@ -199,7 +227,8 @@ cord-thread .cord-thread-container {
     'messageContent messageContent messageContent messageContent messageContent';
 }
 
-.cord-component .cord-message .cord-avatar-container {
+:is(.cord-component .cord-message, .cord-viewer-avatar-with-composer)
+  .cord-avatar-container {
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -260,19 +289,123 @@ cord-thread .cord-thread-container {
   background: rgba(68, 71, 70, 0.08);
 }
 
-.cord-component .cord-message .cord-message-content {
+cord-thread.cord-component .cord-message .cord-message-content {
   border-radius: 6px;
   margin-top: 4px;
   padding: 6px 32px 3px 8px;
 }
 
+cord-thread.cord-component .cord-message-content:hover {
+  background: #f0f0f0;
+}
+
+.cord-threaded-comments {
+  z-index: 8;
+  border-radius: 8px;
+  max-height: 800px;
+}
+
+.comments-container {
+  margin-top: 8px;
+}
+
+.cord-threaded-comments .cord-threaded-comments-thread-list {
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.cord-threaded-comments .cord-threaded-comments-thread {
+  border-radius: 8px;
+  border: 1px solid #c7c7c7;
+  margin: 0 8px;
+}
+
+.cord-threaded-comments .cord-threaded-comments-thread:hover {
+  background-color: #f6f6f6;
+  cursor: pointer;
+}
+
+.cord-threaded-comments .cord-threaded-comments-thread.cord-highlighted {
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+}
+
+.cord-threaded-comments .cord-expand-replies {
+  padding: 8px;
+  border-radius: 0 0 8px 8px;
+  gap: 4px;
+}
+
+.cord-expand-replies .cord-avatar-container {
+  display: none;
+}
+
+.cord-threaded-comments .cord-unseen cord-facepile::before {
+  margin-left: 0;
+}
+
+.cord-threaded-comments button:not(.cord-threaded-comments-reopen-button) {
+  margin: 0;
+}
+
+.cord-threaded-comments .cord-highlighted button:hover {
+  background-color: var(--grey-light);
+}
+
+.cord-threaded-comments .cord-hide-replies {
+  padding-left: 8px;
+}
+
+.cord-threaded-comments .cord-show-more::before,
+.cord-threaded-comments .cord-show-more::after {
+  display: none;
+}
+
+.cord-threaded-comments .cord-replies-container {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.cord-threaded-comments .cord-viewer-avatar-with-composer {
+  margin-left: 0;
+}
+
+.cord-threaded-comments .cord-viewer-avatar-with-composer cord-avatar {
+  margin-top: 6px;
+}
+
+.cord-threaded-comments
+  .cord-message:not(.cord-deleted, .cord-action, .cord-editing) {
+  grid-template-areas:
+    'avatar authorName  sentViaIcon . optionsMenu'
+    'avatar timestamp  timestamp . optionsMenu'
+    '. messageContent messageContent messageContent messageContent';
+  margin-top: 4px;
+}
+
+.cord-threaded-comments button[data-cord-button='select-emoji'] {
+  display: none;
+}
+
+.cord-threaded-comments .cord-message .cord-reactions-container {
+  display: none;
+}
+
+.cord-threaded-comments
+  .cord-message.cord-no-reactions:not(
+    .cord-deleted,
+    .cord-action,
+    .cord-editing
+  ) {
+  grid-template-areas:
+    'avatar authorName  sentViaIcon . optionsMenu'
+    'avatar timestamp  timestamp . optionsMenu'
+    '. messageContent messageContent messageContent messageContent';
+}
+
 .cord-component
   :is(.cord-scroll-container, .cord-message, .cord-message-content) {
   background: transparent;
-}
-
-.cord-component .cord-message-content:hover {
-  background: rgb(240, 240, 240);
 }
 
 .cord-component .cord-message .cord-reaction-list {
@@ -306,7 +439,7 @@ cord-thread .cord-thread-container {
 }
 
 .cord-component .cord-message.cord-editing .cord-avatar-container {
-  align-self: center;
+  margin-top: 6px;
 }
 
 .cord-component .cord-message .cord-menu {

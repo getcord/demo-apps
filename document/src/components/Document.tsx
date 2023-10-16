@@ -15,6 +15,7 @@ import { FakeMenu } from './FakeMenuIcon';
 import { FloatingPresence } from './FloatingPresence';
 import { TextHighlight } from './TextHighlight';
 import { AnimatedText } from './AnimatedText';
+import { ThreadedCommentsLauncher } from './ThreadedCommentsLauncher';
 
 export const LOCATION = { page: 'document' };
 const THREADS_GAP = 16;
@@ -452,7 +453,10 @@ export function Document() {
       >
         <div className="header">
           <FakeMenu />
-          <PagePresence location={LOCATION} />
+          <div className="header-subgroup">
+            <ThreadedCommentsLauncher />
+            <PagePresence location={LOCATION} />
+          </div>
         </div>
         <hr />
         {/* Used to catch clicks outside the thread, and close it. */}
