@@ -17,6 +17,7 @@ body {
 
   --black: #1f1f1f;
   --grey-light: #dadce0;
+  --comments-z-index: 8;
 }
 
 html,
@@ -164,7 +165,12 @@ cord-thread:not(.open-thread) .cord-composer {
   display: flex;
 }
 
-.thread-underlay {
+.click-underlay {
+  display: none;
+}
+
+.click-underlay.show {
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
@@ -172,6 +178,10 @@ cord-thread:not(.open-thread) .cord-composer {
   height: 100%;
   cursor: auto;
   isolation: isolate;
+}
+
+.comments-underlay {
+  z-index: var(--comments-z-index);
 }
 
 cord-thread.cord-component {
@@ -300,7 +310,7 @@ cord-thread.cord-component .cord-message-content:hover {
 }
 
 .cord-threaded-comments {
-  z-index: 8;
+  z-index: var(--comments-z-index);
   border-radius: 8px;
   max-height: 800px;
 }

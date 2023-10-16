@@ -8,6 +8,7 @@ import React, {
   useState,
   Fragment,
 } from 'react';
+import cx from 'classnames';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
 import { CommentButton } from './CommentButton';
@@ -461,10 +462,9 @@ export function Document() {
         <hr />
         {/* Used to catch clicks outside the thread, and close it. */}
         <div
-          className="thread-underlay"
-          style={{
-            display: openThread ? 'block' : 'none',
-          }}
+          className={cx('click-underlay', {
+            ['show']: openThread,
+          })}
           onClick={() => {
             if (openThread && threads.get(openThread)?.totalMessages === 0) {
               handleRemoveThread(openThread);

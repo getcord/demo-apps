@@ -38,6 +38,12 @@ export function ThreadedCommentsLauncher() {
 
   return (
     <>
+      <div
+        className={cx('click-underlay', 'comments-underlay', {
+          ['show']: open,
+        })}
+        onClick={toggleThreadedComments}
+      />
       <button
         className={cx('comments-action-button', {
           ['open']: open,
