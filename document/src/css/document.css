@@ -457,7 +457,8 @@ cord-thread.cord-component .cord-message-content:hover {
 }
 
 .cord-component .cord-thread-seen-by-container {
-  display: none;
+  padding-left: 8px;
+  color: #696a6c;
 }
 
 .cord-component .cord-composer .cord-placeholder {
