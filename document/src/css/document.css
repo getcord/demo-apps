@@ -219,6 +219,10 @@ cord-thread .cord-thread-container {
   padding: 0;
 }
 
+cord-thread .cord-message:is(.cord-deleted, .cord-action) {
+  padding: 4px 4px 8px;
+}
+
 .cord-threaded-comments .cord-message:not(.cord-deleted, .cord-action) {
   padding: 4px 4px 8px 8px;
   margin: 0;
