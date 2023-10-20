@@ -2,7 +2,14 @@ import { useCallback, useContext } from 'react';
 import { ThreadedComments } from '@cord-sdk/react';
 import cx from 'classnames';
 
-import { autoUpdate, flip, shift, useFloating } from '@floating-ui/react';
+import {
+  autoUpdate,
+  flip,
+  shift,
+  useDismiss,
+  useFloating,
+  useInteractions,
+} from '@floating-ui/react';
 import { ThreadsContext } from '../ThreadsContext';
 import { LOCATION } from './Dashboard';
 import { CommentsIcon } from './CommentsIcon';
@@ -15,7 +22,11 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
   const { openThread, setRequestToOpenThread, threads } =
     useContext(ThreadsContext)!;
 
-  const { refs, floatingStyles } = useFloating({
+  const { refs, floatingStyles, context } = useFloating({
+    open,
+    onOpenChange: (value: boolean) => {
+      setOpen((_) => value);
+    },
     whileElementsMounted: autoUpdate,
     placement: 'bottom',
     transform: false,
@@ -26,6 +37,9 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
       flip(),
     ],
   });
+
+  const dismiss = useDismiss(context);
+  const { getReferenceProps, getFloatingProps } = useInteractions([dismiss]);
 
   const toggleThreadedComments = useCallback(() => {
     setOpen((prev) => !prev);
@@ -46,6 +60,7 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
         ref={refs.setReference}
         onClick={toggleThreadedComments}
         type="button"
+        {...getReferenceProps()}
       >
         <CommentsIcon />
         All comments
@@ -55,6 +70,7 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
           className="threadlist-container"
           ref={refs.setFloating}
           style={floatingStyles}
+          {...getFloatingProps()}
         >
           <ThreadedComments
             location={LOCATION}
