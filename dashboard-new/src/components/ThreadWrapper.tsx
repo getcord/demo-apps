@@ -25,19 +25,19 @@ export function ThreadWrapper({
   const [numberOfMessages, setNumberOfMessages] = useState<number | undefined>(
     undefined,
   );
+  const [rendered, setRendered] = useState(false);
+
   // Effect that removes this thread if it has no messages at the time it is closed
   useEffect(() => {
-    const isOpen = threadId === openThread;
-    if (!isOpen && numberOfMessages !== undefined && numberOfMessages <= 0) {
-      removeThread(threadId);
-    }
-
     return () => {
-      if (numberOfMessages !== undefined && numberOfMessages <= 0) {
+      if (
+        rendered &&
+        (numberOfMessages === undefined || numberOfMessages <= 0)
+      ) {
         removeThread(threadId);
       }
     };
-  }, [numberOfMessages, openThread, removeThread, threadId]);
+  }, [rendered, numberOfMessages, openThread, removeThread, threadId]);
 
   return (
     <Thread
@@ -55,7 +55,12 @@ export function ThreadWrapper({
         maxHeight: '300px',
         ...style,
       }}
-      onThreadInfoChange={(info) => setNumberOfMessages(info.messageCount)}
+      onThreadInfoChange={(info) => {
+        setNumberOfMessages(info.messageCount);
+      }}
+      onRender={() => {
+        setRendered(true);
+      }}
       onClose={() => setOpenThread(null)}
     />
   );
