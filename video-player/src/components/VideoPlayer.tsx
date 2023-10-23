@@ -150,6 +150,10 @@ function CommentableVideo({
       videoRef.current.currentTime = threadMetadata.timestamp;
       videoRef.current.pause();
       window.scroll({ top: 0, behavior: 'smooth' });
+      const messageElement = videoRef.current
+        .closest('#content')
+        ?.querySelector(`[message-id="${mi.messageId}"]`);
+      messageElement?.scrollIntoView();
       setOpenThread(mi.threadId);
     },
     [videoRef, setOpenThread, threads],
