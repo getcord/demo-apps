@@ -393,7 +393,7 @@ cord-thread.cord-component .cord-message-content:hover {
   grid-template-areas:
     'avatar authorName  sentViaIcon . optionsMenu'
     'avatar timestamp  timestamp . optionsMenu'
-    '. messageContent messageContent messageContent messageContent';
+    '. messageContent messageContent messageContent .';
   margin-top: 4px;
 }
 
@@ -414,7 +414,7 @@ cord-thread.cord-component .cord-message-content:hover {
   grid-template-areas:
     'avatar authorName  sentViaIcon . optionsMenu'
     'avatar timestamp  timestamp . optionsMenu'
-    '. messageContent messageContent messageContent messageContent';
+    '. messageContent messageContent messageContent .';
 }
 
 .cord-component
