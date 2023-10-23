@@ -298,8 +298,14 @@ video {
   color: var(--white);
 }
 
-.timestamp {
+.cord-threaded-comments-thread .cord-message .timestamp {
   font-weight: bold;
+  background-color: var(--white);
+  color: var(--cord-color-base);
+  border-radius: 99px;
+  padding: 2px 8px;
+  margin-right: 4px;
+  font-size: 12px;
 }
 
 /* Cord components  */
