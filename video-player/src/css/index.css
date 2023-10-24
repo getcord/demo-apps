@@ -384,8 +384,11 @@ cord-pin,
 }
 
 #video-player-demo-container .cord-tooltip {
-  background: var(--black);
+  background: var(--grey-dark);
   color: var(--white);
+}
+#video-player-demo-container .cord-threaded-comments .cord-tooltip {
+  background: var(--black);
 }
 
 .cord-send-button.cord-disabled {
