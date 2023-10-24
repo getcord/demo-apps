@@ -9,6 +9,7 @@ import {
   useDismiss,
   useFloating,
   useInteractions,
+  size,
 } from '@floating-ui/react';
 import { ThreadsContext } from '../ThreadsContext';
 import { LOCATION } from './Dashboard';
@@ -35,6 +36,13 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
         padding: 2,
       }),
       flip(),
+      size({
+        apply({ elements }) {
+          Object.assign(elements.floating.style, {
+            height: `75vh`,
+          });
+        },
+      }),
     ],
   });
 
@@ -77,6 +85,7 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
             onMessageClick={handleClickMessage}
             composerPosition="none"
             highlightThreadId={openThread ?? undefined}
+            messageOrder="newest_on_top"
           />
         </div>
       )}

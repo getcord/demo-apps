@@ -191,6 +191,10 @@ body {
   );
 }
 
+.threadlist-container .cord-threaded-comments{
+  height: 100%;
+}
+
 .cord-component .cord-avatar-container {
   border-radius: 50%;
 }
