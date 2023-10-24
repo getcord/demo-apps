@@ -24,6 +24,7 @@ import { ThreadsContext } from '../ThreadsContext';
 import { LOCATION } from './Dashboard';
 import { ThreadWrapper } from './ThreadWrapper';
 import commentIcon from './CommentIcon.svg';
+import commentIconResolved from './CommentIconResolved.svg';
 
 export function AGGridExample({ gridId }: { gridId: string }) {
   const orgId = user.useViewerData()?.organizationID;
@@ -253,6 +254,7 @@ export function AGGridExample({ gridId }: { gridId: string }) {
               gridId,
               rowId,
               colId,
+              resolved: false,
             };
             addThread(threadId, metadata);
             setOpenThread(threadId);
@@ -311,7 +313,7 @@ function CellWithThreadAndPresence(
         />
         {threadMetadata && threadId && (
           <img
-            src={commentIcon}
+            src={threadMetadata.resolved ? commentIconResolved : commentIcon}
             ref={openThread === threadId ? setReference : undefined}
           />
         )}

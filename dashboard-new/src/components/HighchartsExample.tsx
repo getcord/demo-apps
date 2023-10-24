@@ -18,6 +18,7 @@ import { ThreadsContext } from '../ThreadsContext';
 import { LOCATION } from './Dashboard';
 import { ThreadWrapper } from './ThreadWrapper';
 import commentIcon from './CommentIcon.svg';
+import commentIconResolved from './CommentIconResolved.svg';
 
 const DATE_RANGE_SELECTOR_OPTIONS = [
   { start: 2012, end: 2017 },
@@ -200,6 +201,7 @@ function useChartOptions(
       seriesId: hoverPoint.series.userOptions.id!,
       x: hoverPoint.x,
       y: hoverPoint.y!,
+      resolved: false,
     } as const;
     // NOTE: Allow only one thread per point by using the point x,y in threadId
     // NOTE: Use orgId as part of thread Id to have unique ids across orgs
@@ -488,7 +490,7 @@ function ChartThread({
     >
       <img
         key={threadId}
-        src={commentIcon}
+        src={metadata.resolved ? commentIconResolved : commentIcon}
         onClick={() => setOpenThread(isOpen ? null : threadId)}
         style={{ height: COMMENT_ICON_HEIGHT_PX }}
       />
