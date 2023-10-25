@@ -408,7 +408,11 @@ export function Document() {
           </div>
         </div>
         <hr />
-        <div>
+        <div
+          className={cx({
+            ['floating-thread-is-open']: openThread !== null,
+          })}
+        >
           {sortedThreads
             // only display threads we have marked as visible
             .filter(([_id, { metadata }]) => metadata.floatingThreadVisible)
@@ -460,6 +464,9 @@ export function Document() {
                         observer.observe(el);
                       }
                     }}
+                    className={cx('floating-thread-container', {
+                      ['open']: openThread === threadId,
+                    })}
                     onClick={() => {
                       setOpenThread(threadId);
                       // Threads grow vertically. Very long threads might get

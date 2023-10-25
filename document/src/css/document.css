@@ -458,6 +458,17 @@ cord-thread.cord-component .cord-message-content:hover {
   display: none;
 }
 
+/* We want to hide the select-emoji button from
+all floating threads except the open one, when
+we have at least one open thread. That is due to
+the stacking context created by floating threads. */
+.floating-thread-is-open
+  .floating-thread-container:not(.open)
+  .cord-message
+  [data-cord-button='select-emoji'] {
+  display: none;
+}
+
 .cord-component .cord-message.cord-editing {
   grid-template-columns: auto 1fr;
   grid-template-areas: 'avatar messageContent';
