@@ -31,6 +31,11 @@ export type GridThreadMetadata = {
 
 export type ThreadMetadata = ChartThreadMetadata | GridThreadMetadata;
 
+type RequestToOpenThreadType = {
+  threadID: string;
+  onThreadShownCallback?: () => void;
+};
+
 // Context for storing all thread related information
 type ThreadsContextType = {
   // Map of all threads on current page, mapping from thread's ID to its
@@ -60,8 +65,8 @@ type ThreadsContextType = {
   //      setRequestToOpenThread(null);
   //   }
   // }, [requestToOpenThread, setRequestToOpenThread, setOpenThread]);
-  requestToOpenThread: string | null;
-  setRequestToOpenThread: (threadId: string | null) => void;
+  requestToOpenThread: RequestToOpenThreadType | null;
+  setRequestToOpenThread: (data: RequestToOpenThreadType | null) => void;
 };
 export const ThreadsContext = createContext<ThreadsContextType | undefined>(
   undefined,
@@ -128,9 +133,8 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
 
   const [openThread, setOpenThread] = useState<string | null>(null);
 
-  const [requestToOpenThread, setRequestToOpenThread] = useState<string | null>(
-    null,
-  );
+  const [requestToOpenThread, setRequestToOpenThread] =
+    useState<RequestToOpenThreadType | null>(null);
 
   const context = useMemo(
     () => ({

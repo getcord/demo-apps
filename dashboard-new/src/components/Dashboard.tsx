@@ -30,7 +30,7 @@ function Dashboard({
       //
       // Full documentation on the navigate hook is here:
       // https://docs.cord.com/js-apis-and-hooks/initialization#navigate-3
-      setRequestToOpenThread(threadID);
+      setRequestToOpenThread({ threadID });
       return true;
     };
   }, [navigateRef, setRequestToOpenThread]);

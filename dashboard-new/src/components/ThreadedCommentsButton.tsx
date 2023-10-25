@@ -55,9 +55,18 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
 
   const handleClickMessage = useCallback(
     ({ threadId }: { threadId: string | null; messageId: string | null }) => {
-      setRequestToOpenThread(threadId);
+      setRequestToOpenThread(
+        threadId === null
+          ? null
+          : {
+              threadID: threadId,
+              onThreadShownCallback: () => {
+                setOpen((_) => false);
+              },
+            },
+      );
     },
-    [setRequestToOpenThread],
+    [setOpen, setRequestToOpenThread],
   );
 
   return (

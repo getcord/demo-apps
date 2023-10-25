@@ -67,7 +67,7 @@ export function HighchartsExample({ chartId, highchartsDataSeries }: Props) {
       return;
     }
 
-    const metadata = threads.get(requestToOpenThread);
+    const metadata = threads.get(requestToOpenThread.threadID);
     if (metadata?.type !== 'chart' || metadata.chartId !== chartId) {
       // request is not for this chart
       return;
@@ -103,10 +103,16 @@ export function HighchartsExample({ chartId, highchartsDataSeries }: Props) {
       behavior: 'smooth',
       block: 'center',
     });
+
+    const onThreadShownCallback = requestToOpenThread.onThreadShownCallback;
+
     setRequestToOpenThread(null);
     // Open the thread with a small delay. Opening the thread immediately
     // currently stops the scrollIntoView().
-    setTimeout(() => setOpenThread(requestToOpenThread), 300);
+    setTimeout(() => {
+      setOpenThread(requestToOpenThread.threadID);
+      onThreadShownCallback && onThreadShownCallback();
+    }, 300);
   }, [
     chartId,
     threads,

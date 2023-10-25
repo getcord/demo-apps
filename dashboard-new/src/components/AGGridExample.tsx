@@ -63,7 +63,9 @@ export function AGGridExample({ gridId }: { gridId: string }) {
       return;
     }
     const metadata =
-      requestToOpenThread !== null ? threads.get(requestToOpenThread) : null;
+      requestToOpenThread !== null
+        ? threads.get(requestToOpenThread.threadID)
+        : null;
     if (metadata?.type === 'grid' && metadata.gridId === gridId) {
       // this is a request for this grid, make the thread visible
       const { rowId, colId } = metadata;
@@ -87,6 +89,8 @@ export function AGGridExample({ gridId }: { gridId: string }) {
         block: 'center',
       });
 
+      const onThreadShownCallback = requestToOpenThread?.onThreadShownCallback;
+
       setRequestToOpenThread(null);
 
       // Only open the thread if the table is in the viewport because
@@ -101,15 +105,20 @@ export function AGGridExample({ gridId }: { gridId: string }) {
           gridContainerBottom &&
           gridContainerTop &&
           // Open the thread if the whole table container is in the viewport
-          ((window.innerHeight > gridContainerBottom &&
-            window.innerHeight > gridContainerTop) ||
+          ((window.innerHeight >= gridContainerBottom &&
+            window.innerHeight >= gridContainerTop) ||
             // Also open the thread if the top of the table is outside the viewport
             // to account for window heights smaller than the table height
             gridContainerTop < 0)
         ) {
           grid.api.flashCells({ rowNodes: [rowNode], columns: [colId] });
           clearInterval(intervalID);
-          setOpenThread(requestToOpenThread);
+
+          const threadID = requestToOpenThread?.threadID;
+          if (threadID) {
+            setOpenThread(threadID);
+            onThreadShownCallback?.();
+          }
         }
       };
 
