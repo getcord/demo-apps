@@ -38,6 +38,7 @@ export function Document() {
   const [threadsReady, setThreadsReady] = useState<Set<string>>(new Set());
   const threadsRefs = useRef<(HTMLDivElement | undefined)[] | null>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const sheetContainerBoundingClientRect = useRef<DOMRect | undefined>();
 
   // NOTE: This is used only for the typing effect in cord.com demos.
   // Feel free to ignore/get rid of this part.
@@ -115,6 +116,11 @@ export function Document() {
     if (!containerRect) {
       return;
     }
+    // Recalculating the bounding client rects is a relatively expensive operation,
+    // so we opted to only recalculate when repositioning our threads and reuse
+    // this value with a ref.
+    sheetContainerBoundingClientRect.current =
+      containerRef.current?.parentElement?.getBoundingClientRect();
 
     const [_topThreadId, { metadata }] = sortedThreads[0];
     const newThreadPositions: Coordinates[] = [
@@ -165,6 +171,20 @@ export function Document() {
           threadPosition.top += amountShifted;
         }
       }
+    }
+
+    // Floating threads positions is relative to the sheet container, but newThreadPositions
+    // were calculated against the viewport, so we need to adjust them.
+    const parentTop = sheetContainerBoundingClientRect.current?.top ?? 0;
+    const parentLeft = sheetContainerBoundingClientRect.current?.left ?? 0;
+    for (let i = 0; i < sortedThreads.length; i++) {
+      const top = newThreadPositions[i].top - parentTop;
+      const left = newThreadPositions[i].left - parentLeft;
+
+      newThreadPositions[i] = {
+        top,
+        left,
+      };
     }
 
     return newThreadPositions;
@@ -374,110 +394,8 @@ export function Document() {
       {commentButtonCoords && (
         <CommentButton coords={commentButtonCoords} onClick={addComment} />
       )}
-      <div>
-        {sortedThreads
-          // only display threads we have marked as visible
-          .filter(([_id, { metadata }]) => metadata.floatingThreadVisible)
-          .map(([threadId, { metadata }], threadIdx) => {
-            const range = getRange(metadata);
-            if (!range) {
-              return;
-            }
-            const selectionRects = [...range.getClientRects()];
-            const isOpenThread = openThread === threadId;
-
-            return (
-              <Fragment key={threadId}>
-                {selectionRects.map((rect, idx) => (
-                  <TextHighlight
-                    rect={rect}
-                    key={idx}
-                    isOpenThread={isOpenThread}
-                    onClick={() => {
-                      if (!isOpenThread) {
-                        setOpenThread(threadId);
-                      }
-                    }}
-                  />
-                ))}
-                <div
-                  ref={(el: HTMLDivElement) => {
-                    if (threadsRefs?.current && el) {
-                      threadsRefs.current[threadIdx] = el;
-                      observer.observe(el);
-                    }
-                  }}
-                  onClick={() => {
-                    setOpenThread(threadId);
-                    // Threads grow vertically. Very long threads might get
-                    // far away from the sheet's content, in which case, move them up!
-                    const isBottomThreadTooFarDown =
-                      threadsPositions[threadsPositions.length - 1].top >
-                      window.innerHeight;
-                    if (isBottomThreadTooFarDown) {
-                      window.scrollTo({ top: 0 });
-                    }
-                  }}
-                  style={{
-                    position: 'absolute',
-                    left:
-                      (threadsPositions[threadIdx]?.left ??
-                        // Make threads slide in from the right
-                        containerRef.current?.getBoundingClientRect().right ??
-                        0) + (isOpenThread ? -THREADS_GAP * 2 : THREADS_GAP),
-                    top:
-                      threadsPositions[threadIdx]?.top ??
-                      getTopPxFromMetadata(metadata),
-                    transition: 'all 0.5s ease 0.1s',
-                    transitionProperty: 'top, left',
-                    // The first time the thread gets rendered it's `hidden`, but
-                    // it has the right height. Once we know its height, we mark it
-                    // as ready, and we can correctly compute the position of the  thread
-                    //  below it.
-                    visibility: threadsReady.has(threadId)
-                      ? 'visible'
-                      : 'hidden',
-                  }}
-                >
-                  <Thread
-                    location={LOCATION}
-                    threadId={threadId}
-                    metadata={metadata}
-                    className={isOpenThread ? 'open-thread' : undefined}
-                    showPlaceholder={false}
-                    composerExpanded={isOpenThread}
-                    // When editing a message and focusing an open thread,
-                    // we don't want the main composer of the thread to
-                    // steal the focus from the editing composer.
-                    autofocus={isOpenThread && !isEditing}
-                    onRender={() =>
-                      setThreadsReady((prev) => new Set([...prev, threadId]))
-                    }
-                    onResolved={() => {
-                      handleHideFloatingThread(threadId);
-                    }}
-                    onClose={() => {
-                      setOpenThread(null);
-                    }}
-                    onThreadInfoChange={({ messageCount }) => {
-                      const userDeletedLastMessage =
-                        messageCount === 0 && threadsReady.has(threadId);
-                      if (userDeletedLastMessage) {
-                        handleHideFloatingThread(threadId);
-                      }
-                    }}
-                    onMessageEditStart={() => {
-                      setOpenThread(threadId);
-                      setIsEditing(true);
-                    }}
-                    onMessageEditEnd={() => setIsEditing(false)}
-                  />
-                </div>
-              </Fragment>
-            );
-          })}
-      </div>
       <div
+        id="sheet-container"
         className="container"
         ref={infiniteScrollContainerRef}
         style={{ height: containerHeight }}
@@ -490,6 +408,128 @@ export function Document() {
           </div>
         </div>
         <hr />
+        <div>
+          {sortedThreads
+            // only display threads we have marked as visible
+            .filter(([_id, { metadata }]) => metadata.floatingThreadVisible)
+            .map(([threadId, { metadata }], threadIdx) => {
+              const range = getRange(metadata);
+              if (!range) {
+                return;
+              }
+
+              // We need to calculate offsets as the parent container
+              // is relatively positioned
+              sheetContainerBoundingClientRect.current =
+                containerRef.current?.parentElement?.getBoundingClientRect();
+              const offsetTop =
+                sheetContainerBoundingClientRect.current?.top ?? 0;
+              const offsetLeft =
+                sheetContainerBoundingClientRect.current?.left ?? 0;
+
+              const selectionRectsVsViewport = [...range.getClientRects()];
+              const isOpenThread = openThread === threadId;
+
+              return (
+                <Fragment key={threadId}>
+                  {selectionRectsVsViewport.map((rect, idx) => (
+                    <TextHighlight
+                      rect={{
+                        // Getting the DOMRect object as a JSON so
+                        // we can spread its properties and easily
+                        // modify the top and left properties with
+                        // the values we just calculated a few lines
+                        // above.
+                        ...rect.toJSON(),
+                        top: rect.top - offsetTop,
+                        left: rect.left - offsetLeft,
+                      }}
+                      key={idx}
+                      isOpenThread={isOpenThread}
+                      onClick={() => {
+                        if (!isOpenThread) {
+                          setOpenThread(threadId);
+                        }
+                      }}
+                    />
+                  ))}
+                  <div
+                    ref={(el: HTMLDivElement) => {
+                      if (threadsRefs?.current && el) {
+                        threadsRefs.current[threadIdx] = el;
+                        observer.observe(el);
+                      }
+                    }}
+                    onClick={() => {
+                      setOpenThread(threadId);
+                      // Threads grow vertically. Very long threads might get
+                      // far away from the sheet's content, in which case, move them up!
+                      const isBottomThreadTooFarDown =
+                        threadsPositions[threadsPositions.length - 1].top >
+                        window.innerHeight;
+                      if (isBottomThreadTooFarDown) {
+                        window.scrollTo({ top: 0 });
+                      }
+                    }}
+                    style={{
+                      position: 'absolute',
+                      left:
+                        (threadsPositions[threadIdx]?.left ??
+                          // Make threads slide in from the right
+                          containerRef.current?.getBoundingClientRect().right ??
+                          0) + (isOpenThread ? -THREADS_GAP * 2 : THREADS_GAP),
+                      top:
+                        threadsPositions[threadIdx]?.top ??
+                        getTopPxFromMetadata(metadata),
+                      transition: 'all 0.5s ease 0.1s',
+                      transitionProperty: 'top, left',
+                      // The first time the thread gets rendered it's `hidden`, but
+                      // it has the right height. Once we know its height, we mark it
+                      // as ready, and we can correctly compute the position of the  thread
+                      //  below it.
+                      visibility: threadsReady.has(threadId)
+                        ? 'visible'
+                        : 'hidden',
+                    }}
+                  >
+                    <Thread
+                      location={LOCATION}
+                      threadId={threadId}
+                      metadata={metadata}
+                      className={isOpenThread ? 'open-thread' : undefined}
+                      showPlaceholder={false}
+                      composerExpanded={isOpenThread}
+                      // When editing a message and focusing an open thread,
+                      // we don't want the main composer of the thread to
+                      // steal the focus from the editing composer.
+                      autofocus={isOpenThread && !isEditing}
+                      onRender={() =>
+                        setThreadsReady((prev) => new Set([...prev, threadId]))
+                      }
+                      onResolved={() => {
+                        handleHideFloatingThread(threadId);
+                      }}
+                      onClose={() => {
+                        setOpenThread(null);
+                      }}
+                      onThreadInfoChange={({ messageCount }) => {
+                        const userDeletedLastMessage =
+                          messageCount === 0 && threadsReady.has(threadId);
+                        if (userDeletedLastMessage) {
+                          handleHideFloatingThread(threadId);
+                        }
+                      }}
+                      onMessageEditStart={() => {
+                        setOpenThread(threadId);
+                        setIsEditing(true);
+                      }}
+                      onMessageEditEnd={() => setIsEditing(false)}
+                    />
+                  </div>
+                </Fragment>
+              );
+            })}
+        </div>
         {/* Used to catch clicks outside the thread, and close it. */}
         <div
           className={cx('click-underlay', {
@@ -570,12 +610,6 @@ function getRange(metadata: ThreadMetadata) {
   return range;
 }
 
-/**
- * Helper function that adds the window.scrollY, to correctly account for
- * vertical scroll when comparing the y/top coordinate.
- */
 function getTopPxFromMetadata(metadata: ThreadMetadata) {
-  return (
-    (getRange(metadata)?.getBoundingClientRect().top ?? 0) + window.scrollY
-  );
+  return getRange(metadata)?.getBoundingClientRect().top ?? 0;
 }

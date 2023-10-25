@@ -16,8 +16,8 @@ export function TextHighlight({
   const rectPosition = {
     width: rect.width,
     height: rect.height,
-    top: rect.top + window.scrollY,
-    left: rect.left + window.scrollX,
+    top: rect.top,
+    left: rect.left,
     position: 'absolute',
   } as CSSProperties;
   return (

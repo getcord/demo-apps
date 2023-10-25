@@ -16,24 +16,31 @@ export function FloatingPresence({
         const { locations } = u.ephemeral;
         // We made it so user can only be at one location at a time.
         const elementId = (locations?.[0]?.elementId ?? '') as string;
-        const elementRect = document
-          .getElementById(elementId)
-          ?.getBoundingClientRect();
-        if (!elementRect) {
+        const element = document.getElementById(elementId);
+        // Since we are using `position: absolute`, we need the closest
+        // relatively-positioned element to correctly position the avatar
+        const parentElement = document.getElementById('sheet-container');
+        const elementRectVsViewport = element?.getBoundingClientRect();
+        const parentElementRectVsViewport =
+          parentElement?.getBoundingClientRect();
+
+        if (!elementRectVsViewport || !parentElementRectVsViewport) {
           return null;
         }
-        const { top, left, height } = elementRect;
+        const { top, left, height } = elementRectVsViewport;
+        const { top: offsetTop, left: offsetLeft } =
+          parentElementRectVsViewport;
         return (
           <Avatar
             key={u.id}
             userId={u.id}
             style={{
               position: 'absolute',
-              top: top + window.scrollY + height / 2, // Move it to the middle of the line.
+              top: top - offsetTop + height / 2, // Move it to the middle of the line.
               transform: 'translateY(-50%)', // Center it visually.
               left:
                 left -
-                window.scrollX -
+                offsetLeft -
                 AVATARS_GAP * 2 - // Move it to the left of the text
                 idx * AVATARS_GAP, // Move each avatar a bit more to the left
               zIndex: 1,
