@@ -36,6 +36,7 @@ export default function App() {
           'cord-page-presence',
         ]}
         api={['thread', 'user']}
+        app="dashboard"
       />
       {authToken && (
         <ThreadsProvider>

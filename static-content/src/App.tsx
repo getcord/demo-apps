@@ -17,6 +17,7 @@ export default function App() {
           'cord-presence-facepile',
         ]}
         api={[]}
+        app="static-content"
       />
       {authToken && <StaticContent />}
     </CordProvider>

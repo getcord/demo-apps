@@ -17,6 +17,7 @@ export default function App() {
       <InformationHeader
         components={['cord-avatar', 'cord-message', 'cord-thread']}
         api={['thread', 'user']}
+        app="canvas-new"
       />
       {clientAuthToken && (
         <CanvasAndCommentsProvider location={EXAMPLE_CORD_LOCATION}>

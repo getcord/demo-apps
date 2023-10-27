@@ -22,6 +22,7 @@ export default function App() {
           'cord-notification-list-launcher',
         ]}
         api={['thread']}
+        app="video-player"
       />
       {clientAuthToken && (
         <VideoPlayer

@@ -17,6 +17,7 @@ export default function App() {
       <InformationHeader
         api={['presence', 'thread', 'user']}
         components={['cord-avatar', 'cord-thread', 'cord-threaded-comments']}
+        app="document"
       />
       {clientAuthToken && (
         <ThreadsProvider>

@@ -21,6 +21,7 @@ export default function App() {
           'cord-composer',
         ]}
         api={['annotations', 'thread']}
+        app="canvas"
       />
       <Canvas />
     </CordProvider>
