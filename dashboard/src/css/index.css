@@ -22,8 +22,18 @@ body {
 
 #dashboard {
   color: #4a4a4a;
-  font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+  font-family:
+    'Roboto',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
     sans-serif;
   padding: 32px;
 }
@@ -82,8 +92,17 @@ body {
 
 .ag-theme-alpine {
   --ag-value-change-value-highlight-background-color: #e37400;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family:
+    'Roboto',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Oxygen',
+    'Ubuntu',
+    'Cantarell',
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
     sans-serif;
 }
 
@@ -171,13 +190,17 @@ body {
 }
 
 .in-thread-mode {
-  cursor: url('/images/comment-cursor.svg') 0 34, auto;
+  cursor:
+    url('/images/comment-cursor.svg') 0 34,
+    auto;
 }
 
 /* annotatable elements */
 .in-thread-mode .over-chart-point,
 .in-thread-mode .ag-cell {
-  cursor: url('/images/comment-cursor-active.svg') 0 34, auto;
+  cursor:
+    url('/images/comment-cursor-active.svg') 0 34,
+    auto;
 }
 
 .threadlist-container {
