@@ -224,6 +224,21 @@ export function Document() {
     };
   }, [handleUpdateThreadPositions]);
 
+  const [selectionInitialScrollPosition, setSelectionInitialScrollPosition] =
+    useState<Coordinates | undefined>();
+  const [currentScroll, setCurrentScroll] = useState<Coordinates | undefined>();
+
+  useEffect(() => {
+    const setScroll = () => {
+      setCurrentScroll({ top: window.scrollY, left: window.scrollX });
+    };
+
+    window.addEventListener('scroll', setScroll);
+    return () => {
+      window.removeEventListener('scroll', setScroll);
+    };
+  }, []);
+
   // When users select text within the page, we want to show a
   // comment button.
   const handleSelection = useCallback(() => {
@@ -235,6 +250,7 @@ export function Document() {
       !selection.anchorNode?.parentElement?.closest('#sheet') ||
       !selection.focusNode?.parentElement?.closest('#sheet')
     ) {
+      setSelectionInitialScrollPosition(undefined);
       setCommentButtonCoords(undefined);
       return;
     }
@@ -243,6 +259,10 @@ export function Document() {
     if (hasSelectedText) {
       const range = selection.getRangeAt(0);
       const { top, left } = range.getClientRects()[0];
+      setSelectionInitialScrollPosition({
+        top: window.scrollY,
+        left: window.scrollX,
+      });
       setCommentButtonCoords({
         top: top,
         left: left,
@@ -389,10 +409,22 @@ export function Document() {
     };
   }, [handleClickEsc]);
 
+  const newCommentButtonCoords = commentButtonCoords
+    ? {
+        left:
+          commentButtonCoords.left +
+          (selectionInitialScrollPosition?.left ?? 0) -
+          (currentScroll?.left ?? 0),
+        top:
+          commentButtonCoords.top +
+          (selectionInitialScrollPosition?.top ?? 0) -
+          (currentScroll?.top ?? 0),
+      }
+    : undefined;
   return (
     <>
-      {commentButtonCoords && (
-        <CommentButton coords={commentButtonCoords} onClick={addComment} />
+      {newCommentButtonCoords && (
+        <CommentButton coords={newCommentButtonCoords} onClick={addComment} />
       )}
       <div
         id="sheet-container"
