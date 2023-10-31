@@ -10,8 +10,8 @@ import {
 } from 'react';
 import { thread } from '@cord-sdk/react';
 import type { Location } from '@cord-sdk/types';
-import type { OpenThread, Pin } from './canvasUtils';
-import { updatePinPositionOnStage, getPinFromThread } from './canvasUtils';
+import { updatePinPositionOnStage, getPinFromThread } from './canvasUtils/pin';
+import type { OpenThread, Pin } from './canvasUtils/common';
 
 // Context for storing all thread related information
 type CanvasAndCommentsContextType = {

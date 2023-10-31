@@ -1,5 +1,5 @@
 import { PagePresence } from '@cord-sdk/react';
-import { EXAMPLE_CORD_LOCATION } from '../canvasUtils';
+import { EXAMPLE_CORD_LOCATION } from '../canvasUtils/pin';
 
 export function CanvasHeader() {
   return (

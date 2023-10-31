@@ -6,8 +6,8 @@ import cx from 'classnames';
 
 import { useCallback, useContext, useMemo } from 'react';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
-import type { Pin } from '../canvasUtils';
-import { EXAMPLE_CORD_LOCATION } from '../canvasUtils';
+import { EXAMPLE_CORD_LOCATION } from '../canvasUtils/common';
+import type { Pin } from '../canvasUtils/common';
 
 type CanvasCommentType = {
   pin: Pin;

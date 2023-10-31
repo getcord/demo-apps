@@ -2,7 +2,7 @@ import { CordProvider } from '@cord-sdk/react';
 
 import { InformationHeader } from '../../_common/InformationHeader';
 import { CanvasAndCommentsProvider } from './CanvasAndCommentsContext';
-import { EXAMPLE_CORD_LOCATION } from './canvasUtils';
+import { EXAMPLE_CORD_LOCATION } from './canvasUtils/pin';
 import { CanvasWindow } from './components/CanvasWindow';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
 

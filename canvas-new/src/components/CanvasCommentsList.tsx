@@ -6,7 +6,7 @@ import {
   EXAMPLE_CORD_LOCATION,
   getPinPositionOnStage,
   isPinInView,
-} from '../canvasUtils';
+} from '../canvasUtils/pin';
 
 export function CanvasCommentsList() {
   const {
