@@ -11,6 +11,7 @@ import {
 import { thread } from '@cord-sdk/react';
 import type { Location } from '@cord-sdk/types';
 import { updatePinPositionOnStage, getPinFromThread } from './canvasUtils/pin';
+import { getStageData } from './canvasUtils/common';
 import type { OpenThread, Pin } from './canvasUtils/common';
 
 // Context for storing all thread related information
@@ -41,6 +42,9 @@ type CanvasAndCommentsContextType = {
 
   // Updates all the thread co-ordinates relative to the canvas
   recomputePinPositions: () => void;
+
+  scale: number;
+  changeScale: (newScale: number, center?: { x: number; y: number }) => void;
 };
 export const CanvasAndCommentsContext = createContext<
   CanvasAndCommentsContextType | undefined
@@ -141,6 +145,39 @@ export function CanvasAndCommentsProvider({
     threadSummaries,
   ]);
 
+  const [scale, setScale] = useState(1);
+  const changeScale = useCallback(
+    (newScale: number, center?: { x: number; y: number }) => {
+      const stage = canvasStageRef.current;
+      if (!stage) {
+        return;
+      }
+
+      if (!center) {
+        const { scale: oldScale, stageX, stageY } = getStageData(stage);
+
+        const centerStage = {
+          x: stage.width() / 2,
+          y: stage.height() / 2,
+        };
+        const relatedTo = {
+          x: (centerStage.x - stageX) / oldScale,
+          y: (centerStage.y - stageY) / oldScale,
+        };
+
+        center = {
+          x: centerStage.x - relatedTo.x * newScale,
+          y: centerStage.y - relatedTo.y * newScale,
+        };
+      }
+
+      stage.scale({ x: newScale, y: newScale });
+      stage.position(center);
+      setScale(newScale);
+    },
+    [],
+  );
+
   const context = useMemo(
     () => ({
       threads,
@@ -155,6 +192,8 @@ export function CanvasAndCommentsProvider({
       isPanningCanvas,
       setIsPanningCanvas,
       recomputePinPositions,
+      scale,
+      changeScale,
     }),
     [
       threads,
@@ -164,6 +203,8 @@ export function CanvasAndCommentsProvider({
       inThreadCreationMode,
       isPanningCanvas,
       recomputePinPositions,
+      scale,
+      changeScale,
     ],
   );
   return (

@@ -10,6 +10,7 @@ import { CommentIcon } from './CommentIcon';
 import { CanvasComment } from './CanvasComment';
 import { CanvasCommentsList } from './CanvasCommentsList';
 import { CustomArrow, CustomSparkle, CustomSquiggle } from './CustomShapes';
+import { ZoomControls } from './ZoomControls';
 
 const LIST_OF_CANVAS_SHAPES = [
   'square',
@@ -34,6 +35,8 @@ export default function Canvas() {
     addThread,
     setIsPanningCanvas,
     recomputePinPositions,
+    changeScale,
+    scale,
   } = useContext(CanvasAndCommentsContext)!;
 
   const timeoutPanningRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -92,7 +95,7 @@ export default function Canvas() {
 
       const elementPosition = e.target.getPosition();
 
-      const { stageX, stageY, scale, stagePointerPosition } = getStageData(
+      const { stageX, stageY, stagePointerPosition } = getStageData(
         canvasStageRef.current,
       );
 
@@ -139,6 +142,7 @@ export default function Canvas() {
       inThreadCreationMode,
       openThread,
       removeThreadIfEmpty,
+      scale,
       setInThreadCreationMode,
       setOpenThread,
     ],
@@ -187,20 +191,19 @@ export default function Canvas() {
         if (evt.ctrlKey) {
           direction = -direction;
         }
-        const oldScale = stage.scaleX();
-        const newScale =
-          direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+        const newScale = direction > 0 ? scale * scaleBy : scale / scaleBy;
         const pointer = stage.getPointerPosition() ?? { x: 0, y: 0 };
         const mousePointTo = {
-          x: (pointer.x - stage.x()) / oldScale,
-          y: (pointer.y - stage.y()) / oldScale,
+          x: (pointer.x - stage.x()) / scale,
+          y: (pointer.y - stage.y()) / scale,
         };
 
-        stage.scale({ x: newScale, y: newScale });
-        stage.position({
+        const center = {
           x: pointer.x - mousePointTo.x * newScale,
           y: pointer.y - mousePointTo.y * newScale,
-        });
+        };
+
+        changeScale(newScale, center);
       } else {
         // Just panning the canvas
         const { deltaX, deltaY } = evt;
@@ -209,7 +212,13 @@ export default function Canvas() {
       }
       recomputePinPositions();
     },
-    [canvasStageRef, setIsPanningCanvas, recomputePinPositions],
+    [
+      setIsPanningCanvas,
+      canvasStageRef,
+      recomputePinPositions,
+      scale,
+      changeScale,
+    ],
   );
 
   const onElementDrag = useCallback(
@@ -322,6 +331,7 @@ export default function Canvas() {
             <CommentIcon />
             <span>{inThreadCreationMode ? 'Cancel' : 'Add Comment'}</span>
           </button>
+          <ZoomControls />
         </div>
         {Array.from(threads).map(([id, pin]) => (
           <CanvasComment key={id} pin={pin} />

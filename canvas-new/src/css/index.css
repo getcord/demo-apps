@@ -26,6 +26,7 @@ body {
 
   --comments-list-width: 240px;
   --header-height: 64px;
+  --canvas-button-height: 36px;
   --pin-size: 34px;
 
   /* Colors */
@@ -113,11 +114,11 @@ body {
   z-index: 3;
 }
 
-.canvasButtonGroup button {
+.canvasButtonGroup > button {
   align-items: center;
   background: var(--color-dark);
   border-radius: 4px;
-  border: 1px solid var(--color-grey-light);
+  border: none;
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
   color: var(--color-white);
   cursor: pointer;
@@ -354,4 +355,32 @@ cord-thread.cord-component.hidden {
 /* Generic cord component */
 .cord-component .cord-avatar-container {
   border-radius: 50%;
+}
+
+.zoomControls {
+  display: flex;
+  border-radius: 4px;
+  background: var(--color-dark);
+  align-items: center;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+  justify-content: center;
+}
+
+.zoomControls * {
+  border: none;
+  color: var(--color-white);
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.zoomControls > button {
+  cursor: pointer;
+  width: var(--canvas-button-height);
+  background-color: transparent;
+}
+
+.zoomControls .scale {
+  text-align: center;
+  width: 60px;
 }
