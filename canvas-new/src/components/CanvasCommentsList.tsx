@@ -2,11 +2,8 @@ import { useCallback, useContext } from 'react';
 import { ThreadedComments } from '@cord-sdk/react';
 import type { MessageInfo } from '@cord-sdk/types';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
-import {
-  EXAMPLE_CORD_LOCATION,
-  getPinPositionOnStage,
-  isPinInView,
-} from '../canvasUtils/pin';
+import { getPinPositionOnStage, isPinInView } from '../canvasUtils/pin';
+import { EXAMPLE_CORD_LOCATION } from '../canvasUtils/common';
 
 export function CanvasCommentsList() {
   const {
