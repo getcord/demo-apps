@@ -67,6 +67,14 @@ export function CanvasAndCommentsProvider({
     });
   }, []);
 
+  const deleteThread = useCallback((threadId: string) => {
+    setThreads((oldThreads) => {
+      const newThreads = new Map(oldThreads);
+      newThreads.delete(threadId);
+      return newThreads;
+    });
+  }, []);
+
   const removeThreadIfEmpty = useCallback((removeThread: OpenThread) => {
     if (!removeThread || !removeThread.empty) {
       return;
@@ -112,7 +120,10 @@ export function CanvasAndCommentsProvider({
     hasMore,
     loading,
     fetchMore,
-  } = thread.useLocationData(location, { includeResolved: false });
+  } = thread.useThreads({
+    sortBy: 'most_recent_message_timestamp',
+    filter: { location: location },
+  });
   useEffect(() => {
     if (loading) {
       return;
@@ -136,8 +147,13 @@ export function CanvasAndCommentsProvider({
           addThread(t.id, pinData);
         }
       });
+
+    threadSummaries
+      .filter((t) => t.resolved || t.total === 0)
+      .forEach((t) => deleteThread(t.id));
   }, [
     addThread,
+    deleteThread,
     fetchMore,
     hasMore,
     loading,
