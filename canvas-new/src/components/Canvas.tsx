@@ -3,14 +3,14 @@ import type { KonvaEventObject } from 'konva/lib/Node';
 import cx from 'classnames';
 import { useCallback, useContext, useEffect, useRef } from 'react';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
-import { createNewPin } from '../canvasUtils/pin';
 import type { ThreadMetadata } from '../canvasUtils/common';
 import { getStageData } from '../canvasUtils/common';
+import { createNewPin } from '../canvasUtils/pin';
 import { CommentIcon } from './CommentIcon';
-import { CanvasComment } from './CanvasComment';
 import { CanvasCommentsList } from './CanvasCommentsList';
 import { CustomArrow, CustomSparkle, CustomSquiggle } from './CustomShapes';
 import { ZoomControls } from './ZoomControls';
+import { CanvasComments } from './CanvasComments';
 
 const LIST_OF_CANVAS_SHAPES = [
   'square',
@@ -24,7 +24,6 @@ const LIST_OF_CANVAS_SHAPES = [
 
 export default function Canvas() {
   const {
-    threads,
     canvasStageRef,
     canvasContainerRef,
     openThread,
@@ -35,7 +34,7 @@ export default function Canvas() {
     addThread,
     setIsPanningCanvas,
     recomputePinPositions,
-    changeScale,
+    zoomAndCenter,
     scale,
   } = useContext(CanvasAndCommentsContext)!;
 
@@ -203,7 +202,7 @@ export default function Canvas() {
           y: pointer.y - mousePointTo.y * newScale,
         };
 
-        changeScale(newScale, center);
+        zoomAndCenter(newScale, center);
       } else {
         // Just panning the canvas
         const { deltaX, deltaY } = evt;
@@ -217,7 +216,7 @@ export default function Canvas() {
       canvasStageRef,
       recomputePinPositions,
       scale,
-      changeScale,
+      zoomAndCenter,
     ],
   );
 
@@ -333,9 +332,7 @@ export default function Canvas() {
           </button>
           <ZoomControls />
         </div>
-        {Array.from(threads).map(([id, pin]) => (
-          <CanvasComment key={id} pin={pin} />
-        ))}
+        <CanvasComments />
       </div>
       <CanvasCommentsList />
     </div>

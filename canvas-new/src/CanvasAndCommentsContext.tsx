@@ -44,7 +44,7 @@ type CanvasAndCommentsContextType = {
   recomputePinPositions: () => void;
 
   scale: number;
-  changeScale: (newScale: number, center?: { x: number; y: number }) => void;
+  zoomAndCenter: (newScale: number, center?: { x: number; y: number }) => void;
 };
 export const CanvasAndCommentsContext = createContext<
   CanvasAndCommentsContextType | undefined
@@ -162,7 +162,7 @@ export function CanvasAndCommentsProvider({
   ]);
 
   const [scale, setScale] = useState(1);
-  const changeScale = useCallback(
+  const zoomAndCenter = useCallback(
     (newScale: number, center?: { x: number; y: number }) => {
       const stage = canvasStageRef.current;
       if (!stage) {
@@ -209,7 +209,7 @@ export function CanvasAndCommentsProvider({
       setIsPanningCanvas,
       recomputePinPositions,
       scale,
-      changeScale,
+      zoomAndCenter,
     }),
     [
       threads,
@@ -220,7 +220,7 @@ export function CanvasAndCommentsProvider({
       isPanningCanvas,
       recomputePinPositions,
       scale,
-      changeScale,
+      zoomAndCenter,
     ],
   );
   return (

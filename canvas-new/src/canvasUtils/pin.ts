@@ -73,11 +73,12 @@ export function computePinPosition(
     pinX = pinX + stageX;
     pinY = pinY + stageY;
   }
+
   return {
     threadID,
     thread,
-    x: pinX,
-    y: pinY,
+    x: roundNumber(pinX),
+    y: roundNumber(pinY),
   };
 }
 
@@ -89,10 +90,12 @@ export function getPinPositionOnStage(stage: Stage, pin: Pin) {
   return computePinPosition(stage, pin.threadID, pin.thread, false);
 }
 
-// TODO - tweak to avoid header
-export function isPinInView(stage: Stage, pin: Pin) {
-  const pinElement = document.getElementById(pin.threadID);
+export function getPinElementOnStage(threadID: string) {
+  return document.querySelector(`div[id*="${threadID}"]`);
+}
 
+// TODO - tweak to avoid header
+export function isPinInView(stage: Stage, pinElement: Element | null) {
   if (!pinElement) {
     throw new Error('Pin does not exist');
   }

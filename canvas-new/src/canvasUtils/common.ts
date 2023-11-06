@@ -1,9 +1,11 @@
-import type { ThreadSummary } from '@cord-sdk/types';
 import type { Stage } from 'konva/lib/Stage';
+import type { ThreadSummary } from '@cord-sdk/types';
 
 export const EXAMPLE_CORD_LOCATION = {
   page: 'canvas-new',
 };
+
+export const GROUPED_PINS_CLASS_NAME = 'groupedPins';
 
 export type ThreadMetadata = {
   elementName: string;

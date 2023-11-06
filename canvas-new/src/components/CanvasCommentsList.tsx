@@ -1,9 +1,25 @@
 import { useCallback, useContext } from 'react';
 import { ThreadedComments } from '@cord-sdk/react';
 import type { MessageInfo } from '@cord-sdk/types';
+import type { Stage } from 'konva/lib/Stage';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
-import { getPinPositionOnStage, isPinInView } from '../canvasUtils/pin';
-import { EXAMPLE_CORD_LOCATION } from '../canvasUtils/common';
+import {
+  getPinElementOnStage,
+  getPinPositionOnStage,
+  isPinInView,
+} from '../canvasUtils/pin';
+import {
+  EXAMPLE_CORD_LOCATION,
+  GROUPED_PINS_CLASS_NAME,
+} from '../canvasUtils/common';
+import { expandGroupedPins } from '../canvasUtils/groupedPins';
+
+function getStageCenter(stage: Stage) {
+  return {
+    x: stage.width() / 2,
+    y: stage.height() / 2,
+  };
+}
 
 export function CanvasCommentsList() {
   const {
@@ -12,52 +28,80 @@ export function CanvasCommentsList() {
     setOpenThread,
     recomputePinPositions,
     openThread,
+    zoomAndCenter,
   } = useContext(CanvasAndCommentsContext)!;
+
+  const navigateToGroupPin = useCallback(
+    (pinElement: Element, stage: Stage) => {
+      const groupedPinsThreadIDs = pinElement.id.split('/');
+
+      const pinsInGroup = Array.from(threads)
+        .filter(([id]) => groupedPinsThreadIDs.includes(id))
+        .map(([_, pinThread]) => pinThread);
+      const { newStagePosition, newScale } = expandGroupedPins(
+        stage,
+        pinsInGroup,
+        getStageCenter(stage),
+      );
+      zoomAndCenter(newScale, newStagePosition);
+    },
+    [threads, zoomAndCenter],
+  );
 
   const navigateToPin = useCallback(
     (messageInfo: MessageInfo) => {
+      const stage = canvasStageRef.current;
+      if (!stage) {
+        return;
+      }
+
       const foundPin = threads.get(messageInfo.threadId);
       if (!foundPin) {
         console.warn('Could not find pin on the page');
         return;
       }
 
-      if (!canvasStageRef.current) {
+      const pinElement = getPinElementOnStage(messageInfo.threadId);
+      if (!pinElement) {
+        console.warn('Could not find pin on the page');
         return;
       }
-
-      const stage = canvasStageRef.current;
+      const isGroupPin = pinElement?.classList.contains(
+        GROUPED_PINS_CLASS_NAME,
+      );
 
       // check if pin is already in view - if so then we open the thread
-      if (isPinInView(stage, foundPin)) {
-        setOpenThread({ threadID: foundPin.threadID, empty: false });
+      if (isPinInView(stage, pinElement) && !isGroupPin) {
+        setOpenThread({ threadID: messageInfo.threadId, empty: false });
         return;
       }
 
-      // Pin is not in view so we have to move the stage and pin to show it
-      const stageHeight = stage.height();
-      const stageWidth = stage.width();
+      if (isGroupPin) {
+        navigateToGroupPin(pinElement, stage);
+      } else {
+        const pinPositionOnStage = getPinPositionOnStage(stage, foundPin);
 
-      // Get Shape Position or Stage Position
-      const pinPositionOnStage = getPinPositionOnStage(stage, foundPin);
+        if (!pinPositionOnStage) {
+          return;
+        }
 
-      if (!pinPositionOnStage) {
-        return;
+        const stageCenter = getStageCenter(stage);
+        stage.position({
+          x: stageCenter.x - pinPositionOnStage.x,
+          y: stageCenter.y - pinPositionOnStage.y,
+        });
       }
 
-      const stageCenter = {
-        x: stageWidth / 2,
-        y: stageHeight / 2,
-      };
-
-      stage.position({
-        x: stageCenter.x - pinPositionOnStage.x,
-        y: stageCenter.y - pinPositionOnStage.y,
-      });
       recomputePinPositions();
       setOpenThread({ threadID: foundPin.threadID, empty: false });
     },
-    [threads, canvasStageRef, recomputePinPositions, setOpenThread],
+    [
+      threads,
+      canvasStageRef,
+      recomputePinPositions,
+      setOpenThread,
+      navigateToGroupPin,
+    ],
   );
 
   return (

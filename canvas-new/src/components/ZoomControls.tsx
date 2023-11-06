@@ -2,7 +2,7 @@ import { useCallback, useContext } from 'react';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
 
 export function ZoomControls() {
-  const { canvasStageRef, recomputePinPositions, changeScale, scale } =
+  const { canvasStageRef, recomputePinPositions, zoomAndCenter, scale } =
     useContext(CanvasAndCommentsContext)!;
 
   const zoom = useCallback(
@@ -11,13 +11,13 @@ export function ZoomControls() {
         return;
       }
 
-      const scaleBy = 1.03;
+      const scaleBy = 1.25;
       const newScale = type === 'in' ? scale * scaleBy : scale / scaleBy;
 
-      changeScale(newScale);
+      zoomAndCenter(newScale);
       recomputePinPositions();
     },
-    [canvasStageRef, changeScale, recomputePinPositions, scale],
+    [canvasStageRef, zoomAndCenter, recomputePinPositions, scale],
   );
 
   const zoomIn = useCallback(() => {
