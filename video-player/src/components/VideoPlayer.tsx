@@ -133,30 +133,47 @@ function CommentableVideo({
     setCursorTooltipText('Click to resume');
   }, []);
 
-  // Let's connect ThreadedComments to the video! Clicking on
-  // a message in ThreadedComment will move the video time to
-  // the timestamp of that message, and open the thread.
-  const onMessageClick = useCallback(
-    (mi: MessageInfo) => {
+  const onMessageFocus = useCallback(
+    (threadID: string, messageID?: string) => {
       if (!videoRef.current) {
         return;
       }
-      const threadMetadata = threads.get(mi.threadId)?.metadata;
+      const threadMetadata = threads.get(threadID)?.metadata;
       if (!threadMetadata) {
-        console.log(`Thread ${mi.threadId} not found`);
+        console.log(`Thread ${threadID} not found`);
         return;
       }
 
       videoRef.current.currentTime = threadMetadata.timestamp;
       videoRef.current.pause();
-      window.scroll({ top: 0, behavior: 'smooth' });
-      const messageElement = videoRef.current
-        .closest('#content')
-        ?.querySelector(`[message-id="${mi.messageId}"]`);
-      messageElement?.scrollIntoView();
-      setOpenThread(mi.threadId);
+      const messageElement = messageID
+        ? videoRef.current
+            .closest('#content')
+            ?.querySelector(`[message-id="${messageID}"]`)
+        : videoRef.current
+            .closest('#content')
+            ?.querySelector(`[thread-id="${threadID}"]`);
+      messageElement?.scrollIntoView({ behavior: 'smooth' });
+      setOpenThread(threadID);
     },
     [videoRef, setOpenThread, threads],
+  );
+
+  // Let's connect ThreadedComments to the video! Clicking on
+  // a message in ThreadedComment will move the video time to
+  // the timestamp of that message, and open the thread.
+  const onMessageClick = useCallback(
+    (mi: MessageInfo) => {
+      onMessageFocus(mi.threadId, mi.messageId);
+    },
+    [onMessageFocus],
+  );
+
+  const onComposerFocus = useCallback(
+    ({ threadId }: { threadId: string }) => {
+      onMessageFocus(threadId);
+    },
+    [onMessageFocus],
   );
 
   // Close open thread when users press ESCAPE
@@ -168,6 +185,7 @@ function CommentableVideo({
     },
     [handleCloseThread],
   );
+
   useEffect(() => {
     document.addEventListener('keydown', handlePressEscape);
     return () => document.removeEventListener('keydown', handlePressEscape);
@@ -289,6 +307,7 @@ function CommentableVideo({
             displayResolved={
               (summary?.resolved ?? 0) > 0 ? 'tabbed' : 'unresolvedOnly'
             }
+            onComposerFocus={onComposerFocus}
           />
         </div>
       </div>
