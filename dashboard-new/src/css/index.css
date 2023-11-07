@@ -256,3 +256,8 @@ cord-thread.cord-component {
   color: var(--grey-x-light);
   margin: 0;
 }
+
+.cord-component .cord-composer .cord-button ,
+.cord-component .cord-composer .cord-separator {
+  display: none;
+}

@@ -530,7 +530,8 @@ the stacking context created by floating threads. */
   padding: 0;
 }
 
-.cord-component .cord-composer .cord-button {
+.cord-component .cord-composer .cord-button ,
+.cord-component .cord-composer .cord-separator {
   display: none;
 }
 
