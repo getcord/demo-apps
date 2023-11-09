@@ -341,6 +341,7 @@ cord-thread.cord-component .cord-message-content:hover {
   z-index: var(--threaded-comments-z-index);
   border-radius: 8px;
   max-height: 800px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .comments-container {
