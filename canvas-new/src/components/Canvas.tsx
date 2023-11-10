@@ -259,7 +259,14 @@ export default function Canvas() {
           onWheel={onStageWheel}
         >
           <Layer>
-            <Circle radius={250} fill="#0ACF83" x={890} y={85} name="circle" />
+            <Circle
+              radius={250}
+              fill="#0ACF83"
+              x={890}
+              y={85}
+              name="circle"
+              {...dragProps}
+            />
             <Rect
               fill={'#FA7351'}
               width={400}
