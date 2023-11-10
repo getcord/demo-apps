@@ -473,44 +473,43 @@ function ChartThread({
   }, [metadata.x, metadata.y, selectedDateRange]);
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        // When not visible, position all the way to the left, to not
-        // add unnecessary horizontal scroll.
-        left: isVisible ? pointPixelPosX + GAP_PX - COMMENT_ICON_HEIGHT_PX : 0,
-        // When the commented bar is visible, show the comment icon
-        // on top of it.
-        top: isVisible
-          ? `calc(${
-              pointPixelPosY -
-              COMMENT_ICON_HEIGHT_PX -
-              GAP_PX -
-              COMMENT_ICON_TOP_OFFSET_PX
-            }px`
-          : 0,
-        transition: 'top 0.5s, left 0.5s',
-        visibility: isVisible ? 'visible' : 'hidden',
-        zIndex: isOpen ? 5 : 0, // The highcharts tooltip has a z-index of 3
-      }}
-    >
-      <img
-        key={threadId}
-        src={metadata.resolved ? commentIconResolved : commentIcon}
-        onClick={() => setOpenThread(isOpen ? null : threadId)}
-        style={{ height: COMMENT_ICON_HEIGHT_PX }}
-      />
-
-      <ThreadWrapper
-        location={LOCATION}
-        threadId={threadId}
-        metadata={metadata}
+    isVisible && (
+      <div
         style={{
           position: 'absolute',
-          ...threadPosition,
+          // When not visible, position all the way to the left, to not
+          // add unnecessary horizontal scroll.
+          left: pointPixelPosX + GAP_PX - COMMENT_ICON_HEIGHT_PX,
+          // When the commented bar is visible, show the comment icon
+          // on top of it.
+          top: `calc(${
+            pointPixelPosY -
+            COMMENT_ICON_HEIGHT_PX -
+            GAP_PX -
+            COMMENT_ICON_TOP_OFFSET_PX
+          }px`,
+          transition: 'top 0.5s, left 0.5s',
+          zIndex: isOpen ? 5 : 0, // The highcharts tooltip has a z-index of 3
         }}
-      />
-    </div>
+      >
+        <img
+          key={threadId}
+          src={metadata.resolved ? commentIconResolved : commentIcon}
+          onClick={() => setOpenThread(isOpen ? null : threadId)}
+          style={{ height: COMMENT_ICON_HEIGHT_PX }}
+        />
+
+        <ThreadWrapper
+          location={LOCATION}
+          threadId={threadId}
+          metadata={metadata}
+          style={{
+            position: 'absolute',
+            ...threadPosition,
+          }}
+        />
+      </div>
+    )
   );
 }
 
