@@ -240,6 +240,11 @@ export default function Canvas() {
     ],
   );
 
+  const dragProps = {
+    draggable: !inThreadCreationMode,
+    onDragMove: onElementDrag,
+  };
+
   return (
     <div className="canvasAndCordContainer">
       <div className="canvasContainer" ref={canvasContainerRef}>
@@ -254,15 +259,7 @@ export default function Canvas() {
           onWheel={onStageWheel}
         >
           <Layer>
-            <Circle
-              radius={250}
-              fill="#0ACF83"
-              x={890}
-              y={85}
-              name="circle"
-              draggable={!inThreadCreationMode}
-              onDragMove={onElementDrag}
-            />
+            <Circle radius={250} fill="#0ACF83" x={890} y={85} name="circle" />
             <Rect
               fill={'#FA7351'}
               width={400}
@@ -270,57 +267,43 @@ export default function Canvas() {
               x={-200}
               y={24}
               name="square"
-              draggable={!inThreadCreationMode}
-              onDragMove={onElementDrag}
+              {...dragProps}
             />
-            <CustomArrow
-              x={330}
-              y={85}
-              name="custom-arrow"
-              draggable={!inThreadCreationMode}
-              onDragMove={onElementDrag}
-            />
-            <CustomSparkle
-              x={810}
-              y={-5}
-              name="custom-sparkle"
-              draggable={!inThreadCreationMode}
-              onDragMove={onElementDrag}
-            />
+            <CustomArrow x={330} y={85} name="custom-arrow" {...dragProps} />
+            <CustomSparkle x={810} y={0} name="custom-sparkle" {...dragProps} />
             <CustomSquiggle
-              x={500}
-              y={350}
+              x={450}
+              y={170}
               name="custom-squiggle"
-              draggable={!inThreadCreationMode}
-              onDragMove={onElementDrag}
-            />
-            <Text
-              text="Try adding a comment here!"
-              name="prompt-text"
-              draggable={!inThreadCreationMode}
-              onDragMove={onElementDrag}
-              fontSize={20}
-              x={580}
-              y={430}
+              {...dragProps}
             />
             <Star
               numPoints={5}
               lineJoin="round"
               fill={'#FFC700'}
-              outerRadius={34}
-              innerRadius={15}
+              outerRadius={20}
+              innerRadius={10}
               stroke={'#FFFFFF'}
-              strokeWidth={5}
-              x={800}
-              y={380}
+              strokeWidth={4}
+              x={580}
+              y={420}
               name="star"
-              draggable={!inThreadCreationMode}
-              onDragMove={onElementDrag}
+              {...dragProps}
+            />
+            <Text
+              text="Try adding a comment here!"
+              name="prompt-text"
+              {...dragProps}
+              fontSize={16}
+              x={580}
+              y={440}
+              rotation={-5}
             />
           </Layer>
         </Stage>
         <div className="canvasButtonGroup">
           <button
+            className="controlButton"
             type="button"
             onClick={() => {
               setInThreadCreationMode((prev) => !prev);

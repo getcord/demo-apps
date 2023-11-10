@@ -1,4 +1,5 @@
 import { useCallback, useContext } from 'react';
+import classNames from 'classnames';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
 
 export function ZoomControls() {
@@ -28,11 +29,11 @@ export function ZoomControls() {
   }, [zoom]);
 
   return (
-    <div className="zoomControls">
+    <div className={classNames('zoomControls', 'controlButton')}>
       <button type="button" onClick={zoomOut}>
         -
       </button>
-      <p className="scale">{(scale * 100).toFixed(0)}%</p>
+      <span className="scale">{(scale * 100).toFixed(0)}%</span>
       <button type="button" onClick={zoomIn}>
         +
       </button>
