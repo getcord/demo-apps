@@ -28,7 +28,13 @@ export default function App() {
       }}
     >
       <InformationHeader
-        components={['cord-avatar', 'cord-message', 'cord-thread']}
+        components={[
+          'cord-avatar',
+          'cord-message',
+          'cord-thread',
+          'cord-threaded-comments',
+          'cord-page-presence',
+        ]}
         api={['thread', 'user']}
         app="canvas-new"
       />
