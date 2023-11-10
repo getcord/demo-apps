@@ -261,6 +261,16 @@ body {
   position: absolute;
   /* line up the thread with the pin */
   top: calc(-1 * var(--pin-size));
+  width: var(--comments-list-width)
+}
+
+.canvasComment cord-thread.cord-component.thread-on-the-left {
+  left: calc(-1 * (var(--comments-list-width) + 20px));
+}
+
+.canvasComment cord-thread.cord-component.thread-on-the-top {
+  bottom: 0;
+  top: auto;
 }
 
 .canvasPin {

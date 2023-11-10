@@ -16,9 +16,28 @@ type CanvasCommentType = {
 export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
   const userData = user.useViewerData();
 
-  const { isPanningCanvas, openThread, setOpenThread, threads } = useContext(
-    CanvasAndCommentsContext,
-  )!;
+  const {
+    isPanningCanvas,
+    openThread,
+    setOpenThread,
+    threads,
+    canvasContainerRef,
+  } = useContext(CanvasAndCommentsContext)!;
+
+  // Calculate the best place to position the open thread for
+  // visibility depending on how close the pin is to the canvas edges.
+  const threadPositionOnCanvas = useMemo(() => {
+    if (!canvasContainerRef.current) {
+      return;
+    }
+    const canvasrect = canvasContainerRef.current.getBoundingClientRect();
+    // the thread's default position is on the right-hand side of the pin so we only
+    // need to know when we should position it on the left or top side.
+    return {
+      top: (y / canvasrect.height) * 100 > 50,
+      left: (x / canvasrect.width) * 100 > 50,
+    };
+  }, [canvasContainerRef, y, x]);
 
   const threadData = useMemo(() => {
     const thread = threads.get(threadID);
@@ -102,6 +121,8 @@ export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
         className={cx({
           ['active']: openThread?.threadID === threadID,
           ['hidden']: openThread?.threadID !== threadID,
+          ['thread-on-the-left']: threadPositionOnCanvas?.left,
+          ['thread-on-the-top']: threadPositionOnCanvas?.top,
         })}
         onThreadInfoChange={onThreadInfoChange}
       />
