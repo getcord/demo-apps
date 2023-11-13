@@ -39,6 +39,7 @@ export function Document() {
   const threadsRefs = useRef<(HTMLDivElement | undefined)[] | null>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const sheetContainerBoundingClientRect = useRef<DOMRect | undefined>();
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   // NOTE: This is used only for the typing effect in cord.com demos.
   // Feel free to ignore/get rid of this part.
@@ -243,6 +244,7 @@ export function Document() {
   // comment button.
   const handleSelection = useCallback(() => {
     const selection = document.getSelection();
+
     if (
       !selection ||
       selection.isCollapsed ||
@@ -252,6 +254,7 @@ export function Document() {
     ) {
       setSelectionInitialScrollPosition(undefined);
       setCommentButtonCoords(undefined);
+
       return;
     }
 
@@ -269,6 +272,7 @@ export function Document() {
       });
     }
   }, []);
+
   useEffect(() => {
     document.addEventListener('selectionchange', handleSelection);
 
@@ -276,6 +280,26 @@ export function Document() {
       document.removeEventListener('selectionchange', handleSelection);
     };
   }, [handleSelection]);
+
+  // Adding an initial text selection, to showcase the "Add comment" button.
+  // This useEffect is not necessary if you are building this yourself!
+  useEffect(() => {
+    if (finishedTextAnimation && titleRef.current) {
+      const selection = document.getSelection();
+      const selectionRange = document.createRange();
+      // Selecting the "Looks like" text from the title
+      selectionRange.setStart(titleRef.current.childNodes[0], 0);
+      selectionRange.setEnd(titleRef.current.childNodes[0], 10);
+
+      // If a user clicks anywhere, even before this useEffect runs,
+      // the selection object gets populated. Multiple ranges are not
+      // supported in all browsers, but they are in this API. So we are
+      // clearing any ranges before adding this selection to make sure
+      // it's displayed.
+      selection?.removeAllRanges();
+      selection?.addRange(selectionRange);
+    }
+  }, [finishedTextAnimation]);
 
   const presentUsers = presence.useLocationData(LOCATION, {
     partial_match: true,
@@ -421,6 +445,7 @@ export function Document() {
           (currentScroll?.top ?? 0),
       }
     : undefined;
+
   return (
     <>
       {newCommentButtonCoords && (
@@ -587,7 +612,7 @@ export function Document() {
         E.g. <h1 id="title">My Shiny App</h1><p id="content">My Shiny content</p> will work. */}
         <div id="sheet" ref={containerRef}>
           <FloatingPresence presentUsers={presentUsers} />
-          <h1 id="title">
+          <h1 id="title" ref={titleRef}>
             <AnimatedText
               typingUser="Albert"
               animate={!document.hidden && animatingElementIndex === 0}
