@@ -1,5 +1,7 @@
+import cx from 'classnames';
 import type { Point2D } from '@cord-sdk/types';
-import { useCallback, useContext, useEffect, useMemo } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Avatar } from '@cord-sdk/react';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
 import type { Pin } from '../canvasUtils/common';
 import { GROUPED_PINS_CLASS_NAME } from '../canvasUtils/common';
@@ -74,6 +76,7 @@ function CanvasCommentGroup({ pins }: { pins: Pin[] }) {
     recomputePinPositions,
     zoomAndCenter,
   } = useContext(CanvasAndCommentsContext)!;
+  const [isHoveringOverGroup, setIsHoveringOverGroup] = useState(false);
 
   useEffect(() => {
     if (pins.find((pin) => pin.threadID === openThread?.threadID)) {
@@ -116,19 +119,71 @@ function CanvasCommentGroup({ pins }: { pins: Pin[] }) {
 
   const { averageX, averageY } = getAverageCoordsOfPins(pins);
 
+  const threadAuthorsList = pins.map(
+    (pin) => pin.thread.firstMessage?.authorID,
+  );
+  const uniqueThreadAuthors = [...new Set(threadAuthorsList)];
+  // The ghost Avatar is used when all thread authors in a group
+  // are the same user.
+  const showGhost =
+    uniqueThreadAuthors.length === 1 && threadAuthorsList.length > 1;
+
+  const handleStartHoverOverGroup = useCallback(
+    () => setIsHoveringOverGroup(true),
+    [],
+  );
+  const handleStopHoverOverGroup = useCallback(
+    () => setIsHoveringOverGroup(false),
+    [],
+  );
+
+  const groupedAuthorAvatars = uniqueThreadAuthors
+    .slice(0, 3)
+    .map((userId, _, slicedArray) =>
+      userId ? (
+        <Avatar
+          key={userId}
+          className={cx('groupedAvatar', {
+            ['oneTotalAvatar']: slicedArray.length === 1,
+            ['twoTotalAvatars']: slicedArray.length === 2,
+            ['threeTotalAvatars']: slicedArray.length === 3,
+          })}
+          userId={userId}
+        />
+      ) : null,
+    );
+
   return (
-    <div
-      id={pins.map((pin) => pin.threadID).join('/')}
-      className={GROUPED_PINS_CLASS_NAME}
-      role="button"
-      style={{
-        left: averageX,
-        top: averageY,
-        pointerEvents: isPanningCanvas ? 'none' : 'auto',
-      }}
-      onClick={onGroupClick}
-    >
-      <p> {pins.length}</p>
-    </div>
+    <>
+      <div
+        id={pins.map((pin) => pin.threadID).join('/')}
+        className={cx(GROUPED_PINS_CLASS_NAME, {
+          ['totalPinsNumber']: isHoveringOverGroup,
+        })}
+        role="button"
+        style={{
+          left: averageX,
+          top: averageY,
+          pointerEvents: isPanningCanvas ? 'none' : 'auto',
+        }}
+        onClick={onGroupClick}
+        onMouseEnter={handleStartHoverOverGroup}
+        onMouseLeave={handleStopHoverOverGroup}
+      >
+        {isHoveringOverGroup ? (
+          <p>{pins.length}</p>
+        ) : (
+          <>
+            {showGhost && (
+              <Avatar
+                className={cx('groupedAvatar', 'ghost')}
+                userId={uniqueThreadAuthors[0]!}
+              />
+            )}
+            {groupedAuthorAvatars}
+          </>
+        )}
+      </div>
+    </>
   );
 }

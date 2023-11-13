@@ -416,11 +416,65 @@ cord-thread.cord-component.hidden {
   justify-items: center;
   position: absolute;
   transform: translate(0px, -50px);
+  transition: transform 250ms ease-in;
   width: 50px;
+}
+
+.groupedPins.totalPinsNumber {
+  transform: translate(0px, -50px) scale(1.2);
 }
 
 .groupedPins p {
   width: 100%;
   font-weight: 800;
   text-align: center;
+}
+
+.groupedAvatar {
+  position: absolute;
+}
+
+.groupedAvatar > .cord-avatar-container {
+  border: 2px solid #fff;
+  height: 24px;
+  width: 24px;
+}
+
+/* Group of 1 pin with a ghost pin */
+.groupedPins > .groupedAvatar.oneTotalAvatar {
+  left: 8px;
+  top: 13px;
+}
+
+.groupedPins > .groupedAvatar.ghost {
+  left: 18px;
+  opacity: 0.5;
+  top: 13px;
+}
+
+/* Group of 2 different authors */
+.groupedPins > .groupedAvatar.twoTotalAvatars:nth-child(1) {
+  left: 7px;
+  top: 5px;
+}
+
+.groupedPins > .groupedAvatar.twoTotalAvatars:nth-child(2) {
+  left: 20px;
+  top: 21px;
+}
+
+/* Group of 3 different authors */
+.groupedPins > .groupedAvatar.threeTotalAvatars:nth-child(1) {
+  left: 2px;
+  top: 7px;
+}
+
+.groupedPins > .groupedAvatar.threeTotalAvatars:nth-child(2) {
+  left: 24px;
+  top: 7px;
+}
+
+.groupedPins > .groupedAvatar.threeTotalAvatars:nth-child(3) {
+  left: 13px;
+  top: 26px;
 }
