@@ -8,7 +8,12 @@ import { getStageData } from '../canvasUtils/common';
 import { createNewPin } from '../canvasUtils/pin';
 import { CommentIcon } from './CommentIcon';
 import { CanvasCommentsList } from './CanvasCommentsList';
-import { CustomArrow, CustomSparkle, CustomSquiggle } from './CustomShapes';
+import {
+  CustomArrow,
+  CustomHeart,
+  CustomSparkle,
+  CustomSquiggle,
+} from './CustomShapes';
 import { ZoomControls } from './ZoomControls';
 import { CanvasComments } from './CanvasComments';
 
@@ -20,6 +25,7 @@ const LIST_OF_CANVAS_SHAPES = [
   'custom-arrow',
   'custom-squiggle',
   'custom-sparkle',
+  'custom-heart',
 ];
 
 export default function Canvas() {
@@ -257,6 +263,8 @@ export default function Canvas() {
           name="stage"
           onClick={onStageClick}
           onWheel={onStageWheel}
+          width={window.innerWidth}
+          height={window.innerHeight}
         >
           <Layer>
             <Circle
@@ -295,6 +303,12 @@ export default function Canvas() {
               x={580}
               y={420}
               name="star"
+              shadowColor={'rgba(0, 0, 0, 0.12)'}
+              shadowOffset={{
+                x: 0,
+                y: 2,
+              }}
+              shadowBlur={3}
               {...dragProps}
             />
             <Text
@@ -305,7 +319,10 @@ export default function Canvas() {
               x={580}
               y={440}
               rotation={-5}
+              draggable={!inThreadCreationMode}
+              onDragMove={onElementDrag}
             />
+            <CustomHeart x={850} y={450} name="custom-heart" {...dragProps} />
           </Layer>
         </Stage>
         <div className="canvasButtonGroup">
