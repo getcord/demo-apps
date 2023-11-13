@@ -52,7 +52,7 @@ export function ThreadWrapper({
         // Thread from DOM and thus would lose the draft message.
         visibility: openThread === threadId ? 'visible' : 'hidden',
         width: '300px',
-        maxHeight: '300px',
+        maxHeight: '400px',
         ...style,
       }}
       onThreadInfoChange={(info) => {

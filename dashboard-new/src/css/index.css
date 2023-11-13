@@ -257,7 +257,7 @@ cord-thread.cord-component {
   margin: 0;
 }
 
-.cord-component .cord-composer .cord-button ,
-.cord-component .cord-composer .cord-separator {
+.cord-mention-menu > .cord-button ,
+.cord-mention-menu > .cord-separator {
   display: none;
-}
+} 
