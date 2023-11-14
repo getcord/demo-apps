@@ -95,6 +95,7 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
             composerPosition="none"
             highlightThreadId={openThread ?? undefined}
             messageOrder="newest_on_top"
+            displayResolved="tabbed"
           />
         </div>
       )}
