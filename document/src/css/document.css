@@ -305,6 +305,12 @@ cord-thread .cord-message:is(.cord-deleted, .cord-action) {
   width: 32px;
 }
 
+.cord-message
+  .cord-menu
+  [data-cord-menu-item='thread-share-via-slack-not-connected'] {
+  display: none;
+}
+
 .cord-component
   .cord-message
   .cord-options-menu-trigger
