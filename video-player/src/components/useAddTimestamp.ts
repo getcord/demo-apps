@@ -33,7 +33,7 @@ export function useAddTimestamp() {
           const newBlock = {
             type: 'p',
             children: [
-              { text: `${timestamp}`, class: 'timestamp' },
+              { text: `${timestamp} `, class: 'timestamp' },
               ...firstContentBlock['children'],
             ],
           };

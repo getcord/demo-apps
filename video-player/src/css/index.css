@@ -305,7 +305,7 @@ video {
   background-color: var(--white);
   color: var(--cord-color-base);
   border-radius: 99px;
-  padding: 2px 8px;
+  padding: 2px 4px 2px 8px;
   margin-right: 4px;
   font-size: 12px;
 }
