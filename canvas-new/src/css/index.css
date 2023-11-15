@@ -246,6 +246,7 @@ p {
 }
 
 .cord-threaded-comments-thread .cord-expand-replies {
+  margin: 0;
   padding-left: 0;
   color: var(--color-dark-x-light);
 }
@@ -266,7 +267,7 @@ p {
   position: absolute;
   /* line up the thread with the pin */
   top: calc(-1 * var(--pin-size));
-  width: var(--comments-list-width)
+  width: var(--comments-list-width);
 }
 
 .canvasComment cord-thread.cord-component.thread-on-the-left {
