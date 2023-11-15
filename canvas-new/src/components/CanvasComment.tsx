@@ -78,6 +78,11 @@ export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
     ? threadData.thread.firstMessage.authorID
     : userData.id;
 
+  // Only show facepile in pin if repliers include other people than the thread author
+  const threadHasOtherRepliers = threadData.repliers.filter(
+    (id) => id !== firstMessageAuthorID,
+  ).length;
+
   return (
     // Need the canvasComment wrapper so the pin can grow in size from the bottom
     <div
@@ -97,11 +102,11 @@ export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
           ['previewMessage']:
             openThread?.threadID !== threadID && threadData.thread.firstMessage,
           ['active']: openThread?.threadID === threadID,
-          ['no-repliers']: !threadData.repliers?.length,
+          ['no-repliers']: !threadHasOtherRepliers,
         })}
         onClick={onPinClick}
       >
-        {threadData.repliers?.length ? (
+        {threadHasOtherRepliers ? (
           <Facepile
             users={[firstMessageAuthorID, ...threadData.repliers].slice(0, 3)}
           />
