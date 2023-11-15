@@ -297,6 +297,9 @@ p {
     width 0.2s,
     height 0.2s,
     padding 0.2s;
+}
+
+.canvasPin.no-repliers {
   width: var(--pin-size);
 }
 

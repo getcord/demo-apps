@@ -20,7 +20,7 @@ type CanvasAndCommentsContextType = {
   // calculated pins
   threads: ReadonlyMap<string, Pin>;
   // Adds a thread to the threads map
-  addThread: (threadId: string, metadata: Pin) => void;
+  addThread: (threadId: string, pinData: Pin) => void;
   // Removes a thread from the threads map
   removeThreadIfEmpty: (openThread: OpenThread) => void;
 
@@ -59,10 +59,10 @@ export function CanvasAndCommentsProvider({
 
   const [threads, setThreads] = useState<Map<string, Pin>>(new Map());
 
-  const addThread = useCallback((threadId: string, metadata: Pin) => {
+  const addThread = useCallback((threadId: string, pinData: Pin) => {
     setThreads((oldThreads) => {
       const newThreads = new Map(oldThreads);
-      newThreads.set(threadId, metadata);
+      newThreads.set(threadId, pinData);
       return newThreads;
     });
   }, []);
@@ -144,7 +144,7 @@ export function CanvasAndCommentsProvider({
       .forEach((t) => {
         const pinData = getPinFromThread(stage, t);
         if (pinData) {
-          addThread(t.id, pinData);
+          addThread(t.id, { ...pinData, repliers: t.repliers });
         }
       });
 
@@ -208,8 +208,8 @@ export function CanvasAndCommentsProvider({
       isPanningCanvas,
       setIsPanningCanvas,
       recomputePinPositions,
-      scale,
       zoomAndCenter,
+      scale,
     }),
     [
       threads,
@@ -219,8 +219,8 @@ export function CanvasAndCommentsProvider({
       inThreadCreationMode,
       isPanningCanvas,
       recomputePinPositions,
-      scale,
       zoomAndCenter,
+      scale,
     ],
   );
   return (

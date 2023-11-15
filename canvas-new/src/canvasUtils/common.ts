@@ -28,6 +28,7 @@ export type Pin = {
   thread: CanvasThreadData;
   x: number;
   y: number;
+  repliers: string[];
 };
 
 export type OpenThread = {

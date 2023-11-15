@@ -24,6 +24,7 @@ export function createNewPin({
       firstMessage: null,
       total: 0,
     },
+    repliers: [],
     x: roundNumber(x),
     y: roundNumber(y),
   };
@@ -37,13 +38,20 @@ export function getPinFromThread(
   if (!metadata) {
     return null;
   }
-  return computePinPosition(stage, thread.id, { ...thread, metadata }, true);
+  return computePinPosition(
+    stage,
+    thread.id,
+    { ...thread, metadata },
+    thread.repliers,
+    true,
+  );
 }
 
 export function computePinPosition(
   stage: Stage,
   threadID: string,
   thread: CanvasThreadData,
+  repliers: string[],
   // Including the stage means we are calculating where the new pin position
   // should be otherwise we are getting the position of the existing pin
   includeStageCoords: boolean,
@@ -77,17 +85,30 @@ export function computePinPosition(
   return {
     threadID,
     thread,
+    repliers,
     x: roundNumber(pinX),
     y: roundNumber(pinY),
   };
 }
 
 export function updatePinPositionOnStage(stage: Stage, pin: Pin) {
-  return computePinPosition(stage, pin.threadID, pin.thread, true);
+  return computePinPosition(
+    stage,
+    pin.threadID,
+    pin.thread,
+    pin.repliers,
+    true,
+  );
 }
 
 export function getPinPositionOnStage(stage: Stage, pin: Pin) {
-  return computePinPosition(stage, pin.threadID, pin.thread, false);
+  return computePinPosition(
+    stage,
+    pin.threadID,
+    pin.thread,
+    pin.repliers,
+    false,
+  );
 }
 
 export function getPinElementOnStage(threadID: string) {

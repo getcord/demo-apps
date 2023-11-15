@@ -1,5 +1,5 @@
 import type { ThreadReactComponentProps } from '@cord-sdk/react';
-import { Thread, Avatar, Message, user } from '@cord-sdk/react';
+import { Thread, Message, user, Facepile, Avatar } from '@cord-sdk/react';
 import type { ThreadInfo } from '@cord-sdk/types';
 
 import cx from 'classnames';
@@ -74,6 +74,10 @@ export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
     return null;
   }
 
+  const firstMessageAuthorID = threadData.thread.firstMessage
+    ? threadData.thread.firstMessage.authorID
+    : userData.id;
+
   return (
     // Need the canvasComment wrapper so the pin can grow in size from the bottom
     <div
@@ -93,18 +97,17 @@ export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
           ['previewMessage']:
             openThread?.threadID !== threadID && threadData.thread.firstMessage,
           ['active']: openThread?.threadID === threadID,
+          ['no-repliers']: !threadData.repliers?.length,
         })}
         onClick={onPinClick}
       >
-        <Avatar
-          userId={
-            // If a thread has no first message, we know it's the user who wants
-            // to add a comment so we use their avatar
-            threadData.thread.firstMessage
-              ? threadData.thread.firstMessage.authorID
-              : userData.id
-          }
-        />
+        {threadData.repliers?.length ? (
+          <Facepile
+            users={[firstMessageAuthorID, ...threadData.repliers].slice(0, 3)}
+          />
+        ) : (
+          <Avatar userId={firstMessageAuthorID} />
+        )}
         {threadData.thread.firstMessage && (
           <Message
             threadId={threadID}
