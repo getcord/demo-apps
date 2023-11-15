@@ -268,6 +268,7 @@ p {
   /* line up the thread with the pin */
   top: calc(-1 * var(--pin-size));
   width: var(--comments-list-width);
+  max-height: 400px;
 }
 
 .canvasComment cord-thread.cord-component.thread-on-the-left {
