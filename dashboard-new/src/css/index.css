@@ -261,3 +261,7 @@ cord-thread.cord-component {
 .cord-mention-menu > .cord-separator {
   display: none;
 } 
+
+.cord-component .cord-inline-thread {
+  padding-top: 4px;
+}
