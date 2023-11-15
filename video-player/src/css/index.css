@@ -322,6 +322,10 @@ video {
   --cord-color-brand-primary: var(--white);
 }
 
+.cord-menu.cord-mention-menu {
+  background-color: var(--grey-dark)
+}
+
 .cord-annotation-pin {
   /* Remove annotation pin border */
   --cord-color-content-secondary: transparent;
