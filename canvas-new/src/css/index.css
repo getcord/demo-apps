@@ -32,10 +32,12 @@ body {
 
   /* Colors */
   --color-dark: #1e1e1e;
+  --color-light: #e6e6e6;
   --color-dark-x-light: #696a6c;
   --color-grey-light: #c1c1c1;
   --color-grey-x-light: #dadce0;
   --color-white: #ffffff;
+  --color-purple: #9a6aff;
 
   --canvas-header-background-color: #282828;
   --canvas-background-color: #f5f5f5;
@@ -279,6 +281,44 @@ p {
 
 .cord-component .cord-composer .cord-composer-secondary-buttons {
   gap: 0;
+}
+
+.cord-composer:where(.cord-expanded) .cord-composer-menu {
+  border-top: 1px solid var(--color-light);
+}
+
+.canvasComment cord-thread.cord-component:not(.empty) .cord-composer {
+  background-color: var(--canvas-background-color);
+  border-radius: 6px;
+}
+
+.cord-component .cord-composer,
+.cord-component .cord-composer:focus-within {
+  outline: none;
+  border: none;
+}
+
+.cord-composer-primary-buttons button {
+  height: 24px;
+  width: 24px;
+  --cord-primary-button-background-color: var(--color-purple);
+}
+
+.canvasComment .cord-send-button {
+  transform: rotate(-90deg);
+}
+
+.cord-send-button:is(.cord-disabled) {
+  opacity: 0.5;
+}
+
+.cord-send-button:not(.cord-disabled):hover {
+  background-color: var(--color-purple);
+  opacity: 0.5;
+}
+
+.cord-component .cord-composer:focus-within {
+  box-shadow: unset;
 }
 
 .canvasComment cord-thread.cord-component.thread-on-the-left {

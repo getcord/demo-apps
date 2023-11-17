@@ -131,6 +131,7 @@ export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
           ['hidden']: openThread?.threadID !== threadID,
           ['thread-on-the-left']: threadPositionOnCanvas?.left,
           ['thread-on-the-top']: threadPositionOnCanvas?.top,
+          ['empty']: openThread?.threadID === threadID && openThread.empty,
         })}
         onThreadInfoChange={onThreadInfoChange}
       />
