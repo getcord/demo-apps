@@ -2,9 +2,11 @@ import { Stage, Layer, Rect, Circle, Text, Star } from 'react-konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import cx from 'classnames';
 import { useCallback, useContext, useEffect, useRef } from 'react';
+import { LiveCursors } from '@cord-sdk/react';
+import type { Location } from '@cord-sdk/types';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
 import type { ThreadMetadata } from '../canvasUtils/common';
-import { getStageData } from '../canvasUtils/common';
+import { EXAMPLE_CORD_LOCATION, getStageData } from '../canvasUtils/common';
 import { createNewPin } from '../canvasUtils/pin';
 import { CommentIcon } from './CommentIcon';
 import { CanvasCommentsList } from './CanvasCommentsList';
@@ -45,6 +47,7 @@ export default function Canvas() {
   } = useContext(CanvasAndCommentsContext)!;
 
   const timeoutPanningRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const canvasAndCordContainerRef = useRef<HTMLDivElement>(null);
 
   const updateCanvasSize = useCallback(() => {
     const stage = canvasStageRef.current;
@@ -252,7 +255,7 @@ export default function Canvas() {
   };
 
   return (
-    <div className="canvasAndCordContainer">
+    <div className="canvasAndCordContainer" ref={canvasAndCordContainerRef}>
       <div className="canvasContainer" ref={canvasContainerRef}>
         <Stage
           id="stage"
@@ -325,6 +328,52 @@ export default function Canvas() {
             <CustomHeart x={850} y={450} name="custom-heart" {...dragProps} />
           </Layer>
         </Stage>
+        <LiveCursors
+          location={EXAMPLE_CORD_LOCATION}
+          boundingElementRef={canvasContainerRef}
+          translations={{
+            eventToLocation: () => {
+              const stage = canvasStageRef.current;
+              if (!stage) {
+                return null;
+              }
+              const stageRelativePointerPosition =
+                stage.getRelativePointerPosition();
+
+              return {
+                x: stageRelativePointerPosition.x,
+                y: stageRelativePointerPosition.y,
+              };
+            },
+            locationToDocument: (location: Location) => {
+              const stage = canvasStageRef.current;
+              const canvasAndCordContainer = canvasAndCordContainerRef.current;
+              if (
+                !stage ||
+                !canvasAndCordContainer ||
+                !location ||
+                !location.x ||
+                !location.y
+              ) {
+                return null;
+              }
+
+              const transform = stage.getTransform();
+              const transformedCoords = transform.point({
+                x: location.x as number,
+                y: location.y as number,
+              });
+
+              return {
+                viewportX:
+                  canvasAndCordContainer.offsetLeft + transformedCoords.x,
+                viewportY:
+                  canvasAndCordContainer.offsetTop + transformedCoords.y,
+                click: false,
+              };
+            },
+          }}
+        />
         <div className="canvasButtonGroup">
           <button
             className="controlButton"
