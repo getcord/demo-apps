@@ -25,6 +25,7 @@ body {
     sans-serif;
 
   --comments-list-width: 240px;
+  --thread-list-width: 300px;
   --header-height: 64px;
   --canvas-button-height: 36px;
   --pin-size: 34px;
@@ -267,12 +268,21 @@ p {
   position: absolute;
   /* line up the thread with the pin */
   top: calc(-1 * var(--pin-size));
-  width: var(--comments-list-width);
+  width: var(--thread-list-width);
   max-height: 400px;
 }
 
+/* align composer with avatar when editing a message */
+.cord-component .cord-message .cord-composer {
+  margin: 0;
+}
+
+.cord-component .cord-composer .cord-composer-secondary-buttons {
+  gap: 0;
+}
+
 .canvasComment cord-thread.cord-component.thread-on-the-left {
-  left: calc(-1 * (var(--comments-list-width) + 20px));
+  left: calc(-1 * (var(--thread-list-width) + 20px));
 }
 
 .canvasComment cord-thread.cord-component.thread-on-the-top {
@@ -364,12 +374,6 @@ p {
 
 cord-thread.cord-component.hidden {
   visibility: hidden;
-}
-
-.message {
-  display: block;
-  padding-bottom: 200px;
-  transition: transform 0.2s;
 }
 
 /* Generic cord component */
