@@ -105,7 +105,7 @@ function CanvasCommentGroup({ pins }: { pins: Pin[] }) {
       pins,
       stageCenter,
     );
-    zoomAndCenter(newScale, newStagePosition);
+    zoomAndCenter(newScale, newStagePosition, true);
     recomputePinPositions();
   }, [
     canvasStageRef,

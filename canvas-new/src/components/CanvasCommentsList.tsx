@@ -43,7 +43,7 @@ export function CanvasCommentsList() {
         pinsInGroup,
         getStageCenter(stage),
       );
-      zoomAndCenter(newScale, newStagePosition);
+      zoomAndCenter(newScale, newStagePosition, true);
     },
     [threads, zoomAndCenter],
   );
@@ -86,14 +86,18 @@ export function CanvasCommentsList() {
         }
 
         const stageCenter = getStageCenter(stage);
-        stage.position({
+        canvasStageRef.current.to({
           x: stageCenter.x - pinPositionOnStage.x,
           y: stageCenter.y - pinPositionOnStage.y,
+          duration: 0.2,
+          onUpdate: () => {
+            recomputePinPositions();
+          },
+          onFinish: () => {
+            setOpenThread({ threadID: foundPin.threadID, empty: false });
+          },
         });
       }
-
-      recomputePinPositions();
-      setOpenThread({ threadID: foundPin.threadID, empty: false });
     },
     [
       threads,

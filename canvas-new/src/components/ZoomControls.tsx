@@ -15,7 +15,7 @@ export function ZoomControls() {
       const scaleBy = 1.25;
       const newScale = type === 'in' ? scale * scaleBy : scale / scaleBy;
 
-      zoomAndCenter(newScale);
+      zoomAndCenter(newScale, undefined, true);
       recomputePinPositions();
     },
     [canvasStageRef, zoomAndCenter, recomputePinPositions, scale],
