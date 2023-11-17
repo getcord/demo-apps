@@ -163,6 +163,9 @@ p {
   width: var(--comments-list-width);
   /* Shown above the canvas */
   z-index: 2;
+  border-radius: 0;
+  border-top: none;
+  border-bottom: none;
 }
 
 /* The list of threads */
@@ -218,11 +221,20 @@ p {
   content: '';
   position: absolute;
   display: block;
-  bottom: 0;
-  border-bottom: 1px solid var(--color-grey-x-light);
   right: 0;
   left: 0;
+  bottom: 0;
+  border-bottom: 1px solid var(--color-light);
   margin: 0px 12px;
+}
+
+/* Select the hovered thread and its previous sibling */
+.cord-threaded-comments .cord-threaded-comments-thread:hover::after,
+.cord-threaded-comments
+  .cord-threaded-comments-thread:has(
+    + .cord-threaded-comments-thread:hover
+  )::after {
+  border-bottom: none;
 }
 
 .cord-threaded-comments .cord-threaded-comments-thread:hover,
