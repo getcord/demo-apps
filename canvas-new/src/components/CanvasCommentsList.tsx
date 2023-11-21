@@ -116,6 +116,7 @@ export function CanvasCommentsList() {
       showReplies="alwaysCollapsed"
       highlightThreadId={openThread?.threadID}
       messageOrder="newest_on_top"
+      displayResolved="tabbed"
     />
   );
 }

@@ -157,6 +157,7 @@ p {
   border-left: 1px solid var(--color-grey-x-light);
   background: var(--color-white);
   flex-shrink: 0;
+  gap: 0;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0;
@@ -166,6 +167,40 @@ p {
   border-radius: 0;
   border-top: none;
   border-bottom: none;
+}
+
+.cord-threaded-comments .cord-threaded-comments-tab-container {
+  border-bottom: 1px solid var(--color-grey-x-light);
+  border-radius: 0;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.cord-threaded-comments .cord-threaded-comments-tab {
+  border-radius: 0;
+  padding: 8px 4px;
+}
+
+.cord-threaded-comments .cord-threaded-comments-thread.cord-resolved {
+  margin: 0;
+}
+
+.cord-threaded-comments .cord-threaded-comments-resolved-thread-header {
+  padding: 0;
+}
+
+.cord-empty-state-placeholder .cord-avatar-container {
+  height: 20px;
+  width: 20px;
+}
+
+.cord-threaded-comments .cord-empty-state-placeholder {
+  padding: 20px 12px;
+}
+
+.cord-empty-state-placeholder .cord-facepile {
+  margin-bottom: 12px;
 }
 
 /* The list of threads */
