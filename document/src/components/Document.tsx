@@ -81,26 +81,35 @@ export function Document() {
 
   // Sorted from top to bottom as they should appear on screen.
   const sortedThreads = useMemo(() => {
-    // We want to recompute this when the finishedTextAnimation,
-    // because the content of the page changes based on that.
-    // You can remove the next line.
-    finishedTextAnimation;
+    // You can remove the following line if you are not using the text animation
+    // We are using it to re-sort the threads every time a new one is rendered
+    threadsReady.size;
     return Array.from(threads).sort(
       ([_aId, { metadata: metadataA }], [_bId, { metadata: metadataB }]) => {
         const firstRectA = getRange(metadataA)?.getClientRects()[0];
         const firstRectB = getRange(metadataB)?.getClientRects()[0];
 
+        // Making sure threads that are not rendered, are always sent to the bottom.
+        // They will be re-sorted when they are rendered
         if (!firstRectA || !firstRectB) {
-          return 0;
+          if (firstRectA) {
+            return -1;
+          } else if (firstRectB) {
+            return 1;
+          } else {
+            return 0;
+          }
         }
+
         const sortFromTop = firstRectA.top - firstRectB.top;
         const sortFromLeft = firstRectA.left - firstRectB.left;
+
         // If two highlights are on the same line, we break the tie by checking
         // which one starts the leftmost.
         return sortFromTop === 0 ? sortFromLeft : sortFromTop;
       },
     );
-  }, [threads, finishedTextAnimation]);
+  }, [threadsReady.size, threads]);
 
   // If users comment on the same line, multiple threads would have the same
   // y (or top) coordinate. However, we don't want threads to overlap, and so
