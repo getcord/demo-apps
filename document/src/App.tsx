@@ -16,7 +16,12 @@ export default function App() {
     <CordProvider clientAuthToken={clientAuthToken}>
       <InformationHeader
         api={['presence', 'thread', 'user']}
-        components={['cord-avatar', 'cord-thread', 'cord-threaded-comments']}
+        components={[
+          'cord-avatar',
+          'cord-page-presence',
+          'cord-thread',
+          'cord-threaded-comments',
+        ]}
         app="document"
       />
       {clientAuthToken && (
