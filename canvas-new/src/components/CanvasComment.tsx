@@ -79,7 +79,7 @@ export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
     : userData.id;
 
   // Only show facepile in pin if repliers include other people than the thread author
-  const threadHasOtherRepliers = threadData.repliers.filter(
+  const threadOtherRepliersCount = threadData.repliers.filter(
     (id) => id !== firstMessageAuthorID,
   ).length;
 
@@ -102,11 +102,13 @@ export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
           ['previewMessage']:
             openThread?.threadID !== threadID && threadData.thread.firstMessage,
           ['active']: openThread?.threadID === threadID,
-          ['no-repliers']: !threadHasOtherRepliers,
+          ['no-repliers']: !threadOtherRepliersCount,
+          ['one-replier']: threadOtherRepliersCount === 1,
+          ['two-repliers']: threadOtherRepliersCount > 1,
         })}
         onClick={onPinClick}
       >
-        {threadHasOtherRepliers ? (
+        {threadOtherRepliersCount ? (
           <Facepile
             users={[firstMessageAuthorID, ...threadData.repliers].slice(0, 3)}
           />

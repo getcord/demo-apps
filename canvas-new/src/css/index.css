@@ -28,7 +28,9 @@ body {
   --thread-list-width: 300px;
   --header-height: 64px;
   --canvas-button-height: 36px;
-  --pin-size: 34px;
+  --pin-size-small: 34px;
+  --pin-size-medium: 56px;
+  --pin-size-large: 80px;
 
   /* Colors */
   --color-dark: #1e1e1e;
@@ -316,14 +318,25 @@ p {
 }
 
 .canvasComment cord-thread.cord-component {
-  left: calc(8px + var(--pin-size));
+  left: calc(8px + var(--pin-size-small));
   position: absolute;
   /* line up the thread with the pin */
-  top: calc(-1 * var(--pin-size));
+  top: calc(-1 * var(--pin-size-small));
   width: var(--thread-list-width);
   max-height: 400px;
   box-shadow: 0px 2px 14px rgba(0, 0, 0, 0.2);
   border: none;
+}
+
+/* Position the thread correctly depenging on type of pin */
+.canvasComment .no-repliers ~ cord-thread.cord-component {
+  left: calc(8px + var(--pin-size-small));
+}
+.canvasComment .one-replier ~ cord-thread.cord-component {
+  left: calc(8px + var(--pin-size-medium));
+}
+.canvasComment .two-repliers ~ cord-thread.cord-component {
+  left: calc(8px + var(--pin-size-large));
 }
 
 .canvasComment .cord-message .cord-message-options-buttons .cord-button {
@@ -419,7 +432,7 @@ p {
   box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.16);
   cursor: default;
   display: flex;
-  height: var(--pin-size);
+  height: var(--pin-size-small);
   overflow: hidden;
   padding: 3px;
   position: absolute;
@@ -430,7 +443,7 @@ p {
 }
 
 .canvasPin.no-repliers {
-  width: var(--pin-size);
+  width: var(--pin-size-small);
 }
 
 .canvasPin:hover {
@@ -439,7 +452,7 @@ p {
 }
 
 .canvasPin .cord-message {
-  grid-template-columns: 1fr;
+  grid-template-columns: auto 1fr;
   grid-template-rows: auto;
   grid-template-areas:
     'authorName timestamp'
@@ -455,8 +468,9 @@ p {
 .canvasPin
   .cord-message
   :is(.cord-author-name, .cord-timestamp, .cord-message-text) {
-  font-size: 12px;
+  font-size: 11px;
   margin-top: 0;
+  line-height: 16px;
 }
 
 .canvasPin .cord-message .cord-message-text {
@@ -478,9 +492,31 @@ p {
 }
 
 .previewMessage:hover {
-  height: 80px;
+  height: 120px;
   width: 250px;
-  padding: 8px;
+  padding: 16px 0 0 8px;
+}
+
+.previewMessage.no-repliers:hover {
+  height: 80px;
+}
+
+.canvasPin.previewMessage:not(:hover) .cord-message,
+.canvasPin.active .cord-message {
+  display: none;
+}
+
+/* display replier avatars on top of message if the thread has repliers */
+.previewMessage:not(.no-repliers):hover {
+  flex-direction: column;
+}
+
+.previewMessage:not(.no-repliers):hover
+  cord-facepile.cord-component
+  .cord-facepile {
+  gap: 12px;
+  padding-left: 8px;
+  padding-bottom: 8px;
 }
 
 .canvasPin .cord-avatar-container {
