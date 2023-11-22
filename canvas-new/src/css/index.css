@@ -97,6 +97,7 @@ p {
   height: 100%;
   width: 100%;
   position: relative;
+  border: 1px solid var(--color-grey-x-light);
   /* Prevents scroll bars from appearing for the canvas */
   overflow: hidden;
 }
@@ -154,7 +155,6 @@ p {
 /* Comments List */
 
 .canvasAndCordContainer .cord-threaded-comments {
-  border-left: 1px solid var(--color-grey-x-light);
   background: var(--color-white);
   flex-shrink: 0;
   gap: 0;
@@ -165,8 +165,7 @@ p {
   /* Shown above the canvas */
   z-index: 2;
   border-radius: 0;
-  border-top: none;
-  border-bottom: none;
+  border: none;
 }
 
 .cord-threaded-comments .cord-threaded-comments-tab-container {
