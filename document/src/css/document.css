@@ -352,8 +352,15 @@ cord-thread.cord-component .cord-message-content:hover {
 
 .comments-container {
   margin-top: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+  visibility: hidden;
 }
 
+.open + .comments-container {
+  opacity: 1;
+  visibility: visible;
+}
 .cord-threaded-comments .cord-threaded-comments-thread-list {
   gap: 16px;
   padding: 8px 0;

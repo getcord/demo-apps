@@ -58,35 +58,33 @@ export function ThreadedCommentsLauncher() {
       >
         <AllCommenstIcon />
       </button>
-      {open && (
-        // Wrapping our ThreadedComments component with a reference
-        // container, and setting those references for the floating-ui
-        // library. The library handles all positioning for us as we
-        // scroll around.
-        <div
-          className="comments-container"
-          ref={refs.setFloating}
-          style={floatingStyles}
-        >
-          <ThreadedComments
-            location={LOCATION}
-            onMessageClick={handleClickMessage}
-            onThreadResolve={({ threadID }) => {
-              threadsContext?.setFloatingThreadsVisibility(threadID, false);
-              threadsContext?.setOpenThread(null);
-            }}
-            onThreadReopen={({ threadID }) => {
-              threadsContext?.setFloatingThreadsVisibility(threadID, true);
-              threadsContext?.setOpenThread(threadID);
-              toggleThreadedComments();
-            }}
-            composerPosition="none"
-            highlightThreadId={threadsContext?.openThread ?? undefined}
-            displayResolved="interleaved"
-            messageOrder="newest_on_top"
-          />
-        </div>
-      )}
+      {/* Wrapping our ThreadedComments component with a reference
+         container, and setting those references for the floating-ui
+         library. The library handles all positioning for us as we
+         scroll around. */}
+      <div
+        className="comments-container"
+        ref={refs.setFloating}
+        style={floatingStyles}
+      >
+        <ThreadedComments
+          location={LOCATION}
+          onMessageClick={handleClickMessage}
+          onThreadResolve={({ threadID }) => {
+            threadsContext?.setFloatingThreadsVisibility(threadID, false);
+            threadsContext?.setOpenThread(null);
+          }}
+          onThreadReopen={({ threadID }) => {
+            threadsContext?.setFloatingThreadsVisibility(threadID, true);
+            threadsContext?.setOpenThread(threadID);
+            toggleThreadedComments();
+          }}
+          composerPosition="none"
+          highlightThreadId={threadsContext?.openThread ?? undefined}
+          displayResolved="interleaved"
+          messageOrder="newest_on_top"
+        />
+      </div>
     </>
   );
 }
