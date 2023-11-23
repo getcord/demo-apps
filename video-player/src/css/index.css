@@ -355,6 +355,7 @@ video {
 
 #video-player-demo-container .cord-threaded-comments-thread-list {
   gap: 24px;
+  padding: 0 4px;
   /* // Scrollbar styling for Firefox */
   scrollbar-color: var(--scrollbar-thumb) transparent;
   scrollbar-width: thin;
