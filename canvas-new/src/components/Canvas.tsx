@@ -211,7 +211,7 @@ export default function Canvas() {
           y: pointer.y - mousePointTo.y * newScale,
         };
 
-        zoomAndCenter(newScale, center);
+        zoomAndCenter({ newScale, center });
       } else {
         // Just panning the canvas
         const { deltaX, deltaY } = evt;

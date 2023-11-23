@@ -32,20 +32,25 @@ export function CanvasCommentsList() {
   } = useContext(CanvasAndCommentsContext)!;
 
   const navigateToGroupPin = useCallback(
-    (pinElement: Element, stage: Stage) => {
+    (pinElement: Element, stage: Stage, threadID: string) => {
       const groupedPinsThreadIDs = pinElement.id.split('/');
 
       const pinsInGroup = Array.from(threads)
         .filter(([id]) => groupedPinsThreadIDs.includes(id))
         .map(([_, pinThread]) => pinThread);
-      const { newStagePosition, newScale } = expandGroupedPins(
+      const { newStagePosition: center, newScale } = expandGroupedPins(
         stage,
         pinsInGroup,
         getStageCenter(stage),
       );
-      zoomAndCenter(newScale, newStagePosition, true);
+      zoomAndCenter({
+        newScale,
+        center,
+        animate: true,
+        onFinish: () => setOpenThread({ threadID, empty: false }),
+      });
     },
-    [threads, zoomAndCenter],
+    [setOpenThread, threads, zoomAndCenter],
   );
 
   const navigateToPin = useCallback(
@@ -77,7 +82,7 @@ export function CanvasCommentsList() {
       }
 
       if (isGroupPin) {
-        navigateToGroupPin(pinElement, stage);
+        navigateToGroupPin(pinElement, stage, messageInfo.threadId);
       } else {
         const pinPositionOnStage = getPinPositionOnStage(stage, foundPin);
 

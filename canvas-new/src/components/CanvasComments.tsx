@@ -100,12 +100,12 @@ function CanvasCommentGroup({ pins }: { pins: Pin[] }) {
       y: stageHeight / 2,
     };
 
-    const { newScale, newStagePosition } = expandGroupedPins(
+    const { newScale, newStagePosition: center } = expandGroupedPins(
       stage,
       pins,
       stageCenter,
     );
-    zoomAndCenter(newScale, newStagePosition, true);
+    zoomAndCenter({ newScale, center, animate: true });
     recomputePinPositions();
   }, [
     canvasStageRef,

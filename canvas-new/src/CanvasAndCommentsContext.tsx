@@ -44,11 +44,17 @@ type CanvasAndCommentsContextType = {
   recomputePinPositions: () => void;
 
   scale: number;
-  zoomAndCenter: (
-    newScale: number,
-    center?: { x: number; y: number },
-    animate?: boolean,
-  ) => void;
+  zoomAndCenter: ({
+    newScale,
+    center,
+    animate,
+    onFinish,
+  }: {
+    newScale: number;
+    center?: { x: number; y: number };
+    animate?: boolean;
+    onFinish?: () => void;
+  }) => void;
 };
 export const CanvasAndCommentsContext = createContext<
   CanvasAndCommentsContextType | undefined
@@ -167,11 +173,17 @@ export function CanvasAndCommentsProvider({
 
   const [scale, setScale] = useState(1);
   const zoomAndCenter = useCallback(
-    (
-      newScale: number,
-      center?: { x: number; y: number },
-      animate?: boolean,
-    ) => {
+    ({
+      newScale,
+      center,
+      animate,
+      onFinish,
+    }: {
+      newScale: number;
+      center?: { x: number; y: number };
+      animate?: boolean;
+      onFinish?: () => void;
+    }) => {
       const stage = canvasStageRef.current;
       if (!stage) {
         return;
@@ -204,6 +216,7 @@ export function CanvasAndCommentsProvider({
           onUpdate: () => {
             recomputePinPositions();
           },
+          onFinish,
         });
       } else {
         stage.scale({ x: newScale, y: newScale });
