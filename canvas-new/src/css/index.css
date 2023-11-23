@@ -212,13 +212,13 @@ p {
 
 /* Layout of message in the comments list */
 .cord-threaded-comments .cord-message {
-  grid-template-columns: repeat(2, auto) 2fr 16px;
+  grid-template-columns: repeat(2, auto) 2fr;
   grid-template-rows: 24px repeat(3, auto);
   grid-template-areas:
-    'avatar . . . optionsMenu '
-    'authorName timestamp . . .'
-    'messageContent messageContent messageContent messageContent .'
-    'reactions reactions reactions reactions .';
+    'avatar . . optionsMenu '
+    'authorName timestamp . . '
+    'messageContent messageContent messageContent .'
+    'reactions reactions reactions .';
   gap: 8px;
   border-radius: 0;
   background-color: transparent;
@@ -256,6 +256,17 @@ p {
   padding: 16px 12px;
 }
 
+.cord-threaded-comments
+  .cord-threaded-comments-thread
+  .cord-message
+  .cord-message-text {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  font-size: 12px;
+}
+
 /* Creating the divider between each thread */
 .cord-threaded-comments .cord-threaded-comments-thread::after {
   content: '';
@@ -275,6 +286,11 @@ p {
     + .cord-threaded-comments-thread:hover
   )::after {
   border-bottom: none;
+}
+
+/* Adding some space after the last divider */
+.cord-threaded-comments .cord-threaded-comments-thread:last-child {
+  margin-bottom: 40px;
 }
 
 .cord-threaded-comments .cord-threaded-comments-thread:hover,
@@ -299,11 +315,23 @@ p {
 .cord-threaded-comments .cord-threaded-comments-thread.cord-highlighted {
   background-color: rgba(84, 141, 84, 0.06);
 }
+.cord-threaded-comments-thread .cord-author-name,
+.cord-threaded-comments-thread .cord-message .cord-message-text,
+.cord-threaded-comments-thread .cord-message .cord-timestamp {
+  font-size: 12px;
+}
+
+.cord-threaded-comments-thread .cord-author-name {
+  font-weight: 500;
+}
 
 .cord-threaded-comments-thread .cord-expand-replies {
   margin: 0;
   padding-left: 0;
-  color: var(--color-dark-x-light);
+  padding-top: 4px;
+  font-weight: 400;
+  font-size: 11px;
+  opacity: 0.4;
 }
 
 .cord-threaded-comments-thread .cord-expand-replies cord-facepile {
