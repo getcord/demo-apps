@@ -6,7 +6,6 @@ import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
 import {
   getPinElementOnStage,
   getPinPositionOnStage,
-  isPinInView,
 } from '../canvasUtils/pin';
 import {
   EXAMPLE_CORD_LOCATION,
@@ -75,12 +74,6 @@ export function CanvasCommentsList() {
         GROUPED_PINS_CLASS_NAME,
       );
 
-      // check if pin is already in view - if so then we open the thread
-      if (isPinInView(stage, pinElement) && !isGroupPin) {
-        setOpenThread({ threadID: messageInfo.threadId, empty: false });
-        return;
-      }
-
       if (isGroupPin) {
         navigateToGroupPin(pinElement, stage, messageInfo.threadId);
       } else {
@@ -96,11 +89,11 @@ export function CanvasCommentsList() {
           y: stageCenter.y - pinPositionOnStage.y,
           duration: 0.2,
           onUpdate: () => {
+            setOpenThread(null);
             recomputePinPositions();
           },
-          onFinish: () => {
-            setOpenThread({ threadID: foundPin.threadID, empty: false });
-          },
+          onFinish: () =>
+            setOpenThread({ threadID: foundPin.threadID, empty: false }),
         });
       }
     },
