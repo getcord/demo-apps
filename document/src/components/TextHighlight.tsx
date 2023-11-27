@@ -1,17 +1,18 @@
 import type { CSSProperties } from 'react';
 
+export const HIGHLIGHT_ID_DATA_ATTRIBUTE = 'data-highlight-id';
+
 /**
- * The highlight has two parts: aA yellow rectangle below the text, to not cover it.
- * A clickable transparent rectangle over the text, enabling interactions.
+ * The yellow rectangle below the text, giving the highlight effect.
  */
 export function TextHighlight({
   rect,
   isOpenThread,
-  onClick,
+  threadId,
 }: {
   rect: DOMRect;
   isOpenThread: boolean;
-  onClick: () => void;
+  threadId: string;
 }) {
   const rectPosition = {
     width: rect.width,
@@ -21,21 +22,12 @@ export function TextHighlight({
     position: 'absolute',
   } as CSSProperties;
   return (
-    <>
-      <div
-        style={{
-          ...rectPosition,
-          background: isOpenThread ? '#F5BE4D' : '#FDF2D7',
-        }}
-      />
-      <div
-        style={{
-          ...rectPosition,
-          zIndex: 2,
-          cursor: 'pointer',
-        }}
-        onClick={onClick}
-      />
-    </>
+    <div
+      {...{ [HIGHLIGHT_ID_DATA_ATTRIBUTE]: threadId }}
+      style={{
+        ...rectPosition,
+        background: isOpenThread ? '#F5BE4D' : '#FDF2D7',
+      }}
+    />
   );
 }

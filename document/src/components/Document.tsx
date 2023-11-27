@@ -14,7 +14,7 @@ import { ThreadsContext } from '../ThreadsContext';
 import { CommentButton } from './CommentButton';
 import { FakeMenu } from './FakeMenuIcon';
 import { FloatingPresence } from './FloatingPresence';
-import { TextHighlight } from './TextHighlight';
+import { HIGHLIGHT_ID_DATA_ATTRIBUTE, TextHighlight } from './TextHighlight';
 import { AnimatedText } from './AnimatedText';
 import { ThreadedCommentsLauncher } from './ThreadedCommentsLauncher';
 
@@ -455,6 +455,27 @@ export function Document() {
       }
     : undefined;
 
+  // Clicking on a text highlight should open the relative
+  // thread. We enable this with an `click` listener.
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (!window.getSelection()?.isCollapsed) {
+        return;
+      }
+
+      const highlightId = document
+        .elementsFromPoint(e.clientX, e.clientY)
+        .find((el) => el.matches(`[${HIGHLIGHT_ID_DATA_ATTRIBUTE}]`))
+        ?.getAttribute(HIGHLIGHT_ID_DATA_ATTRIBUTE);
+      if (highlightId) {
+        setOpenThread(highlightId);
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  });
+
   return (
     <>
       {newCommentButtonCoords && (
@@ -516,11 +537,7 @@ export function Document() {
                       }}
                       key={idx}
                       isOpenThread={isOpenThread}
-                      onClick={() => {
-                        if (!isOpenThread) {
-                          setOpenThread(threadId);
-                        }
-                      }}
+                      threadId={threadId}
                     />
                   ))}
                   <div
