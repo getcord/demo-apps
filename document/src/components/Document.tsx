@@ -45,6 +45,8 @@ export function Document() {
   // Feel free to ignore/get rid of this part.
   const [animatingElementIndex, setAnimatingElementIndex] = useState(0);
   const [finishedTextAnimation, setFinishedTextAnimation] = useState(false);
+  const [isSelectingTextOnSheet, setIsSelectingTextOnSheet] = useState(false);
+  const [blockSheetSelection, setBlockSheetSelection] = useState(false);
   const handleStartAnimatingNextElement = useCallback(
     () => setAnimatingElementIndex((prev) => prev + 1),
     [],
@@ -253,22 +255,29 @@ export function Document() {
   // comment button.
   const handleSelection = useCallback(() => {
     const selection = document.getSelection();
+    const isSelectionOnSheet =
+      selection?.anchorNode?.parentElement?.closest('#sheet') &&
+      selection?.focusNode?.parentElement?.closest('#sheet');
 
-    if (
-      !selection ||
-      selection.isCollapsed ||
-      // Only allow selection in the sheet.
-      !selection.anchorNode?.parentElement?.closest('#sheet') ||
-      !selection.focusNode?.parentElement?.closest('#sheet')
-    ) {
+    // Ensuring that we can't highlight the sheet when we are
+    // highlighting any other part of the demo
+    if (selection && !selection.isCollapsed && !isSelectionOnSheet) {
+      setBlockSheetSelection(true);
+      return;
+    }
+    setBlockSheetSelection(false);
+
+    if (!selection || selection.isCollapsed || !isSelectionOnSheet) {
       setSelectionInitialScrollPosition(undefined);
       setCommentButtonCoords(undefined);
+      setIsSelectingTextOnSheet(false);
 
       return;
     }
 
     const hasSelectedText = selection.toString().trim().length > 0;
     if (hasSelectedText) {
+      setIsSelectingTextOnSheet(true);
       const range = selection.getRangeAt(0);
       const { top, left } = range.getClientRects()[0];
       setSelectionInitialScrollPosition({
@@ -483,7 +492,9 @@ export function Document() {
       )}
       <div
         id="sheet-container"
-        className="container"
+        className={cx('container', {
+          ['blockSelection']: isSelectingTextOnSheet,
+        })}
         ref={infiniteScrollContainerRef}
         style={{ height: containerHeight }}
       >
@@ -636,7 +647,13 @@ export function Document() {
         {/* The actual contents of the sheet. If you're planning on building your own,
         you can safely remove AnimatedText. The key requirement for every element is to have an ID.
         E.g. <h1 id="title">My Shiny App</h1><p id="content">My Shiny content</p> will work. */}
-        <div id="sheet" ref={containerRef}>
+        <div
+          id="sheet"
+          ref={containerRef}
+          className={cx({
+            ['blockSelection']: blockSheetSelection,
+          })}
+        >
           <FloatingPresence presentUsers={presentUsers} />
           <h1 id="title" ref={titleRef}>
             <AnimatedText

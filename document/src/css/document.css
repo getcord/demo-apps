@@ -121,6 +121,8 @@ hr {
   padding: var(--padding);
   max-width: 768px;
   min-width: fit-content;
+  pointer-events: auto;
+  user-select: text;
 }
 
 #sheet > * {
@@ -572,4 +574,9 @@ cord-page-presence.cord-component .cord-facepile {
 
 emoji-picker.cord-emoji-picker {
   --background: white;
+}
+
+:is(.blockSelection, #sheet.blockSelection) {
+  user-select: none;
+  pointer-events: none;
 }

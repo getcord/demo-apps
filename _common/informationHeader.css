@@ -11,6 +11,9 @@ header {
   position: fixed;
   right: 0;
   top: 0;
+  /* Disabling selections, as it conflicts with
+    the intended behavior for the document demo. */
+  user-select: none;
   z-index: 10;
 }
 
