@@ -222,6 +222,19 @@ cord-threaded-comments {
   max-height: 400px;
 }
 
+.cord-empty-state-placeholder .cord-avatar-container {
+  height: 20px;
+  width: 20px;
+}
+
+.cord-threaded-comments .cord-empty-state-placeholder {
+  padding: 8px;
+}
+
+.cord-empty-state-placeholder .cord-facepile {
+  margin-bottom: 12px;
+}
+
 cord-notification-list-launcher .cord-button-label {
   font-size: 14px;
 }
