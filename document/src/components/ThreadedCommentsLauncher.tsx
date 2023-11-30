@@ -35,6 +35,7 @@ export function ThreadedCommentsLauncher() {
         threadsContext?.threads.get(threadId)?.metadata.floatingThreadVisible
       ) {
         threadsContext.setOpenThread(threadId);
+        setOpen(false);
       }
     },
     [threadsContext],
