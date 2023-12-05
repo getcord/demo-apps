@@ -359,10 +359,12 @@ cord-thread.cord-component .cord-message-content:hover {
   visibility: hidden;
 }
 
-.open + .comments-container {
+.open + .comments-container,
+[data-hovered-component='cord-threaded-comments'] .comments-container {
   opacity: 1;
   visibility: visible;
 }
+
 .cord-threaded-comments .cord-threaded-comments-thread-list {
   gap: 16px;
   padding: 8px 0;
@@ -579,4 +581,22 @@ emoji-picker.cord-emoji-picker {
 :is(.blockSelection, #sheet.blockSelection) {
   user-select: none;
   pointer-events: none;
+}
+
+/* The following styles only exist for the Cord demo
+ They are not necessary if you are building this yourself! */
+[data-hovered-component='cord-thread'] cord-thread.cord-component,
+[data-hovered-component='cord-threaded-comments'] .cord-threaded-comments {
+  box-shadow: 0 0 0 2px #9a6aff;
+}
+
+[data-hovered-component='cord-page-presence'] cord-page-presence {
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px #9a6aff;
+}
+
+[data-hovered-component='cord-avatar'] .cord-avatar-container,
+[data-hovered-component='cord-avatar'] cord-avatar {
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #9a6aff;
 }

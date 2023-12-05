@@ -11,6 +11,7 @@ import React, {
 import cx from 'classnames';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
+import { useMutationObserver } from '../hooks/useMutationObserver';
 import { CommentButton } from './CommentButton';
 import { FakeMenu } from './FakeMenuIcon';
 import { FloatingPresence } from './FloatingPresence';
@@ -19,6 +20,7 @@ import { AnimatedText } from './AnimatedText';
 import { ThreadedCommentsLauncher } from './ThreadedCommentsLauncher';
 
 export const LOCATION = { page: 'document' };
+const HOVERED_COMPONENT_ATTRIBUTE_NAME = 'data-hovered-component';
 const THREADS_GAP = 16;
 export type Coordinates = { top: number; left: number };
 
@@ -47,6 +49,9 @@ export function Document() {
   const [finishedTextAnimation, setFinishedTextAnimation] = useState(false);
   const [isSelectingTextOnSheet, setIsSelectingTextOnSheet] = useState(false);
   const [blockSheetSelection, setBlockSheetSelection] = useState(false);
+  const [highlightedComponent, setHighlightedComponent] = useState<
+    string | null
+  >(null);
   const handleStartAnimatingNextElement = useCallback(
     () => setAnimatingElementIndex((prev) => prev + 1),
     [],
@@ -299,6 +304,29 @@ export function Document() {
     };
   }, [handleSelection]);
 
+  // The following callback and useMutationObserver hook only
+  // exist for the Cord demo.
+  // It is not necessary if you are building this yourself!
+  const rootDiv = document.getElementById('root');
+  const handleHoveredAttributeChange: MutationCallback = useCallback(
+    (mutations: MutationRecord[]) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.type === 'attributes' &&
+          mutation.attributeName === HOVERED_COMPONENT_ATTRIBUTE_NAME &&
+          rootDiv
+        ) {
+          const attributeValue = rootDiv.getAttribute(
+            HOVERED_COMPONENT_ATTRIBUTE_NAME,
+          );
+          setHighlightedComponent(attributeValue);
+        }
+      });
+    },
+    [rootDiv],
+  );
+  useMutationObserver(rootDiv, handleHoveredAttributeChange);
+
   // Adding an initial text selection, to showcase the "Add comment" button.
   // This useEffect is not necessary if you are building this yourself!
   useEffect(() => {
@@ -352,6 +380,25 @@ export function Document() {
       { exclusive_within: LOCATION },
     );
   }, []);
+
+  // The following useEffect hook only exists for the Cord demo
+  // It is not necessary if you are building this yourself!
+  // Sets the user present on the title to temporarily
+  // show the avatar component when it is highlighted.
+  useEffect(() => {
+    if (!window.CordSDK || highlightedComponent !== 'cord-avatar') {
+      return;
+    }
+
+    void window.CordSDK.presence.setPresent(
+      {
+        ...LOCATION,
+        elementId: 'title',
+      },
+
+      { exclusive_within: LOCATION },
+    );
+  }, [highlightedComponent]);
 
   useEffect(() => {
     const { current: sheet } = containerRef;
