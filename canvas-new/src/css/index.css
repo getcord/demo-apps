@@ -479,7 +479,7 @@ p {
   z-index: 2;
 }
 
-.canvasPin .cord-message {
+.canvasPin .cord-message:not(.cord-action, .cord-deleted) {
   grid-template-columns: auto 1fr;
   grid-template-rows: auto;
   grid-template-areas:
