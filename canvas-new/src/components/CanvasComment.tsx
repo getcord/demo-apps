@@ -4,7 +4,7 @@ import type { ThreadInfo } from '@cord-sdk/types';
 
 import cx from 'classnames';
 
-import { useCallback, useContext, useMemo } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
 import { EXAMPLE_CORD_LOCATION } from '../canvasUtils/common';
 import type { Pin } from '../canvasUtils/common';
@@ -12,17 +12,63 @@ import type { Pin } from '../canvasUtils/common';
 type CanvasCommentType = {
   pin: Pin;
 };
+const CANVAS_THREAD_MAX_HEIGHT = 400;
 
 export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
   const userData = user.useViewerData();
 
   const {
     isPanningCanvas,
+    setIsPanningCanvas,
     openThread,
     setOpenThread,
     threads,
     canvasContainerRef,
   } = useContext(CanvasAndCommentsContext)!;
+
+  // Enable panning canvas while mouse is on an open thread
+  const canvasCommentContainerRef = useRef<HTMLDivElement>(null);
+  // Get the scroll height of the open thread so we can disable panning over
+  // the thread if it's meant to be scrollable
+  const scrollHeightOfOpenThread = useMemo(() => {
+    // only run this if there's an open thread
+    if (!openThread) {
+      return;
+    }
+    const openThreadID = openThread.threadID;
+    const threadScrollContainer = document.querySelector(
+      `[data-cord-thread-id="${openThreadID}"] > .cord-inline-thread > .cord-scroll-container`,
+    );
+
+    return threadScrollContainer?.scrollHeight;
+  }, [openThread]);
+
+  const handleMouseWheel = useCallback(
+    (e: WheelEvent) => {
+      e.preventDefault();
+      setIsPanningCanvas(true);
+    },
+    [setIsPanningCanvas],
+  );
+  useEffect(() => {
+    const { current: canvasComment } = canvasCommentContainerRef;
+    if (
+      !canvasComment ||
+      isPanningCanvas ||
+      (scrollHeightOfOpenThread &&
+        scrollHeightOfOpenThread > CANVAS_THREAD_MAX_HEIGHT)
+    ) {
+      return;
+    }
+
+    canvasComment.addEventListener('wheel', handleMouseWheel, {
+      passive: false,
+    });
+
+    return () => {
+      canvasComment.removeEventListener('wheel', handleMouseWheel);
+    };
+  }, [handleMouseWheel, isPanningCanvas, scrollHeightOfOpenThread]);
 
   // Calculate the best place to position the open thread for
   // visibility depending on how close the pin is to the canvas edges.
@@ -86,15 +132,15 @@ export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
   return (
     // Need the canvasComment wrapper so the pin can grow in size from the bottom
     <div
-      className="canvasComment"
+      className={cx('canvasComment', {
+        ['panning']: isPanningCanvas,
+      })}
       style={{
         position: 'absolute',
         left: x,
         top: y,
-        // When a user is panning on the canvas we want to make sure they can pan
-        // over canvas comments so we set the pointerEvents to none
-        pointerEvents: isPanningCanvas ? 'none' : 'auto',
       }}
+      ref={canvasCommentContainerRef}
     >
       <div
         id={threadID}

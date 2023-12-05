@@ -341,6 +341,12 @@ p {
 
 /* Custom Individual Pins */
 
+.canvasComment.panning {
+  /*  When a user is panning on the canvas we want to make sure they can pan
+  over canvas comments so we set the pointerEvents to none */
+  pointer-events: none;
+}
+
 .canvasComment .active {
   /* overlays over all other pins */
   z-index: 1;

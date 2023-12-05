@@ -41,6 +41,7 @@ export default function Canvas() {
     removeThreadIfEmpty,
     addThread,
     setIsPanningCanvas,
+    isPanningCanvas,
     recomputePinPositions,
     zoomAndCenter,
     scale,
@@ -175,7 +176,10 @@ export default function Canvas() {
   const onStageWheel = useCallback(
     ({ evt }: KonvaEventObject<WheelEvent>) => {
       evt.preventDefault();
-      setIsPanningCanvas(true);
+
+      if (!isPanningCanvas) {
+        setIsPanningCanvas(true);
+      }
       // Improving the panning experience over canvas
       if (timeoutPanningRef.current !== null) {
         clearTimeout(timeoutPanningRef.current);
@@ -221,6 +225,7 @@ export default function Canvas() {
       recomputePinPositions();
     },
     [
+      isPanningCanvas,
       setIsPanningCanvas,
       canvasStageRef,
       recomputePinPositions,
