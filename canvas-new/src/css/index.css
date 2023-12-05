@@ -168,6 +168,7 @@ p {
   z-index: 2;
   border-radius: 0;
   border: none;
+  border-left: 1px solid var(--color-grey-x-light);
 }
 
 .cord-threaded-comments .cord-threaded-comments-tab-container {
