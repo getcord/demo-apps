@@ -1,3 +1,5 @@
+import cx from 'classnames';
+import type { ClientCreateMessage, ThreadID } from '@cord-sdk/types';
 import { useEffect, useState } from 'react';
 
 const CORD_TOKEN_LOCALSTORAGE_KEY = 'cord_token';
@@ -108,4 +110,47 @@ export function withExpiry(value: string, expiry: number) {
 
 function getTimeInXMillisecondsFromNow(xMilliseconds: number) {
   return new Date(new Date().getTime() + xMilliseconds).getTime();
+}
+
+// We do not recommend adding a quote before the first message this
+// way. That is, because when editing a message, a user can modify
+// this quote. For now, however, this is the best approach.
+// In the near future we will provide a better alternative to achieve
+// this.
+export function handleBeforeMessageCreate(
+  message: ClientCreateMessage,
+  context: {
+    threadID: ThreadID;
+    firstMessage: boolean;
+  },
+) {
+  const threadMetadata = message.createThread?.metadata;
+  if (!context.firstMessage || !threadMetadata) {
+    return message;
+  }
+
+  let text: string;
+  let title: string;
+  if (threadMetadata.type === 'grid') {
+    title = threadMetadata.headerName.toString();
+    const year = threadMetadata.rowId;
+    text = `${title}: ${year} Revenue`;
+  } else {
+    title = threadMetadata.seriesName.toString();
+    const year = threadMetadata.x;
+    text = `${title}: ${year} Market cap`;
+  }
+
+  const quote = {
+    type: 'p',
+    children: [
+      {
+        text,
+        class: cx('metadata-quote', title.toLowerCase()),
+      },
+    ],
+  };
+  message.content.splice(0, 0, quote);
+
+  return message;
 }

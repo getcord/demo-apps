@@ -4,7 +4,10 @@ import type { NavigateFn } from '@cord-sdk/types';
 import { useRef } from 'react';
 import { InformationHeader } from '../../_common/InformationHeader';
 import Dashboard from './components/Dashboard';
-import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
+import {
+  handleBeforeMessageCreate,
+  useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION,
+} from './utils';
 import { ThreadsProvider } from './ThreadsContext';
 // The playground token is only used on cord.com and docs.cord.com, you can ignore it!
 import { playgroundToken } from './playgroundToken.json';
@@ -27,6 +30,7 @@ export default function App() {
     <CordProvider
       clientAuthToken={clientAuthToken}
       navigate={(...args) => navigateRef.current?.(...args) ?? false}
+      beforeMessageCreate={handleBeforeMessageCreate}
     >
       <InformationHeader
         components={[

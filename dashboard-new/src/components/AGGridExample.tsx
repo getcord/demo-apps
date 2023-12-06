@@ -252,6 +252,7 @@ export function AGGridExample({ gridId }: { gridId: string }) {
 
           const rowId = getRowId(e.data);
           const colId = e.column.getId();
+          const headerName = e.colDef.headerName!;
           const threadId = makeThreadId({ orgId, gridId, rowId, colId });
           if (threadId === openThread) {
             setOpenThread(null);
@@ -260,6 +261,7 @@ export function AGGridExample({ gridId }: { gridId: string }) {
           } else {
             const metadata: GridThreadMetadata = {
               type: 'grid',
+              headerName,
               gridId,
               rowId,
               colId,
@@ -334,6 +336,7 @@ function CellWithThreadAndPresence(
 const COLUMN_DEFS: ColDef[] = [
   {
     field: 'year',
+    headerName: 'Year',
     filter: true,
     sortable: true,
   },

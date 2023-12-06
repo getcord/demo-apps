@@ -205,6 +205,7 @@ function useChartOptions(
       type: 'chart',
       chartId,
       seriesId: hoverPoint.series.userOptions.id!,
+      seriesName: hoverPoint.series.userOptions.name!,
       x: hoverPoint.x,
       y: hoverPoint.y!,
       resolved: false,

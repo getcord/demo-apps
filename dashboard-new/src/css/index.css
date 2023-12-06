@@ -278,3 +278,42 @@ cord-thread.cord-component {
 .cord-component .cord-inline-thread {
   padding-top: 4px;
 }
+
+cord-thread.cord-component .cord-message-text .metadata-quote {
+  display: none;
+}
+
+.cord-message-text .metadata-quote {
+  font-size: 12px;
+  display: flex;
+  cursor: pointer;
+}
+
+.cord-message-text .metadata-quote::before {
+  background-color: var(--grey-light);
+  border-radius: 20px;
+  content: '';
+  height: 20px;
+  margin-right: 8px;
+  width: 3px;
+}
+
+.cord-message-text .metadata-quote.notion::before {
+  background-color: var(--orange);
+}
+
+.cord-message-text .metadata-quote.figma::before {
+  background-color: var(--purple);
+}
+
+.cord-message-text .metadata-quote.year:hover {
+  color: var(--grey-light);
+}
+
+.cord-message-text .metadata-quote.notion:hover {
+  color: var(--orange);
+}
+
+.cord-message-text .metadata-quote.figma:hover {
+  color: var(--purple);
+}
