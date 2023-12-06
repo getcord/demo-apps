@@ -211,6 +211,12 @@ p {
   padding: 0;
 }
 
+.cord-threaded-comments
+  .cord-threaded-comments-thread-list
+  .cord-threaded-comments-thread {
+  padding: 0;
+}
+
 /* Layout of message in the comments list */
 .cord-threaded-comments .cord-message {
   grid-template-columns: repeat(2, auto) 2fr;
@@ -225,7 +231,7 @@ p {
   background-color: transparent;
   padding-bottom: 8px;
   cursor: pointer;
-  padding: 0;
+  padding: 16px 12px;
 }
 
 /* Layout of message in the comments list if first message is deleted */
