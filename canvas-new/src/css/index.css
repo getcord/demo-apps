@@ -334,7 +334,7 @@ p {
 
 .cord-threaded-comments-thread .cord-expand-replies {
   margin: 0;
-  padding-left: 0;
+  padding-left: 12px;
   padding-top: 4px;
   font-weight: 400;
   font-size: 11px;
