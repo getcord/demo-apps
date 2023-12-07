@@ -547,6 +547,13 @@ p {
   display: none;
 }
 
+/* Add a border around the pin when its thread is open */
+.canvasPin.active {
+  box-shadow:
+    0px 3px 6px rgba(0, 0, 0, 0.3),
+    0 0 0 2px var(--color-purple);
+}
+
 /* display replier avatars on top of message if the thread has repliers */
 .previewMessage:not(.no-repliers):hover {
   flex-direction: column;
