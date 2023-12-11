@@ -85,6 +85,7 @@ p {
 }
 
 .canvasHeader cord-page-presence {
+  padding: 0 2px;
   position: absolute;
   right: 12px;
 }
@@ -393,7 +394,10 @@ p {
   cord-thread.active
   .cord-message
   .cord-message-options-buttons
-  .cord-button:is([data-cord-button='thread-options']) {
+  .cord-button:is([data-cord-button='thread-options']),
+[data-hovered-component='cord-thread']
+  .canvasComment
+  cord-thread.cord-component {
   visibility: visible;
 }
 
@@ -532,13 +536,15 @@ p {
   display: none;
 }
 
-.previewMessage:hover {
+.previewMessage:hover,
+[data-hovered-component='cord-message'] .previewMessage {
   height: 120px;
   width: 250px;
   padding: 16px 0 0 8px;
 }
 
-.previewMessage.no-repliers:hover {
+.previewMessage.no-repliers:hover,
+[data-hovered-component='cord-message'] .previewMessage.no-repliers {
   height: 80px;
 }
 
@@ -555,16 +561,27 @@ p {
 }
 
 /* display replier avatars on top of message if the thread has repliers */
-.previewMessage:not(.no-repliers):hover {
+.previewMessage:not(.no-repliers):hover,
+[data-hovered-component='cord-message'] .previewMessage:not(.no-repliers) {
   flex-direction: column;
 }
 
 .previewMessage:not(.no-repliers):hover
   cord-facepile.cord-component
+  .cord-facepile,
+[data-hovered-component='cord-message']
+  .previewMessage:not(.no-repliers)
+  cord-facepile.cord-component
   .cord-facepile {
   gap: 12px;
   padding-left: 8px;
   padding-bottom: 8px;
+}
+
+[data-hovered-component='cord-message']
+  .canvasPin.previewMessage
+  .cord-message {
+  display: grid;
 }
 
 .canvasPin .cord-avatar-container {
@@ -692,4 +709,31 @@ cord-thread.cord-component.hidden {
 .groupedPins > .groupedAvatar.threeTotalAvatars:nth-child(3) {
   left: 13px;
   top: 26px;
+}
+
+[data-hovered-component='cord-page-presence'] cord-page-presence,
+[data-hovered-component='cord-thread'] cord-thread.cord-component {
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px var(--color-purple);
+}
+
+[data-hovered-component='cord-message'] .previewMessage {
+  box-shadow: 0 0 0 2px var(--color-purple);
+}
+
+[data-hovered-component='cord-threaded-comments']
+  .cord-threaded-comments::after {
+  border-radius: 0 0 8px 0;
+  box-shadow: 0 0 0 2px inset var(--color-purple);
+  content: '';
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+[data-hovered-component='cord-avatar'] .cord-avatar-container {
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--color-purple);
 }
