@@ -1,9 +1,10 @@
 import type { MutableRefObject } from 'react';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useCallback } from 'react';
 import { PagePresence, NotificationListLauncher } from '@cord-sdk/react';
 import type { NavigateFn } from '@cord-sdk/types';
 
 import { ThreadsContext } from '../ThreadsContext';
+import { useMutationObserver } from '../../../_common/hooks/useMutationObserver';
 import { HighchartsExample } from './HighchartsExample';
 import { AGGridExample } from './AGGridExample';
 import { ThreadedCommentsButton } from './ThreadedCommentsButton';
@@ -11,6 +12,13 @@ import { ThreadedCommentsButton } from './ThreadedCommentsButton';
 export const LOCATION = { page: 'dashboard-new' };
 export const CHART_ID = 'some-unique-and-stable-id-of-this-chart';
 export const GRID_ID = 'some-unique-and-stable-id-of-this-grid';
+const TOP_LEFT_CELL_LOCATION = {
+  gridId: GRID_ID,
+  rowId: '2012',
+  colId: 'year',
+};
+const HOVERED_COMPONENT_ATTRIBUTE_NAME = 'data-hovered-component';
+
 function Dashboard({
   navigateRef,
   highchartsDataSeries,
@@ -20,6 +28,9 @@ function Dashboard({
 }) {
   const { openThread, setOpenThread, setRequestToOpenThread } =
     useContext(ThreadsContext)!;
+  const [highlightedComponent, setHighlightedComponent] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     navigateRef.current = (_url, _location, { threadID }) => {
@@ -70,7 +81,58 @@ function Dashboard({
     return () => {};
   }, [openThread, setOpenThread]);
 
+  // The following callback and useMutationObserver hook only
+  // exist for the Cord demo.
+  // It is not necessary if you are building this yourself!
+  const rootDiv = document.getElementById('root');
+  const handleHoveredAttributeChange: MutationCallback = useCallback(
+    (mutations: MutationRecord[]) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.type === 'attributes' &&
+          mutation.attributeName === HOVERED_COMPONENT_ATTRIBUTE_NAME &&
+          rootDiv
+        ) {
+          const attributeValue = rootDiv.getAttribute(
+            HOVERED_COMPONENT_ATTRIBUTE_NAME,
+          );
+          setHighlightedComponent(attributeValue);
+        }
+      });
+    },
+    [rootDiv],
+  );
+  useMutationObserver(rootDiv, handleHoveredAttributeChange);
+
   const [threadListOpen, setThreadListOpen] = useState(false);
+
+  // The following useEffect hook only exists for the Cord demo
+  // It is not necessary if you are building this yourself!
+  // Sets the user present on the top left cell of the grid to
+  // temporarily show the avatar component when it is highlighted.
+  useEffect(() => {
+    function setDemoPresence(absent: boolean) {
+      if (!window.CordSDK) {
+        return;
+      }
+      void window.CordSDK.presence.setPresent(
+        {
+          ...TOP_LEFT_CELL_LOCATION,
+        },
+        {
+          exclusive_within: TOP_LEFT_CELL_LOCATION,
+          absent,
+        },
+      );
+    }
+
+    const markAbsent =
+      highlightedComponent !== 'cord-presence-observer' &&
+      highlightedComponent !== 'cord-presence-facepile';
+
+    setDemoPresence(markAbsent);
+  }, [highlightedComponent]);
+
   return (
     <>
       <div id="dashboard">

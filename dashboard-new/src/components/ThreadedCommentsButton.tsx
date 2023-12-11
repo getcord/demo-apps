@@ -72,7 +72,10 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
   return (
     <>
       <button
-        className={cx('action-button', { ['disabled']: threads.size === 0 })}
+        className={cx('action-button', {
+          ['disabled']: threads.size === 0,
+          ['open-threadlist-container']: open,
+        })}
         style={open ? { backgroundColor: '#6a6b6c' } : undefined}
         ref={refs.setReference}
         onClick={toggleThreadedComments}
@@ -82,23 +85,21 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
         <CommentsIcon />
         All comments
       </button>
-      {open && (
-        <div
-          className="threadlist-container"
-          ref={refs.setFloating}
-          style={floatingStyles}
-          {...getFloatingProps()}
-        >
-          <ThreadedComments
-            location={LOCATION}
-            onMessageClick={handleClickMessage}
-            composerPosition="none"
-            highlightThreadId={openThread ?? undefined}
-            messageOrder="newest_on_top"
-            displayResolved="tabbed"
-          />
-        </div>
-      )}
+      <div
+        className="threadlist-container"
+        ref={refs.setFloating}
+        style={floatingStyles}
+        {...getFloatingProps()}
+      >
+        <ThreadedComments
+          location={LOCATION}
+          onMessageClick={handleClickMessage}
+          composerPosition="none"
+          highlightThreadId={openThread ?? undefined}
+          messageOrder="newest_on_top"
+          displayResolved="tabbed"
+        />
+      </div>
     </>
   );
 }

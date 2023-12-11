@@ -208,6 +208,12 @@ body {
     --cord-shadow-large,
     0 var(--cord-space-4xs, 2px) var(--cord-space-m, 16px) 0 rgba(0, 0, 0, 0.16)
   );
+  visibility: hidden;
+}
+
+.open-threadlist-container + .threadlist-container,
+[data-hovered-component='cord-threaded-comments'] .cord-threaded-comments {
+  visibility: visible;
 }
 
 .threadlist-container .cord-threaded-comments {
@@ -258,6 +264,12 @@ cord-page-presence.cord-component .cord-avatar-container {
 
 cord-thread.cord-component {
   border-radius: 8px;
+  visibility: hidden;
+}
+
+cord-thread.cord-component.open-thread,
+[data-hovered-component='cord-thread'] cord-thread.cord-component {
+  visibility: visible;
 }
 
 .cord-message .cord-timestamp {
@@ -316,4 +328,23 @@ cord-thread.cord-component .cord-message-text .metadata-quote {
 
 .cord-message-text .metadata-quote.figma:hover {
   color: var(--purple);
+}
+
+[data-hovered-component='cord-notification-list-launcher']
+  cord-notification-list-launcher
+  > .cord-button[data-cord-button='open-notification-list'],
+[data-hovered-component='cord-page-presence'] cord-page-presence,
+[data-hovered-component='cord-threaded-comments'] .cord-threaded-comments,
+[data-hovered-component='cord-thread'] cord-thread.cord-component {
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px #9a6aff;
+}
+
+:is(
+    [data-hovered-component='cord-presence-observer'] .ag-cell,
+    [data-hovered-component='cord-presence-facepile']
+  )
+  .cord-avatar-container {
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #9a6aff;
 }

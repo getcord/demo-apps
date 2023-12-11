@@ -11,7 +11,7 @@ import React, {
 import cx from 'classnames';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
-import { useMutationObserver } from '../hooks/useMutationObserver';
+import { useMutationObserver } from '../../../_common/hooks/useMutationObserver';
 import { CommentButton } from './CommentButton';
 import { FakeMenu } from './FakeMenuIcon';
 import { FloatingPresence } from './FloatingPresence';
