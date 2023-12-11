@@ -212,12 +212,6 @@ p {
   padding: 0;
 }
 
-.cord-threaded-comments
-  .cord-threaded-comments-thread-list
-  .cord-threaded-comments-thread {
-  padding: 0;
-}
-
 /* Layout of message in the comments list */
 .cord-threaded-comments .cord-message {
   grid-template-columns: repeat(2, auto) 2fr;
@@ -232,7 +226,7 @@ p {
   background-color: transparent;
   padding-bottom: 8px;
   cursor: pointer;
-  padding: 16px 12px;
+  padding: 0;
 }
 
 /* Layout of message in the comments list if first message is deleted */
@@ -335,7 +329,7 @@ p {
 
 .cord-threaded-comments-thread .cord-expand-replies {
   margin: 0;
-  padding-left: 12px;
+  padding-left: 0;
   padding-top: 4px;
   font-weight: 400;
   font-size: 11px;
