@@ -346,6 +346,10 @@ video {
   width: var(--threaded-comments-width);
 }
 
+.cord-threaded-comments [data-cord-menu-item='thread-resolve'] {
+  display: list-item;
+}
+
 .cord-threaded-comments-thread.cord-highlighted,
 .cord-threaded-comments-thread:hover,
 .cord-threaded-comments-thread:hover .cord-message {
