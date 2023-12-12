@@ -497,7 +497,7 @@ function ChartThread({
           key={threadId}
           src={metadata.resolved ? commentIconResolved : commentIcon}
           onClick={() => setOpenThread(isOpen ? null : threadId)}
-          style={{ height: COMMENT_ICON_HEIGHT_PX }}
+          style={{ height: COMMENT_ICON_HEIGHT_PX, cursor: 'pointer' }}
         />
 
         <ThreadWrapper

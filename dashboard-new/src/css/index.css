@@ -237,6 +237,10 @@ cord-threaded-comments {
   padding: 8px;
 }
 
+.cord-threaded-comments cord-message {
+  cursor: pointer;
+}
+
 .cord-empty-state-placeholder .cord-facepile {
   margin-bottom: 12px;
 }
