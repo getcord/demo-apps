@@ -120,14 +120,7 @@ export function VideoPin({
     [duration],
   );
 
-  /**
-   * NOTE: useThreadData creates a thread if one doesn't already exists.
-   * For this reason, we are passing the same `location` to it.
-   * Failing to do so might result in the thread being created at the
-   * default location (the current window URL)
-   */
-  const { firstMessage } = thread.useThreadData(id, { location });
-
+  const { thread: threadData } = thread.useThread(id);
   // Special code to make the thread auto open based on timestamp
   // NOTE: This code exists just to support some cool interactions on Cord.com's demos.
   useEffect(() => {
@@ -181,9 +174,11 @@ export function VideoPin({
     >
       {showThreadPreviewBubble &&
         displayOnControls(metadata) &&
-        firstMessage?.plaintext && (
+        threadData?.firstMessage?.plaintext && (
           <div className="thread-preview-bubble-container">
-            <p className="thread-preview-bubble">{firstMessage.plaintext}</p>
+            <p className="thread-preview-bubble">
+              {threadData.firstMessage.plaintext}
+            </p>
           </div>
         )}
       <Thread

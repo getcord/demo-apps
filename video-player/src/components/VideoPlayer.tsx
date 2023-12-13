@@ -49,7 +49,9 @@ function CommentableVideo({
   // We want to know if there are any resolved threads at LOCATION,
   // so we can show ThreadedComments  "Resolved" tab only if there
   // are any resolved threads.
-  const summary = thread.useLocationSummary(LOCATION);
+  const threadCounts = thread.useThreadCounts({
+    filter: { location: LOCATION },
+  });
 
   // When users add a new comment, we'll add the current timestamp
   // to their message.
@@ -311,7 +313,7 @@ function CommentableVideo({
             onMessageClick={onMessageClick}
             highlightThreadId={openThread ?? undefined}
             displayResolved={
-              (summary?.resolved ?? 0) > 0 ? 'tabbed' : 'unresolvedOnly'
+              (threadCounts?.resolved ?? 0) > 0 ? 'tabbed' : 'unresolvedOnly'
             }
             onComposerFocus={onComposerFocus}
           />

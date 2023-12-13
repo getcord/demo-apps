@@ -100,7 +100,9 @@ export function ThreadsProvider({ children }: PropsWithChildren) {
     hasMore,
     loading,
     fetchMore,
-  } = thread.useLocationData(LOCATION, { includeResolved: false });
+  } = thread.useThreads({
+    filter: { location: LOCATION, resolvedStatus: 'unresolved' },
+  });
   useEffect(() => {
     if (loading) {
       return;

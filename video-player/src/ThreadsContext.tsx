@@ -84,7 +84,7 @@ export function ThreadsProvider({
     hasMore,
     loading,
     fetchMore,
-  } = thread.useLocationData(location, { includeResolved: false });
+  } = thread.useThreads({ filter: { location, resolvedStatus: 'unresolved' } });
   useEffect(() => {
     if (loading) {
       return;
