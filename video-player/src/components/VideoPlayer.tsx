@@ -251,7 +251,13 @@ function CommentableVideo({
         />
         <div id="top-bar">
           <PagePresence location={location} />
-          <NotificationListLauncher label="Notifications" />
+          <NotificationListLauncher
+            label="Notifications"
+            onClickNotification={(e, { message }) => {
+              e.preventDefault();
+              message && onMessageFocus(message.threadID, message.id);
+            }}
+          />
         </div>
         <div id="content">
           <div id="commentableVideo">
