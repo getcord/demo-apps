@@ -106,11 +106,22 @@ export function CanvasCommentsList() {
     ],
   );
 
+  const handleMessageClick = useCallback(
+    (messageInfo: MessageInfo) => {
+      if (openThread?.threadID === messageInfo.threadId) {
+        setOpenThread(null);
+      } else {
+        navigateToPin(messageInfo);
+      }
+    },
+    [navigateToPin, openThread?.threadID, setOpenThread],
+  );
+
   return (
     <ThreadedComments
       location={EXAMPLE_CORD_LOCATION}
       composerPosition="none"
-      onMessageClick={navigateToPin}
+      onMessageClick={handleMessageClick}
       showReplies="alwaysCollapsed"
       highlightThreadId={openThread?.threadID}
       messageOrder="newest_on_top"
