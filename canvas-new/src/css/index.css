@@ -229,6 +229,10 @@ p {
   padding: 0;
 }
 
+.cord-threaded-comments cord-message .cord-avatar-container {
+  cursor: pointer;
+}
+
 /* Layout of message in the comments list if first message is deleted */
 .cord-threaded-comments .cord-message.cord-deleted {
   color: var(--color-dark-x-light);
