@@ -1,6 +1,10 @@
 import type { MutableRefObject } from 'react';
 import { useState, useContext, useEffect, useCallback } from 'react';
-import { PagePresence, NotificationListLauncher } from '@cord-sdk/react';
+import {
+  PagePresence,
+  NotificationListLauncher,
+  CordContext,
+} from '@cord-sdk/react';
 import type { NavigateFn } from '@cord-sdk/types';
 
 import { ThreadsContext } from '../ThreadsContext';
@@ -26,6 +30,7 @@ function Dashboard({
   navigateRef: MutableRefObject<NavigateFn | null>;
   highchartsDataSeries?: { start: number; end: number }[];
 }) {
+  const { sdk: cordSDK } = useContext(CordContext);
   const { openThread, setOpenThread, setRequestToOpenThread } =
     useContext(ThreadsContext)!;
   const [highlightedComponent, setHighlightedComponent] = useState<
@@ -112,10 +117,10 @@ function Dashboard({
   // temporarily show the avatar component when it is highlighted.
   useEffect(() => {
     function setDemoPresence(absent: boolean) {
-      if (!window.CordSDK) {
+      if (!cordSDK) {
         return;
       }
-      void window.CordSDK.presence.setPresent(
+      void cordSDK.presence.setPresent(
         {
           ...TOP_LEFT_CELL_LOCATION,
         },
@@ -131,7 +136,7 @@ function Dashboard({
       highlightedComponent !== 'cord-presence-facepile';
 
     setDemoPresence(markAbsent);
-  }, [highlightedComponent]);
+  }, [cordSDK, highlightedComponent]);
 
   return (
     <>
