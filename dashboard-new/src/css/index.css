@@ -334,6 +334,14 @@ cord-thread.cord-component .cord-message-text .metadata-quote {
   color: var(--purple);
 }
 
+.cord-component .cord-link-preview-container {
+  border-left: 4px solid var(--white);
+}
+
+.cord-component .cord-link-preview-url {
+  color: var(--white);
+}
+
 [data-hovered-component='cord-notification-list-launcher']
   cord-notification-list-launcher
   > .cord-button[data-cord-button='open-notification-list'],

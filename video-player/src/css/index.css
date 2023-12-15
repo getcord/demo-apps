@@ -562,3 +562,15 @@ cord-notification-list-launcher .cord-button.cord-badge::after {
     transform: scale(1);
   }
 }
+
+.cord-component .cord-link-preview-container {
+  border-left: 4px solid var(--white);
+}
+
+.cord-component .cord-link-preview-url {
+  color: var(--white);
+}
+
+.cord-component .cord-message-link-previews {
+  color: var(--white);
+}
