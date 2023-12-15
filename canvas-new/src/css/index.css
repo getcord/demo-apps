@@ -92,6 +92,8 @@ p {
 
 .canvasHeader .cord-avatar-container {
   box-shadow: 2px 0 0 var(--canvas-header-background-color);
+  width: 20px;
+  height: 20px;
 }
 
 .canvasAndCordContainer {
