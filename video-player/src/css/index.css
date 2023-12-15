@@ -31,7 +31,8 @@ html {
 }
 
 body {
-  background: var(--yellow-dark);
+  --video-player-bg-color: #e9e469;
+  background-color: var(--video-player-bg-color);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;

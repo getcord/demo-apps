@@ -39,7 +39,8 @@
 }
 
 body {
-  background: var(--black);
+  --dashboard-bg-color: #121314;
+  background-color: var(--dashboard-bg-color);
   margin: 0;
   padding: 0;
   padding-top: 73px;

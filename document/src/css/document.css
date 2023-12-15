@@ -11,7 +11,8 @@
 }
 
 body {
-  background-color: #c2e7ff;
+  --document-bg-color: #c2e7ff;
+  background-color: var(--document-bg-color);
   font-family:
     Roboto,
     -apple-system,
