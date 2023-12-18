@@ -8,11 +8,13 @@ import {
 } from '@cord-sdk/react';
 import type { Location, MessageInfo, Point2D } from '@cord-sdk/types';
 import { ThreadsProvider, ThreadsContext } from '../ThreadsContext';
+import { useMutationObserver } from '../../../_common/hooks/useMutationObserver';
 import { CustomControls } from './CustomControls';
 import { useAddTimestamp } from './useAddTimestamp';
-import { VideoPin } from './VideoPin';
+import { VideoPin, isPinWithinInterval } from './VideoPin';
 
 const LOCATION = { page: 'video' };
+const HOVERED_COMPONENT_ATTRIBUTE_NAME = 'data-hovered-component';
 
 export function VideoPlayer({ video }: { video: string }) {
   return (
@@ -52,10 +54,74 @@ function CommentableVideo({
   const threadCounts = thread.useThreadCounts({
     filter: { location: LOCATION },
   });
+  const [highlightedComponent, setHighlightedComponent] = useState<
+    string | null
+  >(null);
 
   // When users add a new comment, we'll add the current timestamp
   // to their message.
   useAddTimestamp();
+
+  // The following callback, useMutationObserver and useEffect
+  // only exist for the Cord demo. They are used to highlight
+  // components.
+  // They are not necessary if you are building this yourself!
+  const rootDiv = document.getElementById('root');
+  const handleHoveredAttributeChange: MutationCallback = useCallback(
+    (mutations: MutationRecord[]) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.type === 'attributes' &&
+          mutation.attributeName === HOVERED_COMPONENT_ATTRIBUTE_NAME &&
+          rootDiv
+        ) {
+          const attributeValue = rootDiv.getAttribute(
+            HOVERED_COMPONENT_ATTRIBUTE_NAME,
+          );
+          setHighlightedComponent(attributeValue);
+        }
+      });
+    },
+    [rootDiv],
+  );
+  useMutationObserver(rootDiv, handleHoveredAttributeChange);
+
+  // Because the odds of not having a thread in view are quite high
+  // in this demo, if one is not open, we open and bring into view a
+  // random thread to showcase the Pin and Thread component when
+  // highlighting any of the two.
+  useEffect(() => {
+    const highlightedPinOrThread =
+      highlightedComponent === 'cord-thread' ||
+      highlightedComponent === 'cord-pin';
+
+    if (!threads.size || !highlightedPinOrThread || !videoRef.current) {
+      return;
+    }
+
+    const threadArray = Array.from(threads);
+    const pinInView = threadArray.find(([_, { metadata }]) => {
+      return isPinWithinInterval(
+        metadata.timestamp,
+        videoRef.current!.currentTime,
+      );
+    });
+
+    // If the video is not at a timestamp where we have a pin, we choose a
+    // random one to bring into view (We've already checked that there's
+    // at least one thread above).
+    const [
+      _,
+      {
+        metadata: { timestamp },
+      },
+    ] = threadArray[0];
+
+    if (!pinInView) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = timestamp;
+    }
+  }, [highlightedComponent, threads]);
 
   const handleCloseThread = useCallback(() => {
     if (!openThread) {

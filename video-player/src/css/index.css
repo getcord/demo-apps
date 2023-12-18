@@ -424,10 +424,19 @@ cord-pin,
 #video-player-demo-container cord-thread {
   border: none;
   box-shadow: 0px 2px 16px 0px var(--black);
+  display: none;
   width: 250px;
   max-height: 300px;
   border-radius: var(--thread-border-radius);
   position: absolute;
+}
+
+#video-player-demo-container cord-thread.open-thread,
+[data-hovered-component='cord-thread']
+  #video-player-demo-container
+  :where(.pin-on-video-pulse, .pin-on-video)
+  > cord-thread {
+  display: block;
 }
 
 #video-player-demo-container cord-thread .cord-message-text .timestamp {
@@ -526,6 +535,10 @@ cord-notification-list-launcher
   background-color: var(--grey-light);
 }
 
+cord-page-presence {
+  padding: 2px 4px;
+}
+
 cord-page-presence .cord-avatar-container {
   box-shadow: 4px 0px 0px var(--yellow-dark);
   height: 40px;
@@ -574,4 +587,22 @@ cord-notification-list-launcher .cord-button.cord-badge::after {
 
 .cord-component .cord-message-link-previews {
   color: var(--white);
+}
+
+[data-hovered-component='cord-threaded-comments']
+  #video-player-demo-container
+  .cord-threaded-comments {
+  box-shadow: 0 0 0 2px inset var(--purple);
+}
+
+[data-hovered-component='cord-notification-list-launcher']
+  cord-notification-list-launcher,
+[data-hovered-component='cord-thread'] #video-player-demo-container cord-thread,
+[data-hovered-component='cord-pin'] .cord-pin-container .cord-avatar-container {
+  box-shadow: 0 0 0 2px var(--purple);
+}
+
+[data-hovered-component='cord-page-presence'] cord-page-presence {
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px var(--purple);
 }

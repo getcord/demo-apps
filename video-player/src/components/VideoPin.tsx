@@ -8,6 +8,9 @@ import { ThreadsContext } from '../ThreadsContext';
 // Control how long should a pin stay on the video, before
 // moving back to the controls.
 const PIN_TIME_ON_VIDEO_SECONDS = 3;
+export function isPinWithinInterval(pinTimestamp: number, currentTime: number) {
+  return Math.abs(pinTimestamp - currentTime) <= PIN_TIME_ON_VIDEO_SECONDS / 2;
+}
 
 /**
  * A Pin which is either: over the video, exactly where the comment was added,
@@ -41,8 +44,8 @@ export function VideoPin({
   const displayOnControls = useCallback(
     (threadMetadata: ThreadMetadata) => {
       return (
-        Math.abs(threadMetadata.timestamp - currentTime) >
-          PIN_TIME_ON_VIDEO_SECONDS / 2 && openThread !== id
+        !isPinWithinInterval(threadMetadata.timestamp, currentTime) &&
+        openThread !== id
       );
     },
     [currentTime, openThread, id],
@@ -188,9 +191,7 @@ export function VideoPin({
         onResolved={() => removeThread(id)}
         showPlaceholder={false}
         autofocus={openThread === id}
-        style={{
-          display: openThread === id ? 'block' : 'none',
-        }}
+        className={cx({ ['open-thread']: openThread === id })}
       />
     </Pin>
   );
