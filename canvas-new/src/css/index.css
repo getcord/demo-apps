@@ -296,6 +296,33 @@ p {
   border-bottom: none;
 }
 
+/*
+Create a separate animation for the message content so it doen't
+grow/shrink while the container transition is happening on canvasPin:hover
+This way, we can wait until the container transition has happened, before 
+displaying the message.
+*/
+.previewMessage .cord-message {
+  opacity: 0;
+  animation: hide 0.1s step-start forwards;
+}
+
+.previewMessage:hover .cord-message {
+  animation: show 0.1s step-end forwards;
+}
+
+@keyframes show {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hide {
+  to {
+    opacity: 0;
+  }
+}
+
 /* Adding some space after the last divider */
 .cord-threaded-comments .cord-threaded-comments-thread:last-child {
   margin-bottom: 40px;
@@ -482,13 +509,20 @@ p {
   padding: 3px;
   position: absolute;
   transition:
-    width 0.2s,
-    height 0.2s,
-    padding 0.2s;
+    width 0.1s,
+    height 0.1s,
+    padding 0.1s;
 }
 
+/* Set the width for each pin size so the transitions can work smoothly */
 .canvasPin.no-repliers {
   width: var(--pin-size-small);
+}
+.canvasPin.one-replier {
+  width: var(--pin-size-medium);
+}
+.canvasPin.two-repliers {
+  width: var(--pin-size-large);
 }
 
 .canvasPin:hover {
@@ -548,16 +582,14 @@ p {
   height: 80px;
 }
 
-.canvasPin.previewMessage:not(:hover) .cord-message,
-.canvasPin.active .cord-message {
-  display: none;
-}
-
 /* Add a border around the pin when its thread is open */
 .canvasPin.active {
   box-shadow:
     0px 3px 6px rgba(0, 0, 0, 0.3),
     0 0 0 2px var(--color-purple);
+  /* Make sure the active pin is displayed under the open thread while 
+  shrinking down as it transitions  */
+  z-index: 1;
 }
 
 /* display replier avatars on top of message if the thread has repliers */
@@ -587,7 +619,7 @@ p {
 .canvasPin .cord-avatar-container {
   height: 26px;
   width: 26px;
-  transition: transform 0.2s;
+  transition: transform 0.1s;
 }
 
 .canvasPin .cord-tooltip {
