@@ -296,33 +296,6 @@ p {
   border-bottom: none;
 }
 
-/*
-Create a separate animation for the message content so it doen't
-grow/shrink while the container transition is happening on canvasPin:hover
-This way, we can wait until the container transition has happened, before 
-displaying the message.
-*/
-.previewMessage .cord-message {
-  opacity: 0;
-  animation: hide 0.1s step-start forwards;
-}
-
-.previewMessage:hover .cord-message {
-  animation: show 0.1s step-end forwards;
-}
-
-@keyframes show {
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes hide {
-  to {
-    opacity: 0;
-  }
-}
-
 /* Adding some space after the last divider */
 .cord-threaded-comments .cord-threaded-comments-thread:last-child {
   margin-bottom: 40px;
@@ -608,6 +581,34 @@ displaying the message.
   gap: 12px;
   padding-left: 8px;
   padding-bottom: 8px;
+}
+
+/*
+Create a separate animation for the message content so it doen't
+grow/shrink while the container transition is happening on canvasPin:hover
+This way, we can wait until the container transition has happened, before 
+displaying the message.
+*/
+.previewMessage .cord-message {
+  opacity: 0;
+  animation: hide 0.1s step-start forwards;
+}
+
+.previewMessage:hover .cord-message,
+[data-hovered-component='cord-message'] .cord-message {
+  animation: show 0.1s step-end forwards;
+}
+
+@keyframes show {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hide {
+  to {
+    opacity: 0;
+  }
 }
 
 [data-hovered-component='cord-message']
