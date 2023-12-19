@@ -237,7 +237,7 @@ cord-thread .cord-thread-container {
   grid-template-columns: 48px auto auto auto 1fr auto;
   grid-template-areas:
     'avatar authorName  sentViaIcon . optionsMenu'
-    'avatar timestamp  timestamp . optionsMenu'
+    'avatar timestamp  timestamp timestamp optionsMenu'
     'messageContent messageContent messageContent messageContent messageContent'
     'reactions reactions reactions reactions reactions';
   margin: 0 0 16px;
@@ -264,7 +264,7 @@ cord-thread .cord-message:is(.cord-deleted, .cord-action) {
   grid-template-columns: 48px auto auto auto 1fr auto;
   grid-template-areas:
     'avatar authorName  sentViaIcon . optionsMenu'
-    'avatar timestamp  timestamp . optionsMenu'
+    'avatar timestamp  timestamp timestamp optionsMenu'
     'messageContent messageContent messageContent messageContent messageContent';
 }
 
@@ -282,7 +282,7 @@ cord-thread .cord-message:is(.cord-deleted, .cord-action) {
 }
 
 .cord-component .cord-message .cord-author-name {
-  margin: 0;
+  margin: 0 8px 0 0;
 }
 
 .cord-component .cord-message .cord-options-menu-trigger {
