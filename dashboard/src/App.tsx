@@ -43,7 +43,7 @@ export default function App() {
         ]}
         api={['thread', 'user']}
         darkTheme
-        app="dashboard-new"
+        app="dashboard"
       />
       {clientAuthToken && (
         <ThreadsProvider>

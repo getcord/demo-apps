@@ -2,7 +2,7 @@
 
 # [cord-sdk](https://docs.cord.com/) &middot; Dashboard
 
-Want to play with a live version? Head to our [Docs live demos](https://docs.cord.com/get-started/demo-apps/dashboard-new)!
+Want to play with a live version? Head to our [Docs live demos](https://docs.cord.com/get-started/demo-apps/dashboard)!
 
 <img width="100%" alt="screenshot of dashboard demo" src="./src/images/dashboard-screenshot.png"></img>
 
@@ -10,10 +10,10 @@ Want to play with a live version? Head to our [Docs live demos](https://docs.cor
 
 1. Clone the [demo-apps](https://github.com/getcord/demo-apps) repository.
 
-2. Navigate to the new dashboard directory:
+2. Navigate to the dashboard directory:
 
 ```bash
-cd demo-apps/dashboard-new
+cd demo-apps/dashboard
 ```
 
 3. Install the dependencies:

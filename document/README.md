@@ -2,7 +2,7 @@
 
 # [cord-sdk](https://docs.cord.com/) &middot; Document
 
-Want to play with a live version? Head to our [Docs live demos](https://docs.cord.com/get-started/demo-apps/document-new)!
+Want to play with a live version? Head to our [Docs live demos](https://docs.cord.com/get-started/demo-apps/document)!
 
 <img width="100%" alt="screenshot of document demo" src="./src/images/document-screenshot.png"></img>
 
@@ -13,7 +13,7 @@ Want to play with a live version? Head to our [Docs live demos](https://docs.cor
 2. Navigate to the document directory:
 
 ```bash
-cd demo-apps/document-new
+cd demo-apps/document
 ```
 
 3. Install the dependencies:

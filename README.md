@@ -1,7 +1,7 @@
 # Cord SDK Demo Apps
 
-- [Dashboard](https://docs.cord.com/get-started/demo-apps/dashboard-new)
-- [Document](https://docs.cord.com/get-started/demo-apps/document-new)
+- [Dashboard](https://docs.cord.com/get-started/demo-apps/dashboard)
+- [Document](https://docs.cord.com/get-started/demo-apps/document)
 - [Video player](https://docs.cord.com/get-started/demo-apps/video-player)
 - [Canvas](https://docs.cord.com/get-started/demo-apps/canvas)
 
