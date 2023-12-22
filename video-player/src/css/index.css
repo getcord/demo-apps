@@ -61,6 +61,7 @@ body {
 }
 
 .cord-threaded-comments .cord-threaded-comments-tab-container {
+  margin-top: 16px;
   background-color: var(--grey-dark);
   color: var(--white);
   border-radius: 16px;
