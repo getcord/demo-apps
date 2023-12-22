@@ -535,6 +535,14 @@ cord-notification-list-launcher [data-cord-button='open-notification-list'] {
   justify-content: start;
 }
 
+.cord-notification-container [data-cord-button='open-notification-options'] {
+  color: var(--white);
+}
+
+.cord-notification-container [data-cord-button='open-notification-options']:hover {
+  color: var(--black);
+}
+
 cord-notification-list-launcher
   [data-cord-button='open-notification-list']:hover {
   border-radius: var(--border-radius);
