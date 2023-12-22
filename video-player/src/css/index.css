@@ -64,10 +64,15 @@ body {
   background-color: var(--grey-dark);
   color: var(--white);
   border-radius: 16px;
+  gap: 4px;
 }
 
-.cord-threaded-comments .cord-threaded-comments-tab {
-  border-radius: 8px;
+.cord-threaded-comments .cord-threaded-comments-tab:first-child {
+  border-radius: 16px 4px 4px 16px;
+}
+
+.cord-threaded-comments .cord-threaded-comments-tab:last-child {
+  border-radius: 4px 16px 16px 4px;
 }
 
 .cord-threaded-comments .cord-threaded-comments-tab:not(.cord-active):hover {
