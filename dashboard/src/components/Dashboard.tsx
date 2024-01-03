@@ -8,7 +8,7 @@ import {
 import type { NavigateFn } from '@cord-sdk/types';
 
 import { ThreadsContext } from '../ThreadsContext';
-import { useMutationObserver } from '../../../_common/hooks/useMutationObserver';
+import { useMutationObserver } from '../hooks/useMutationObserver';
 import { HighchartsExample } from './HighchartsExample';
 import { AGGridExample } from './AGGridExample';
 import { ThreadedCommentsButton } from './ThreadedCommentsButton';

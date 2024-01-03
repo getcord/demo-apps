@@ -8,7 +8,7 @@ import {
 } from '@cord-sdk/react';
 import type { Location, MessageInfo, Point2D } from '@cord-sdk/types';
 import { ThreadsProvider, ThreadsContext } from '../ThreadsContext';
-import { useMutationObserver } from '../../../_common/hooks/useMutationObserver';
+import { useMutationObserver } from '../hooks/useMutationObserver';
 import { CustomControls } from './CustomControls';
 import { useAddTimestamp } from './useAddTimestamp';
 import { VideoPin, isPinWithinInterval } from './VideoPin';
