@@ -308,12 +308,6 @@ cord-thread .cord-message:is(.cord-deleted, .cord-action) {
   width: 32px;
 }
 
-.cord-message
-  .cord-menu
-  [data-cord-menu-item='thread-share-via-slack-not-connected'] {
-  display: none;
-}
-
 .cord-component
   .cord-message
   .cord-options-menu-trigger
@@ -547,11 +541,6 @@ the stacking context created by floating threads. */
 .cord-component .cord-composer .cord-composer-menu {
   border: none;
   padding: 0;
-}
-
-.cord-component .cord-composer .cord-button,
-.cord-component .cord-composer .cord-separator {
-  display: none;
 }
 
 cord-avatar.cord-component .cord-avatar-container {

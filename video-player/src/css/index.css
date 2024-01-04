@@ -80,11 +80,6 @@ body {
   color: var(--black);
 }
 
-.cord-mention-menu > .cord-button,
-.cord-mention-menu > .cord-separator {
-  display: none;
-}
-
 /* Hide buttons at the top and bottom of the scrollbar */
 .scrollbar::-webkit-scrollbar-button {
   display: none;

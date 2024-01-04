@@ -287,11 +287,6 @@ cord-thread.cord-component.open-thread,
   margin: 0;
 }
 
-.cord-mention-menu > .cord-button,
-.cord-mention-menu > .cord-separator {
-  display: none;
-}
-
 .cord-component .cord-inline-thread {
   padding-top: 4px;
 }
