@@ -26,6 +26,9 @@ export default function App() {
           },
         },
       }}
+      screenshotOptions={{
+        captureWhen: ['new-message', 'new-thread'],
+      }}
     >
       <InformationHeader
         components={[

@@ -12,7 +12,12 @@ export default function App() {
 
   return (
     // All the Cord React components must be children of a single CordProvider component.
-    <CordProvider clientAuthToken={clientAuthToken}>
+    <CordProvider
+      clientAuthToken={clientAuthToken}
+      screenshotOptions={{
+        captureWhen: ['new-message', 'new-thread'],
+      }}
+    >
       <InformationHeader
         components={[
           'cord-threaded-comments',

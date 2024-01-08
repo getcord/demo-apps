@@ -31,6 +31,9 @@ export default function App() {
       clientAuthToken={clientAuthToken}
       navigate={(...args) => navigateRef.current?.(...args) ?? false}
       beforeMessageCreate={handleBeforeMessageCreate}
+      screenshotOptions={{
+        captureWhen: ['new-message', 'new-thread'],
+      }}
     >
       <InformationHeader
         components={[
