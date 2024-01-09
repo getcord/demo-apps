@@ -10,7 +10,7 @@ import { AgGridReact } from 'ag-grid-react';
 import type { ICellRendererParams, GridApi, ColDef } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { PresenceFacepile, PresenceObserver, user } from '@cord-sdk/react';
+import { PresenceFacepile, PresenceObserver } from '@cord-sdk/react';
 import {
   autoUpdate,
   flip,
@@ -21,13 +21,12 @@ import {
 import chartData from '../chartData.json';
 import type { GridThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
-import { LOCATION } from './Dashboard';
+import { LOCATION, SAMPLE_GROUP_ID } from './Dashboard';
 import { ThreadWrapper } from './ThreadWrapper';
 import commentIcon from './CommentIcon.svg';
 import commentIconResolved from './CommentIconResolved.svg';
 
 export function AGGridExample({ gridId }: { gridId: string }) {
-  const orgId = user.useViewerData()?.organizationID;
   const gridRef = useRef<AgGridReact>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
@@ -245,15 +244,15 @@ export function AGGridExample({ gridId }: { gridId: string }) {
         }}
         onCellClicked={(e) => {
           // On cell click, we might want to open/close/start a thread
-          if (!orgId) {
-            // appease the typechecker
-            throw new Error('org information not ready');
-          }
-
           const rowId = getRowId(e.data);
           const colId = e.column.getId();
           const headerName = e.colDef.headerName!;
-          const threadId = makeThreadId({ orgId, gridId, rowId, colId });
+          const threadId = makeThreadId({
+            orgId: SAMPLE_GROUP_ID,
+            gridId,
+            rowId,
+            colId,
+          });
           if (threadId === openThread) {
             setOpenThread(null);
           } else if (threads.has(threadId)) {
@@ -285,11 +284,15 @@ function CellWithThreadAndPresence(
   const { threads, openThread } = useContext(ThreadsContext)!;
   const rowId = getRowId(params.data);
   const colId = params.column?.getId();
-  const orgId = user.useViewerData()?.organizationID;
   if (!colId) {
     throw new Error('unexpected error: missing column id');
   }
-  const threadId = orgId && makeThreadId({ orgId, gridId, colId, rowId });
+  const threadId = makeThreadId({
+    orgId: SAMPLE_GROUP_ID,
+    gridId,
+    colId,
+    rowId,
+  });
   const threadMetadata =
     threadId !== undefined && threadId !== null
       ? threads.get(threadId)
@@ -303,6 +306,7 @@ function CellWithThreadAndPresence(
   return (
     <>
       <PresenceObserver
+        groupId={SAMPLE_GROUP_ID}
         location={location}
         style={{
           display: 'flex',

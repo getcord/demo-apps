@@ -4,6 +4,7 @@ import type { Location } from '@cord-sdk/types';
 import cx from 'classnames';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
+import { SAMPLE_GROUP_ID } from './VideoPlayer';
 
 // Control how long should a pin stay on the video, before
 // moving back to the controls.
@@ -185,6 +186,7 @@ export function VideoPin({
           </div>
         )}
       <Thread
+        groupId={SAMPLE_GROUP_ID}
         threadId={id}
         metadata={metadata}
         location={location}

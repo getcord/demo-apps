@@ -4,6 +4,7 @@ import type { FlatJsonObject } from '@cord-sdk/types';
 import { useState, useEffect, useContext } from 'react';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
+import { SAMPLE_GROUP_ID } from './Dashboard';
 
 type ThreadWrapperProps = {
   forwardRef?: React.RefObject<HTMLElement | null>;
@@ -42,6 +43,7 @@ export function ThreadWrapper({
 
   return (
     <Thread
+      groupId={SAMPLE_GROUP_ID}
       forwardRef={forwardRef}
       location={location}
       threadId={threadId}

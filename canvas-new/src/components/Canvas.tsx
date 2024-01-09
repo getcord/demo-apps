@@ -6,7 +6,11 @@ import { LiveCursors } from '@cord-sdk/react';
 import type { Location } from '@cord-sdk/types';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
 import type { ThreadMetadata } from '../canvasUtils/common';
-import { EXAMPLE_CORD_LOCATION, getStageData } from '../canvasUtils/common';
+import {
+  EXAMPLE_CORD_LOCATION,
+  getStageData,
+  SAMPLE_GROUP_ID,
+} from '../canvasUtils/common';
 import { createNewPin } from '../canvasUtils/pin';
 import { CommentIcon } from './CommentIcon';
 import { CanvasCommentsList } from './CanvasCommentsList';
@@ -334,6 +338,7 @@ export default function Canvas() {
           </Layer>
         </Stage>
         <LiveCursors
+          groupId={SAMPLE_GROUP_ID}
           location={EXAMPLE_CORD_LOCATION}
           boundingElementRef={canvasContainerRef}
           translations={{

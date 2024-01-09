@@ -12,7 +12,7 @@ import {
   size,
 } from '@floating-ui/react';
 import { ThreadsContext } from '../ThreadsContext';
-import { LOCATION } from './Dashboard';
+import { LOCATION, SAMPLE_GROUP_ID } from './Dashboard';
 import { CommentsIcon } from './CommentsIcon';
 
 type Props = {
@@ -92,6 +92,7 @@ export function ThreadedCommentsButton({ open, setOpen }: Props) {
         {...getFloatingProps()}
       >
         <ThreadedComments
+          groupId={SAMPLE_GROUP_ID}
           location={LOCATION}
           onMessageClick={handleClickMessage}
           composerPosition="none"

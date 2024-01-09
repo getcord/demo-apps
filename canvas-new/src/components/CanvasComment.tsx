@@ -6,7 +6,7 @@ import cx from 'classnames';
 
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { CanvasAndCommentsContext } from '../CanvasAndCommentsContext';
-import { EXAMPLE_CORD_LOCATION } from '../canvasUtils/common';
+import { EXAMPLE_CORD_LOCATION, SAMPLE_GROUP_ID } from '../canvasUtils/common';
 import type { Pin } from '../canvasUtils/common';
 
 type CanvasCommentType = {
@@ -169,6 +169,7 @@ export function CanvasComment({ pin: { threadID, x, y } }: CanvasCommentType) {
         )}
       </div>
       <Thread
+        groupId={SAMPLE_GROUP_ID}
         location={EXAMPLE_CORD_LOCATION}
         threadId={threadID}
         metadata={threadData.thread.metadata}

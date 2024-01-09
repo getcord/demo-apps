@@ -22,6 +22,7 @@ const TOP_LEFT_CELL_LOCATION = {
   colId: 'year',
 };
 const HOVERED_COMPONENT_ATTRIBUTE_NAME = 'data-hovered-component';
+export const SAMPLE_GROUP_ID = 'my-first-group';
 
 function Dashboard({
   navigateRef,
@@ -125,6 +126,7 @@ function Dashboard({
           ...TOP_LEFT_CELL_LOCATION,
         },
         {
+          groupID: SAMPLE_GROUP_ID,
           exclusive_within: TOP_LEFT_CELL_LOCATION,
           absent,
         },
@@ -149,7 +151,7 @@ function Dashboard({
                 open={threadListOpen}
                 setOpen={setThreadListOpen}
               />
-              <PagePresence location={LOCATION} />
+              <PagePresence location={LOCATION} groupId={SAMPLE_GROUP_ID} />
               <NotificationListLauncher
                 onClick={() => setThreadListOpen(false)}
                 // Remove this if you want all notifications from all locations

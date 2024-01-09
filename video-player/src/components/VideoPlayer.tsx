@@ -15,6 +15,7 @@ import { VideoPin, isPinWithinInterval } from './VideoPin';
 
 const LOCATION = { page: 'video' };
 const HOVERED_COMPONENT_ATTRIBUTE_NAME = 'data-hovered-component';
+export const SAMPLE_GROUP_ID = 'my-first-group';
 
 export function VideoPlayer({ video }: { video: string }) {
   return (
@@ -318,7 +319,7 @@ function CommentableVideo({
           onClick={handleCloseThread}
         />
         <div id="top-bar">
-          <PagePresence location={location} />
+          <PagePresence groupId={SAMPLE_GROUP_ID} location={location} />
           <NotificationListLauncher
             label="Notifications"
             onClickNotification={(e, { message }) => {
@@ -372,6 +373,7 @@ function CommentableVideo({
             </div>
           </div>
           <ThreadedComments
+            groupId={SAMPLE_GROUP_ID}
             location={location}
             composerPosition="none"
             messageOrder="newest_on_top"

@@ -1,4 +1,4 @@
-import { Thread, user, presence, PagePresence } from '@cord-sdk/react';
+import { Thread, presence, PagePresence } from '@cord-sdk/react';
 import React, {
   useMemo,
   useRef,
@@ -23,6 +23,7 @@ export const LOCATION = { page: 'document' };
 const HOVERED_COMPONENT_ATTRIBUTE_NAME = 'data-hovered-component';
 const THREADS_GAP = 16;
 export type Coordinates = { top: number; left: number };
+export const SAMPLE_GROUP_ID = 'my-first-group';
 
 /**
  * A GDocs clone, powered by Cord.
@@ -74,8 +75,6 @@ export function Document() {
       window.removeEventListener('scroll', handleUpdateContainerHeight);
   }, [handleUpdateContainerHeight]);
 
-  const userData = user.useViewerData();
-  const orgId = userData?.organizationID;
   const {
     threads,
     openThread,
@@ -377,7 +376,7 @@ export function Document() {
       // This makes a user present only in one place within LOCATION.
       // E.g. when hovering the title, the user will be marked absent
       // everywhere else.
-      { exclusive_within: LOCATION },
+      { exclusive_within: LOCATION, groupID: SAMPLE_GROUP_ID },
     );
   }, []);
 
@@ -396,7 +395,7 @@ export function Document() {
         elementId: 'title',
       },
 
-      { exclusive_within: LOCATION },
+      { exclusive_within: LOCATION, groupID: SAMPLE_GROUP_ID },
     );
   }, [highlightedComponent]);
 
@@ -417,9 +416,6 @@ export function Document() {
   // then recreate a `Range`. We can leverage the `Range` to draw highlights
   // over the text, and have the browser compute their position for us.
   const addComment = useCallback(() => {
-    if (!orgId) {
-      throw new Error('org information not ready');
-    }
     const range = window.getSelection()?.getRangeAt(0);
     if (!range) {
       return;
@@ -452,7 +448,7 @@ export function Document() {
     const threadId = crypto.randomUUID();
     addThread(threadId, metadata, 0);
     setOpenThread(threadId);
-  }, [addThread, orgId, setOpenThread]);
+  }, [addThread, setOpenThread]);
 
   const handleHideFloatingThread = useCallback(
     (threadId: string) => {
@@ -549,7 +545,7 @@ export function Document() {
           <FakeMenu />
           <div className="header-subgroup">
             <ThreadedCommentsLauncher />
-            <PagePresence location={LOCATION} />
+            <PagePresence location={LOCATION} groupId={SAMPLE_GROUP_ID} />
           </div>
         </div>
         <hr />
@@ -641,6 +637,7 @@ export function Document() {
                     }}
                   >
                     <Thread
+                      groupId={SAMPLE_GROUP_ID}
                       location={LOCATION}
                       threadId={threadId}
                       metadata={metadata}

@@ -3,7 +3,7 @@ import { autoUpdate, useFloating, shift } from '@floating-ui/react';
 import { useCallback, useContext, useState } from 'react';
 import cx from 'classnames';
 import { ThreadsContext } from '../ThreadsContext';
-import { LOCATION } from './Document';
+import { LOCATION, SAMPLE_GROUP_ID } from './Document';
 import { AllCommenstIcon } from './AllCommentsIcon';
 
 export function ThreadedCommentsLauncher() {
@@ -69,6 +69,7 @@ export function ThreadedCommentsLauncher() {
         style={floatingStyles}
       >
         <ThreadedComments
+          groupId={SAMPLE_GROUP_ID}
           location={LOCATION}
           onMessageClick={handleClickMessage}
           onThreadResolve={({ threadID }) => {

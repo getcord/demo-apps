@@ -5,6 +5,7 @@ import { CanvasAndCommentsProvider } from './CanvasAndCommentsContext';
 import { CanvasWindow } from './components/CanvasWindow';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
 import { EXAMPLE_CORD_LOCATION } from './canvasUtils/common';
+// The playground token is only used on cord.com, you can ignore it!
 import { playgroundToken } from './playgroundToken.json';
 
 export default function App() {

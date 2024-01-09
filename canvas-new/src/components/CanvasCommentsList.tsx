@@ -10,6 +10,7 @@ import {
 import {
   EXAMPLE_CORD_LOCATION,
   GROUPED_PINS_CLASS_NAME,
+  SAMPLE_GROUP_ID,
 } from '../canvasUtils/common';
 import { expandGroupedPins } from '../canvasUtils/groupedPins';
 
@@ -119,6 +120,7 @@ export function CanvasCommentsList() {
 
   return (
     <ThreadedComments
+      groupId={SAMPLE_GROUP_ID}
       location={EXAMPLE_CORD_LOCATION}
       composerPosition="none"
       onMessageClick={handleMessageClick}

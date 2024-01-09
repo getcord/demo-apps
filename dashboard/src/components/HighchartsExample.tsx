@@ -11,11 +11,10 @@ import {
 import * as Highcharts from 'highcharts';
 import type { TooltipPositionerPointObject } from 'highcharts';
 import cx from 'classnames';
-import { user } from '@cord-sdk/react';
 import chartData from '../chartData.json';
 import type { ChartThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
-import { LOCATION } from './Dashboard';
+import { LOCATION, SAMPLE_GROUP_ID } from './Dashboard';
 import { ThreadWrapper } from './ThreadWrapper';
 import commentIcon from './CommentIcon.svg';
 import commentIconResolved from './CommentIconResolved.svg';
@@ -175,7 +174,6 @@ function useChartOptions(
   chartRef: React.RefObject<HighchartsReact.RefObject>,
   onRedraw: (() => void) | undefined,
 ) {
-  const orgId = user.useViewerData()?.organizationID;
   const { threads, addThread, setOpenThread, openThread } =
     useContext(ThreadsContext)!;
 
@@ -197,9 +195,6 @@ function useChartOptions(
     if (!hoverPoint) {
       return;
     }
-    if (!orgId) {
-      throw new Error('org information not ready');
-    }
 
     const metadata = {
       type: 'chart',
@@ -212,10 +207,10 @@ function useChartOptions(
     } as const;
     // NOTE: Allow only one thread per point by using the point x,y in threadId
     // NOTE: Use orgId as part of thread Id to have unique ids across orgs
-    const threadId = `${orgId}_${metadata.chartId}_${metadata.seriesId}_${metadata.x}_${metadata.y}`;
+    const threadId = `${SAMPLE_GROUP_ID}_${metadata.chartId}_${metadata.seriesId}_${metadata.x}_${metadata.y}`;
     addThread(threadId, metadata);
     setOpenThread(threadId);
-  }, [addThread, chartId, chartRef, orgId, setOpenThread]);
+  }, [addThread, chartId, chartRef, setOpenThread]);
 
   return useMemo(
     () => ({

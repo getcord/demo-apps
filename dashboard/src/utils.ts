@@ -73,6 +73,7 @@ async function fetchCordSampleToken(): Promise<string | null> {
     const { client_auth_token } = await response.json();
     return client_auth_token;
   } catch (e) {
+    console.error(e);
     return null;
   }
 }

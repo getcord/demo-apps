@@ -71,3 +71,4 @@ export function extractDataFromThreadMetadata(
     relativeY: metadata.relativeY,
   };
 }
+export const SAMPLE_GROUP_ID = 'my-first-group';
