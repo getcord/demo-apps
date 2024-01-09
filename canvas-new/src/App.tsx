@@ -30,6 +30,9 @@ export default function App() {
       screenshotOptions={{
         captureWhen: ['new-message', 'new-thread'],
       }}
+      onInitError={(e) =>
+        console.error('Error when initializing Cord sdk: ', e)
+      }
     >
       <InformationHeader
         components={[
