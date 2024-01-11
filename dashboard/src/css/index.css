@@ -38,8 +38,15 @@
   margin: 0;
 }
 
+#root {
+  background-color: var(--black);
+  border-radius: 32px;
+  margin: 16px;
+  padding: 16px 0;
+}
+
 body {
-  --dashboard-bg-color: #121314;
+  --dashboard-bg-color: #302c2c;
   background-color: var(--dashboard-bg-color);
   margin: 0;
   padding: 0;
