@@ -31,7 +31,7 @@ html {
 }
 
 body {
-  --video-player-bg-color: #e9e469;
+  --video-player-bg-color: #f8f4f4;
   background-color: var(--video-player-bg-color);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -87,7 +87,11 @@ body {
 
 #root {
   --header-height: 56px;
+  background-color: var(--yellow-dark);
+  border-radius: 32px;
+  margin: 10px;
   margin-top: calc(var(--header-height) + 32px);
+  padding: 16px 0 60px;
 }
 
 #top-bar {
