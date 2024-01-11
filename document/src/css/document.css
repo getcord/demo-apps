@@ -11,7 +11,7 @@
 }
 
 body {
-  --document-bg-color: #c2e7ff;
+  --document-bg-color: #f8f4f4;
   background-color: var(--document-bg-color);
   font-family:
     Roboto,
@@ -38,13 +38,22 @@ body,
   margin: 0px;
 }
 
-#root {
+.container-frame {
+  background-color: #c2e7ff;
+  border-radius: 32px 32px 0 0;
   display: flex;
   justify-content: center;
+  margin: 80px 16px 0;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.demo-no-header .container-frame {
+  margin: 0;
 }
 
 .container {
-  margin: 120px 80px;
+  margin: 80px 80px 0 80px;
   padding: 0 0 16px 0;
   width: 100%;
   max-width: 1200px;

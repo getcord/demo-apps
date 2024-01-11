@@ -534,196 +534,204 @@ export function Document() {
         <CommentButton coords={newCommentButtonCoords} onClick={addComment} />
       )}
       <div
-        id="sheet-container"
-        className={cx('container', {
-          ['blockSelection']: isSelectingTextOnSheet,
-        })}
+        className="container-frame"
         ref={infiniteScrollContainerRef}
         style={{ height: containerHeight }}
       >
-        <div className="header">
-          <FakeMenu />
-          <div className="header-subgroup">
-            <ThreadedCommentsLauncher />
-            <PagePresence location={LOCATION} groupId={SAMPLE_GROUP_ID} />
-          </div>
-        </div>
-        <hr />
         <div
-          className={cx({
-            ['floating-thread-is-open']: openThread !== null,
+          id="sheet-container"
+          className={cx('container', {
+            ['blockSelection']: isSelectingTextOnSheet,
           })}
         >
-          {sortedThreads
-            // only display threads we have marked as visible
-            .filter(([_id, { metadata }]) => metadata.floatingThreadVisible)
-            .map(([threadId, { metadata }], threadIdx) => {
-              const range = getRange(metadata);
-              if (!range) {
-                return;
-              }
+          <div className="header">
+            <FakeMenu />
+            <div className="header-subgroup">
+              <ThreadedCommentsLauncher />
+              <PagePresence location={LOCATION} groupId={SAMPLE_GROUP_ID} />
+            </div>
+          </div>
+          <hr />
+          <div
+            className={cx({
+              ['floating-thread-is-open']: openThread !== null,
+            })}
+          >
+            {sortedThreads
+              // only display threads we have marked as visible
+              .filter(([_id, { metadata }]) => metadata.floatingThreadVisible)
+              .map(([threadId, { metadata }], threadIdx) => {
+                const range = getRange(metadata);
+                if (!range) {
+                  return;
+                }
 
-              // We need to calculate offsets as the parent container
-              // is relatively positioned
-              sheetContainerBoundingClientRect.current =
-                containerRef.current?.parentElement?.getBoundingClientRect();
-              const offsetTop =
-                sheetContainerBoundingClientRect.current?.top ?? 0;
-              const offsetLeft =
-                sheetContainerBoundingClientRect.current?.left ?? 0;
+                // We need to calculate offsets as the parent container
+                // is relatively positioned
+                sheetContainerBoundingClientRect.current =
+                  containerRef.current?.parentElement?.getBoundingClientRect();
+                const offsetTop =
+                  sheetContainerBoundingClientRect.current?.top ?? 0;
+                const offsetLeft =
+                  sheetContainerBoundingClientRect.current?.left ?? 0;
 
-              const selectionRectsVsViewport = [...range.getClientRects()];
-              const isOpenThread = openThread === threadId;
+                const selectionRectsVsViewport = [...range.getClientRects()];
+                const isOpenThread = openThread === threadId;
 
-              return (
-                <Fragment key={threadId}>
-                  {selectionRectsVsViewport.map((rect, idx) => (
-                    <TextHighlight
-                      rect={{
-                        // Getting the DOMRect object as a JSON so
-                        // we can spread its properties and easily
-                        // modify the top and left properties with
-                        // the values we just calculated a few lines
-                        // above.
-                        ...rect.toJSON(),
-                        top: rect.top - offsetTop,
-                        left: rect.left - offsetLeft,
-                      }}
-                      key={idx}
-                      isOpenThread={isOpenThread}
-                      threadId={threadId}
-                    />
-                  ))}
-                  <div
-                    ref={(el: HTMLDivElement) => {
-                      if (threadsRefs?.current && el) {
-                        threadsRefs.current[threadIdx] = el;
-                        observer.observe(el);
-                      }
-                    }}
-                    className={cx('floating-thread-container', {
-                      ['open']: openThread === threadId,
-                    })}
-                    onClick={() => {
-                      setOpenThread(threadId);
-                      // Threads grow vertically. Very long threads might get
-                      // far away from the sheet's content, in which case, move them up!
-                      const isBottomThreadTooFarDown =
-                        threadsPositions[threadsPositions.length - 1].top >
-                        window.innerHeight;
-                      if (isBottomThreadTooFarDown) {
-                        window.scrollTo({ top: 0 });
-                      }
-                    }}
-                    style={{
-                      position: 'absolute',
-                      left:
-                        (threadsPositions[threadIdx]?.left ??
-                          // Make threads slide in from the right
-                          containerRef.current?.getBoundingClientRect().right ??
-                          0) + (isOpenThread ? -THREADS_GAP * 2 : THREADS_GAP),
-                      top:
-                        threadsPositions[threadIdx]?.top ??
-                        getTopPxFromMetadata(metadata),
-                      transition: 'all 0.5s ease 0.1s',
-                      transitionProperty: 'top, left',
-                      // The first time the thread gets rendered it's `hidden`, but
-                      // it has the right height. Once we know its height, we mark it
-                      // as ready, and we can correctly compute the position of the  thread
-                      //  below it.
-                      visibility: threadsReady.has(threadId)
-                        ? 'visible'
-                        : 'hidden',
-                    }}
-                  >
-                    <Thread
-                      groupId={SAMPLE_GROUP_ID}
-                      location={LOCATION}
-                      threadId={threadId}
-                      metadata={metadata}
-                      className={isOpenThread ? 'open-thread' : undefined}
-                      showPlaceholder={false}
-                      composerExpanded={isOpenThread}
-                      // When editing a message and focusing an open thread,
-                      // we don't want the main composer of the thread to
-                      // steal the focus from the editing composer.
-                      autofocus={isOpenThread && !isEditing}
-                      onRender={() =>
-                        setThreadsReady((prev) => new Set([...prev, threadId]))
-                      }
-                      onResolved={() => {
-                        handleHideFloatingThread(threadId);
-                      }}
-                      onClose={() => {
-                        setOpenThread(null);
-                      }}
-                      onThreadInfoChange={({ messageCount }) => {
-                        const userDeletedLastMessage =
-                          messageCount === 0 && threadsReady.has(threadId);
-                        if (userDeletedLastMessage) {
-                          handleHideFloatingThread(threadId);
+                return (
+                  <Fragment key={threadId}>
+                    {selectionRectsVsViewport.map((rect, idx) => (
+                      <TextHighlight
+                        rect={{
+                          // Getting the DOMRect object as a JSON so
+                          // we can spread its properties and easily
+                          // modify the top and left properties with
+                          // the values we just calculated a few lines
+                          // above.
+                          ...rect.toJSON(),
+                          top: rect.top - offsetTop,
+                          left: rect.left - offsetLeft,
+                        }}
+                        key={idx}
+                        isOpenThread={isOpenThread}
+                        threadId={threadId}
+                      />
+                    ))}
+                    <div
+                      ref={(el: HTMLDivElement) => {
+                        if (threadsRefs?.current && el) {
+                          threadsRefs.current[threadIdx] = el;
+                          observer.observe(el);
                         }
                       }}
-                      onMessageEditStart={() => {
+                      className={cx('floating-thread-container', {
+                        ['open']: openThread === threadId,
+                      })}
+                      onClick={() => {
                         setOpenThread(threadId);
-                        setIsEditing(true);
+                        // Threads grow vertically. Very long threads might get
+                        // far away from the sheet's content, in which case, move them up!
+                        const isBottomThreadTooFarDown =
+                          threadsPositions[threadsPositions.length - 1].top >
+                          window.innerHeight;
+                        if (isBottomThreadTooFarDown) {
+                          window.scrollTo({ top: 0 });
+                        }
                       }}
-                      onMessageEditEnd={() => setIsEditing(false)}
-                    />
-                  </div>
-                </Fragment>
-              );
+                      style={{
+                        position: 'absolute',
+                        left:
+                          (threadsPositions[threadIdx]?.left ??
+                            // Make threads slide in from the right
+                            containerRef.current?.getBoundingClientRect()
+                              .right ??
+                            0) +
+                          (isOpenThread ? -THREADS_GAP * 2 : THREADS_GAP),
+                        top:
+                          threadsPositions[threadIdx]?.top ??
+                          getTopPxFromMetadata(metadata),
+                        transition: 'all 0.5s ease 0.1s',
+                        transitionProperty: 'top, left',
+                        // The first time the thread gets rendered it's `hidden`, but
+                        // it has the right height. Once we know its height, we mark it
+                        // as ready, and we can correctly compute the position of the  thread
+                        //  below it.
+                        visibility: threadsReady.has(threadId)
+                          ? 'visible'
+                          : 'hidden',
+                      }}
+                    >
+                      <Thread
+                        groupId={SAMPLE_GROUP_ID}
+                        location={LOCATION}
+                        threadId={threadId}
+                        metadata={metadata}
+                        className={isOpenThread ? 'open-thread' : undefined}
+                        showPlaceholder={false}
+                        composerExpanded={isOpenThread}
+                        // When editing a message and focusing an open thread,
+                        // we don't want the main composer of the thread to
+                        // steal the focus from the editing composer.
+                        autofocus={isOpenThread && !isEditing}
+                        onRender={() =>
+                          setThreadsReady(
+                            (prev) => new Set([...prev, threadId]),
+                          )
+                        }
+                        onResolved={() => {
+                          handleHideFloatingThread(threadId);
+                        }}
+                        onClose={() => {
+                          setOpenThread(null);
+                        }}
+                        onThreadInfoChange={({ messageCount }) => {
+                          const userDeletedLastMessage =
+                            messageCount === 0 && threadsReady.has(threadId);
+                          if (userDeletedLastMessage) {
+                            handleHideFloatingThread(threadId);
+                          }
+                        }}
+                        onMessageEditStart={() => {
+                          setOpenThread(threadId);
+                          setIsEditing(true);
+                        }}
+                        onMessageEditEnd={() => setIsEditing(false)}
+                      />
+                    </div>
+                  </Fragment>
+                );
+              })}
+          </div>
+          {/* Used to catch clicks outside the thread, and close it. */}
+          <div
+            className={cx('click-underlay', {
+              ['show']: openThread,
             })}
-        </div>
-        {/* Used to catch clicks outside the thread, and close it. */}
-        <div
-          className={cx('click-underlay', {
-            ['show']: openThread,
-          })}
-          onClick={() => {
-            if (openThread && threads.get(openThread)?.totalMessages === 0) {
-              handleRemoveFloatingThread(openThread);
-            } else {
-              setOpenThread(null);
-            }
-          }}
-        />
-        {/* The actual contents of the sheet. If you're planning on building your own,
+            onClick={() => {
+              if (openThread && threads.get(openThread)?.totalMessages === 0) {
+                handleRemoveFloatingThread(openThread);
+              } else {
+                setOpenThread(null);
+              }
+            }}
+          />
+          {/* The actual contents of the sheet. If you're planning on building your own,
         you can safely remove AnimatedText. The key requirement for every element is to have an ID.
         E.g. <h1 id="title">My Shiny App</h1><p id="content">My Shiny content</p> will work. */}
-        <div
-          id="sheet"
-          ref={containerRef}
-          className={cx({
-            ['blockSelection']: blockSheetSelection,
-          })}
-        >
-          <FloatingPresence presentUsers={presentUsers} />
-          <h1 id="title" ref={titleRef}>
-            <AnimatedText
-              typingUser="Albert"
-              animate={!document.hidden && animatingElementIndex === 0}
-              text="Looks like Google Docs, right?"
-              onComplete={handleStartAnimatingNextElement}
-            />
-          </h1>
-          <p id="p1">
-            <AnimatedText
-              typingUser="Albert"
-              animate={!document.hidden && animatingElementIndex === 1}
-              text="We built this commenting experience with Cord's SDK, and you
+          <div
+            id="sheet"
+            ref={containerRef}
+            className={cx({
+              ['blockSelection']: blockSheetSelection,
+            })}
+          >
+            <FloatingPresence presentUsers={presentUsers} />
+            <h1 id="title" ref={titleRef}>
+              <AnimatedText
+                typingUser="Albert"
+                animate={!document.hidden && animatingElementIndex === 0}
+                text="Looks like Google Docs, right?"
+                onComplete={handleStartAnimatingNextElement}
+              />
+            </h1>
+            <p id="p1">
+              <AnimatedText
+                typingUser="Albert"
+                animate={!document.hidden && animatingElementIndex === 1}
+                text="We built this commenting experience with Cord's SDK, and you
               can, too 👍"
-              onComplete={handleStartAnimatingNextElement}
-            />
-          </p>
-          <p id="p2">
-            <AnimatedText
-              typingUser="Albert"
-              animate={!document.hidden && animatingElementIndex === 2}
-              text="Go on, give it a try! Don't worry, your comments won't be visible to anyone else visiting the site."
-              onComplete={() => setFinishedTextAnimation(true)}
-            />
-          </p>
+                onComplete={handleStartAnimatingNextElement}
+              />
+            </p>
+            <p id="p2">
+              <AnimatedText
+                typingUser="Albert"
+                animate={!document.hidden && animatingElementIndex === 2}
+                text="Go on, give it a try! Don't worry, your comments won't be visible to anyone else visiting the site."
+                onComplete={() => setFinishedTextAnimation(true)}
+              />
+            </p>
+          </div>
         </div>
       </div>
     </>
