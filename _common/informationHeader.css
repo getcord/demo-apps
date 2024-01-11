@@ -1,14 +1,12 @@
 header {
   align-items: center;
-  backdrop-filter: blur(5px);
-  background: rgba(0, 0, 0, 0.06);
   display: flex;
   gap: 8px;
   height: 64px;
   justify-content: space-between;
   left: 0;
   padding: 16px;
-  position: fixed;
+  position: absolute;
   right: 0;
   top: 0;
   /* Disabling selections, as it conflicts with
@@ -18,7 +16,6 @@ header {
 }
 
 header.dark {
-  background: rgba(255, 255, 255, 0.1);
   color: white;
 }
 
