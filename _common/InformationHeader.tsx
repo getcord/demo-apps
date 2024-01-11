@@ -1,6 +1,6 @@
 import cx from 'classnames';
-import type { DemoApp } from '../../../playground/ComponentsList';
-import { ComponentsList } from '../../../playground/ComponentsList';
+import type { DemoApp } from './ComponentsList';
+import { ComponentsList } from './ComponentsList';
 import cord from './images/cord.svg';
 import './informationHeader.css';
 
