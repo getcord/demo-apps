@@ -220,7 +220,7 @@ body {
 }
 
 .open-threadlist-container + .threadlist-container,
-[data-hovered-component='cord-threaded-comments'] .cord-threaded-comments {
+[data-hovered-component='cord-threaded-comments'] .threadlist-container {
   display: block;
 }
 
