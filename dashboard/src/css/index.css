@@ -216,12 +216,12 @@ body {
     --cord-shadow-large,
     0 var(--cord-space-4xs, 2px) var(--cord-space-m, 16px) 0 rgba(0, 0, 0, 0.16)
   );
-  visibility: hidden;
+  display: none;
 }
 
 .open-threadlist-container + .threadlist-container,
 [data-hovered-component='cord-threaded-comments'] .cord-threaded-comments {
-  visibility: visible;
+  display: block;
 }
 
 .threadlist-container .cord-threaded-comments {
@@ -276,12 +276,12 @@ cord-page-presence.cord-component .cord-avatar-container {
 
 cord-thread.cord-component {
   border-radius: 8px;
-  visibility: hidden;
+  display: none;
 }
 
 cord-thread.cord-component.open-thread,
 [data-hovered-component='cord-thread'] cord-thread.cord-component {
-  visibility: visible;
+  display: block;
 }
 
 .cord-message .cord-timestamp {
