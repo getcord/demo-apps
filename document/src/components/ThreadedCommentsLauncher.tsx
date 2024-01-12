@@ -27,7 +27,8 @@ export function ThreadedCommentsLauncher() {
 
   const toggleThreadedComments = useCallback(() => {
     setOpen((prev) => !prev);
-  }, [setOpen]);
+    threadsContext?.setOpenThread(null);
+  }, [threadsContext]);
 
   const handleClickMessage = useCallback(
     ({ threadId }: { threadId: string; messageId: string }) => {
