@@ -51,25 +51,19 @@ p {
   overflow-wrap: revert;
 }
 
-#root {
-  padding: 80px;
-  padding-top: calc(32px + var(--header-height));
-}
-
 .canvasWindow {
   border-radius: 8px;
-  box-shadow:
-    0px 2px 2px 0px rgba(0, 0, 0, 0.1),
-    0px 2px 20px 0px rgba(0, 0, 0, 0.16);
-  height: 100%;
+  height: calc(100vh - var(--header-height));
   width: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  padding: 16px 80px;
 }
 
 .canvasHeader {
   background-color: var(--canvas-header-background-color);
+  border-radius: 8px 8px 0 0;
   padding: 8px 12px;
   display: flex;
   position: relative;
@@ -100,6 +94,7 @@ p {
 .canvasAndCordContainer {
   display: flex;
   background: var(--color-white);
+  border-radius: 0 0 8px 8px;
   height: 100%;
   width: 100%;
   position: relative;

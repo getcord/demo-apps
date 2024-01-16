@@ -22,11 +22,12 @@ const CSS = `
 
 #components-list-dropdown {
   position: absolute;
-  top: 80%;
+  top: 64px;
   background: #F6F6F6;
   border-radius: 4px;
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
   padding: 4px 8px;
+  z-index: 15;
 }
 
 #components-list-dropdown a {

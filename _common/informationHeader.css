@@ -4,15 +4,10 @@ header {
   gap: 8px;
   height: 64px;
   justify-content: space-between;
-  left: 0;
   padding: 16px;
-  position: absolute;
-  right: 0;
-  top: 0;
   /* Disabling selections, as it conflicts with
     the intended behavior for the document demo. */
   user-select: none;
-  z-index: 10;
 }
 
 header.dark {
