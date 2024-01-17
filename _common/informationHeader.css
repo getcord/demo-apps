@@ -1,8 +1,8 @@
 header {
-  align-items: center;
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  height: 64px;
+  height: 128px;
   justify-content: space-between;
   padding: 16px;
   /* Disabling selections, as it conflicts with
@@ -11,6 +11,7 @@ header {
 }
 
 header.dark {
+  background: #302c2c;
   color: white;
 }
 
@@ -33,5 +34,6 @@ header .button:hover {
 #links {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }

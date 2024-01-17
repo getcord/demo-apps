@@ -1,78 +1,85 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback } from 'react';
+import cx from 'classnames';
+import { ComponentNameToIcon } from './ComponentNameToIcon';
+import type { ComponentNames } from './ComponentNameToIcon';
 
 const CSS = `
-#components-list-btn {
-  align-items: center;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+hr {
   border: 0;
-  color: inherit;
-  cursor: pointer;
+  border-top: 1px solid #CECFD2;  
+  margin: 0;
+}
+
+.drawer-container {
   display: flex;
-  font-size: 16px;
-  gap: 8px;
-  height: 32px;
-  padding: 8px;
+  gap: 32px;
+  margin: auto;
+  /* Shifting up the text so it appears over the hr */
+  margin-top: -16px;
 }
 
-#components-list-btn:hover,
-#components-list-btn:active {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-#components-list-dropdown {
-  position: absolute;
-  top: 64px;
-  background: #F6F6F6;
-  border-radius: 4px;
-  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
-  padding: 4px 8px;
-  z-index: 15;
-}
-
-#components-list-dropdown a {
-  color: #9A6AFF;
-  text-decoration: none;
-  border-radius: 4px;
-  text-transform: capitalize;
-  display: flex;
-  height: 40px;
-  padding: 4px 8px;
+.pill {
   align-items: center;
-  gap: 8px;
-  align-self: stretch;
-}
-
-#components-list-dropdown a:hover {
-  color: #6949AC;
-  background-color: #DADCE0;
-}
-
-.dropdown-section-title {
-  color: #97979F;
+  background-color: #DCDCE2;
+  border-radius: 16px;
+  color: black;
   display: flex;
-  padding: 4px 8px;
-  align-items: center;
-  gap: 8px;
-  align-self: stretch;
-  cursor: default;
-}
-
-.group-title {
-  height: 40px;
-}
-
-.group-subtitle {
-  height: 18px;
   font-size: 12px;
-  padding-top: 0;
-  padding-bottom: 4px;
+  gap: 4px;
+  min-height: 24px;
+  padding: 4px 8px;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
-.separator {
-  border: 0;
-  border-top: 1px solid #DADCE0;
-  margin: 4px 0;
+.pill.dark {
+  background-color: #4C4C4C;
+  color: #F5F5F5;
+}
+
+.pill:hover {
+  background-color: #9A6AFF;
+  color: white;
+}
+
+.api.pill::after,
+.github-logo.pill::after {
+  content: '↗︎';
+}
+
+.section {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section-title {
+  color: #9a6aff;
+  background-color: #F8F4F4;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 300;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.section-title.dark {
+  background-color: #302C2C;
+  color: white;
+}
+
+.section-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Don't display the drawer on mobile */
+@media only screen and (max-width: 650px) {
+  .drawer-container, hr {
+    display: none;
+  }
 }
 `;
 
@@ -84,168 +91,98 @@ export function ComponentsList({
   darkMode,
   app,
 }: {
-  components?: string[];
+  components?: ComponentNames[];
   api?: string[];
   darkMode?: boolean;
   app: DemoApp;
 }) {
-  const [isListOpen, setIsListOpen] = useState(false);
-  const handleToggleComponentsList = useCallback(() => {
-    setIsListOpen((prev) => !prev);
-  }, []);
-
-  return (
-    <>
-      <style>{CSS}</style>
-      <button
-        type="button"
-        id="components-list-btn"
-        style={{
-          background:
-            darkMode && !isListOpen
-              ? 'rgba(255, 255, 255, 0.10)'
-              : darkMode && isListOpen
-              ? 'rgba(255, 255, 255, 0.2)'
-              : isListOpen
-              ? 'rgba(0, 0, 0, 0.2)'
-              : undefined,
-        }}
-        onClick={handleToggleComponentsList}
-      >
-        <CordLogo />
-        How it&apos;s built
-        <DropdownIcon />
-      </button>
-      {isListOpen && (
-        <ComponentListDropdown
-          components={components}
-          api={api}
-          onClose={() => setIsListOpen(false)}
-          app={app}
-        />
-      )}
-    </>
-  );
-}
-
-type ComponentListDropdownProps = {
-  onClose: () => void;
-  components?: string[];
-  api?: string[];
-  app: DemoApp;
-};
-
-function ComponentListDropdown({
-  onClose,
-  components,
-  api,
-  app,
-}: ComponentListDropdownProps) {
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const handleOutsideClick = useCallback(
-    (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
-        onClose();
-      }
-    },
-    [onClose],
-  );
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-    };
-  }, [handleOutsideClick]);
-
   const setHoveredComponent = useCallback((componentString: string) => {
     const rootDiv = document.getElementById('root');
     rootDiv?.setAttribute('data-hovered-component', componentString);
   }, []);
 
   return (
-    <div id="components-list-dropdown" ref={dropdownRef}>
-      {components?.length && (
-        <>
-          <div className="dropdown-section-title group-title">Components</div>
-          <div className="dropdown-section-title group-subtitle">
-            *Hover to highlight
-          </div>
-        </>
-      )}
-      {components?.map((component) => {
-        const lowercaseComponent = component.toLowerCase();
-        const prettyComponentName = lowercaseComponent
-          .slice(4) // Remove `cord-`
-          .split('-')
-          .join(' ')
-          .toLowerCase();
-
-        return (
-          <a
-            href={`https://docs.cord.com/components/${lowercaseComponent}`}
-            key={component}
-            onMouseEnter={() => setHoveredComponent(component)}
-            onMouseLeave={() => setHoveredComponent('')}
+    <>
+      <style>{CSS}</style>
+      <hr />
+      <div className="drawer-container">
+        <div className="section">
+          <div
+            className={cx('section-title', {
+              ['dark']: darkMode,
+            })}
           >
-            {prettyComponentName}
-          </a>
-        );
-      })}
-      {api?.length && (
-        <>
-          <hr className="separator" />
-          <div className="dropdown-section-title group-title">APIs</div>
-        </>
-      )}
-      {api?.map((apiName) => (
-        <a
-          href={`https://docs.cord.com/js-apis-and-hooks/${apiName}-api`}
-          key={apiName}
-        >
-          {apiName}
-        </a>
-      ))}
-      <hr className="separator" />
-      <div>
-        <GithubLink app={app} />
+            Explore components
+          </div>
+          <div className="section-items">
+            {components?.map((component) => {
+              const lowercaseComponent = component.toLowerCase();
+              const prettyComponentName = lowercaseComponent
+                .slice(4) // Remove `cord-`
+                .split('-')
+                .join(' ')
+                .toLowerCase();
+              return (
+                <a
+                  href={`https://docs.cord.com/components/${lowercaseComponent}`}
+                  key={component}
+                  className={cx('pill', {
+                    ['dark']: darkMode,
+                  })}
+                  onMouseEnter={() => setHoveredComponent(component)}
+                  onMouseLeave={() => setHoveredComponent('')}
+                >
+                  {ComponentNameToIcon(component, !!darkMode)}
+                  {capitalize(prettyComponentName)}
+                </a>
+              );
+            })}
+          </div>
+        </div>
+        <div className="section">
+          <div
+            className={cx('section-title', {
+              ['dark']: darkMode,
+            })}
+          >
+            Explore APIs
+          </div>
+          <div className="section-items">
+            {api?.map((apiName) => (
+              <a
+                href={`https://docs.cord.com/js-apis-and-hooks/${apiName}-api`}
+                key={apiName}
+                className={cx('api', 'pill', {
+                  ['dark']: darkMode,
+                })}
+              >
+                {capitalize(apiName)}
+              </a>
+            ))}
+          </div>
+        </div>
+        <div className="section">
+          <div
+            className={cx('section-title', {
+              ['dark']: darkMode,
+            })}
+          >
+            View source code
+          </div>
+          <div className="section-items">
+            <GithubLink app={app} darkMode={!!darkMode} />
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
-function CordLogo() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none">
-      <path
-        d="M10 20c5.523 0 10-4.477 10-10S15.523 0 10 0 0 4.477 0 10s4.477 10 10 10Z"
-        fill="#EDFC7E"
-      />
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M11.444 9.316h1.271V6.983c.864.981 1.435 1.92 1.67 2.75.266.945.098 1.7-.513 2.311-.416.416-1.009.613-1.7.613-.207 0-.421-.017-.641-.05a4.533 4.533 0 0 0-.129-1.15c-.28-1.184-.994-2.398-2.014-3.417-.84-.84-1.757-1.512-2.586-1.895-1.31-.606-2-.318-2.348.03-.35.349-.637 1.04-.032 2.35.384.83 1.064 1.755 1.904 2.596 1.124 1.12 2.383 1.933 3.666 2.393a1.28 1.28 0 0 1-.162.2c-.242.242-.817.606-1.964.335-.958-.226-1.956-.822-2.81-1.677l-.9.9c1.019 1.018 2.233 1.735 3.418 2.014.368.087.721.13 1.056.13.844 0 1.569-.273 2.098-.803.223-.222.4-.478.53-.763.316.053.622.079.916.079 1.05 0 1.947-.334 2.598-.986.938-.939 1.228-2.168.837-3.555-.29-1.026-.941-2.115-1.94-3.247h2.221V4.87h-4.446v4.446Zm-2.952-.375c.855.855 1.447 1.851 1.673 2.81.043.182.07.35.084.505-1.014-.397-2.072-1.084-3.024-2.034-.684-.683-1.25-1.432-1.584-2.095-.32-.638-.31-.969-.286-1.049.08-.025.41-.034 1.049.286.663.334 1.404.893 2.088 1.577Z"
-        fill="#121314"
-      />
-    </svg>
-  );
-}
-
-function DropdownIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M8 2.4a.6.6 0 0 1 .44.192l2.6 2.8a.6.6 0 0 1-.88.816L8 3.882 5.84 6.208a.6.6 0 1 1-.88-.816l2.6-2.8A.6.6 0 0 1 8 2.4ZM4.992 9.76a.6.6 0 0 1 .848.032L8 12.12l2.16-2.327a.6.6 0 1 1 .88.816l-2.6 2.8a.6.6 0 0 1-.88 0l-2.6-2.8a.6.6 0 0 1 .032-.848Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
+function capitalize(componentName: string) {
+  return componentName
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.substring(1))
+    .join(' ');
 }
 
 function GithubLogo() {
@@ -276,15 +213,23 @@ function GithubLogo() {
 
 type GithubLinkProps = {
   app: DemoApp;
+  darkMode: boolean;
 };
 
-function GithubLink({ app }: GithubLinkProps) {
+function GithubLink({ app, darkMode }: GithubLinkProps) {
   const to = `https://github.com/getcord/demo-apps/tree/master/${app}`;
 
   return (
-    <a href={to} target="_blank" rel="noreferrer">
+    <a
+      href={to}
+      className={cx('github-logo', 'pill', {
+        ['dark']: darkMode,
+      })}
+      target="_blank"
+      rel="noreferrer"
+    >
       <GithubLogo />
-      <span>View Source Code</span>
+      <span>Github</span>
     </a>
   );
 }

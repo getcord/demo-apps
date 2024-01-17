@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import type { DemoApp } from './ComponentsList';
 import { ComponentsList } from './ComponentsList';
+import type { ComponentNames } from './ComponentNameToIcon';
 import cord from './images/cord.svg';
 import './informationHeader.css';
 
@@ -12,21 +13,15 @@ export function InformationHeader({
 }: {
   app: DemoApp;
   darkTheme?: boolean;
-  components: string[];
+  components: ComponentNames[];
   api: string[];
 }) {
   return (
     <header className={cx({ ['dark']: darkTheme })}>
-      <div id="logo">
-        <img src={cord} />
-      </div>
       <div id="links">
-        <ComponentsList
-          components={components}
-          api={api}
-          darkMode={darkTheme}
-          app={app}
-        />
+        <div id="logo">
+          <img src={cord} />
+        </div>
         <a
           className="button"
           href="https://console.cord.com"
@@ -36,6 +31,12 @@ export function InformationHeader({
           Get your API keys
         </a>
       </div>
+      <ComponentsList
+        components={components}
+        api={api}
+        darkMode={darkTheme}
+        app={app}
+      />
     </header>
   );
 }

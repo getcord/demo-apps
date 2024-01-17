@@ -193,7 +193,7 @@ body {
   background-color: var(--yellow-dark);
   border-radius: 32px;
   display: flex;
-  margin: 0 16px;
+  margin: 16px;
   min-width: 768px;
   padding: 36px 0 100px;
   flex-direction: column;
