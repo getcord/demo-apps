@@ -4,12 +4,13 @@ import { InformationHeader } from '../../_common/InformationHeader';
 import { useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION } from './utils';
 import { Document } from './components/Document';
 import { ThreadsProvider } from './ThreadsContext';
-// The playground token is only used on cord.com, you can ignore it!
-import { playgroundToken } from './playgroundToken.json';
+// The demo token is only used on cord.com where there are pre-populated users
+// and messages, you can ignore it!
+import { prepopulatedDemoToken } from './prepopulatedDemoToken.json';
 
 export default function App() {
   const sampleToken = useCordSampleToken_DEMO_ONLY_NOT_FOR_PRODUCTION();
-  const clientAuthToken = playgroundToken ?? sampleToken;
+  const clientAuthToken = prepopulatedDemoToken ?? sampleToken;
 
   return (
     // All the Cord React components must be children of a single CordProvider component.
