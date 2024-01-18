@@ -549,7 +549,7 @@ the stacking context created by floating threads. */
 
 .cord-component .cord-composer .cord-composer-menu {
   border: none;
-  padding: 0;
+  padding: 0 8px 0;
 }
 
 cord-avatar.cord-component .cord-avatar-container {
