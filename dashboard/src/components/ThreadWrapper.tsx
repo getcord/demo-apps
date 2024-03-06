@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import { Thread } from '@cord-sdk/react';
 import type { FlatJsonObject } from '@cord-sdk/types';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import type { ThreadMetadata } from '../ThreadsContext';
 import { ThreadsContext } from '../ThreadsContext';
 import { SAMPLE_GROUP_ID } from './Dashboard';
@@ -24,9 +24,7 @@ export function ThreadWrapper({
 }: ThreadWrapperProps) {
   const { openThread, removeThread, setOpenThread } =
     useContext(ThreadsContext)!;
-  const [numberOfMessages, setNumberOfMessages] = useState<number | undefined>(
-    undefined,
-  );
+  const numberOfMessages = useRef<number | undefined>(undefined);
   const [rendered, setRendered] = useState(false);
 
   // Effect that removes this thread if it has no messages at the time it is closed
@@ -34,12 +32,13 @@ export function ThreadWrapper({
     return () => {
       if (
         rendered &&
-        (numberOfMessages === undefined || numberOfMessages <= 0)
+        (numberOfMessages.current === undefined ||
+          numberOfMessages.current <= 0)
       ) {
         removeThread(threadId);
       }
     };
-  }, [rendered, numberOfMessages, openThread, removeThread, threadId]);
+  }, [rendered, openThread, removeThread, threadId]);
 
   return (
     <Thread
@@ -56,7 +55,7 @@ export function ThreadWrapper({
         ...style,
       }}
       onThreadInfoChange={(info) => {
-        setNumberOfMessages(info.messageCount);
+        numberOfMessages.current = info.messageCount;
       }}
       onRender={() => {
         setRendered(true);
